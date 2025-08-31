@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -12,24 +13,24 @@
             box-sizing: border-box;
             font-family: 'Fira Code', 'JetBrains Mono', 'Ubuntu Mono', 'DejaVu Sans Mono', monospace;
         }
-        
+
         body {
             background-color: #0b0f14;
             color: #e5e7eb;
             line-height: 1.6;
             padding: 20px;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
             background-size: 20px 20px;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
         }
-        
+
         header {
             display: flex;
             justify-content: space-between;
@@ -38,8 +39,12 @@
             border-bottom: 1px solid #1f2937;
             margin-bottom: 30px;
         }
-        
-        .logo, .logo:link, .logo:visited, .logo:hover, .logo:active {
+
+        .logo,
+        .logo:link,
+        .logo:visited,
+        .logo:hover,
+        .logo:active {
             font-size: 24px;
             font-weight: bold;
             color: #00ff88 !important;
@@ -62,21 +67,22 @@
             align-items: center;
             gap: 40px;
         }
-        
+
         nav ul {
             display: flex;
             list-style: none;
             align-items: center;
             gap: 25px;
         }
-        
+
         nav a {
             color: #94a3b8;
             text-decoration: none;
             transition: color 0.3s;
         }
-        
-        nav a:hover, nav a.active {
+
+        nav a:hover,
+        nav a.active {
             color: #00ff88;
         }
 
@@ -91,7 +97,7 @@
             cursor: pointer;
             color: #94a3b8;
         }
-        
+
         .avatar {
             width: 32px;
             height: 32px;
@@ -117,30 +123,30 @@
             text-decoration: none;
             display: block;
         }
-        
+
         .hero {
             text-align: center;
             margin-bottom: 40px;
         }
-        
+
         .hero h1 {
             font-size: 2.5rem;
             color: #00ff88;
             margin-bottom: 15px;
         }
-        
+
         .hero p {
             color: #94a3b8;
             font-size: 1.1rem;
         }
-        
+
         .courses-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 25px;
             margin-bottom: 50px;
         }
-        
+
         .course-card {
             background: #0e141a;
             border: 1px solid #1f2937;
@@ -148,18 +154,18 @@
             padding: 25px;
             transition: transform 0.3s, border-color 0.3s;
         }
-        
+
         .course-card:hover {
             transform: translateY(-5px);
             border-color: #00ff88;
         }
-        
+
         .course-card h3 {
             color: #00ff88;
             margin-bottom: 15px;
             font-size: 1.3rem;
         }
-        
+
         .course-info {
             display: flex;
             justify-content: space-between;
@@ -167,7 +173,7 @@
             color: #94a3b8;
             font-size: 0.9rem;
         }
-        
+
         .progress-container {
             background: #1f2937;
             border-radius: 10px;
@@ -175,20 +181,20 @@
             margin-bottom: 15px;
             overflow: hidden;
         }
-        
+
         .progress-bar {
             background: #00ff88;
             height: 100%;
             border-radius: 10px;
             transition: width 0.3s;
         }
-        
+
         .course-actions {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
         }
-        
+
         .btn {
             padding: 10px 20px;
             border: none;
@@ -197,29 +203,30 @@
             font-weight: bold;
             transition: background-color 0.3s;
         }
-        
+
         .btn-primary {
             background: #00ff88;
             color: #0b0f14;
         }
-        
+
         .btn-primary:hover {
             background: #00cc6a;
         }
-        
+
         .btn-secondary {
             background: #334155;
             color: #e5e7eb;
         }
+
         .btn-secondary:hover {
             background: #4b5563;
         }
-        
+
         .btn-certificate {
             background: #fbbf24;
             color: #0b0f14;
         }
-        
+
         .btn-certificate:hover {
             background: #f59e0b;
         }
@@ -241,7 +248,7 @@
             height: 18px;
             fill: currentColor;
         }
-        
+
         .modal {
             display: none;
             position: fixed;
@@ -256,7 +263,7 @@
             -webkit-backdrop-filter: blur(5px);
             backdrop-filter: blur(5px);
         }
-        
+
         .modal-content {
             background: #0e141a;
             border: 2px solid #00ff88;
@@ -268,7 +275,7 @@
             overflow-y: auto;
             position: relative;
         }
-        
+
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -277,11 +284,11 @@
             padding-bottom: 15px;
             border-bottom: 1px solid #1f2937;
         }
-        
+
         .modal-header h2 {
             color: #00ff88;
         }
-        
+
         .close-modal {
             background: none;
             border: none;
@@ -293,7 +300,7 @@
         .lesson-list {
             list-style: none;
         }
-        
+
         .lesson-item {
             padding: 15px;
             border: 1px solid #1f2937;
@@ -304,32 +311,32 @@
             align-items: center;
             background: #0b0f14;
         }
-        
+
         .lesson-item.completed {
             border-color: #00ff88;
             background: rgba(0, 255, 136, 0.05);
         }
-        
+
         .lesson-info {
             flex: 1;
         }
-        
+
         .lesson-title {
             color: #e5e7eb;
             margin-bottom: 5px;
             font-weight: bold;
         }
-        
+
         .lesson-duration {
             color: #94a3b8;
             font-size: 0.9rem;
         }
-        
+
         .lesson-actions {
             display: flex;
             gap: 10px;
         }
-        
+
         footer {
             text-align: center;
             margin-top: 50px;
@@ -337,17 +344,20 @@
             border-top: 1px solid #1f2937;
             color: #94a3b8;
         }
-        
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
             <a href="/" id="logo-link" class="logo" style="text-decoration: none;">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M2 17L12 22L22 17" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    <path d="M2 12L12 17L22 12" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#00ff88" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M2 17L12 22L22 17" stroke="#00ff88" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M2 12L12 17L22 12" stroke="#00ff88" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
                 </svg>
                 <span>Academy Z</span>
             </a>
@@ -387,15 +397,53 @@
         </footer>
     </div>
 
-    <script src="/js/main.js"></script>        
+    <script src="/js/main.js"></script>
     <script src="/js/notifications.js"></script>
-    
+
     <script>
         const API_BASE = '/api';
         let currentUser = null;
         let lastGeneratedCert = null;
-        
-        let courses = [];
+
+        let courses = [
+            { id: 1, title: "Introdução ao Linux", 
+                description: "Aprenda os conceitos fundamentais do sistema operacional Linux...", 
+                duration: "2 horas", 
+                lessons: [
+                { id: 1, title: "O que é Linux?", videoUrl: "/videos/video1.mp4" }, 
+                { id: 2, title: "História do Linux", videoUrl: "/videos/video2.mp4" }, 
+                { id: 3, title: "Distribuições Linux", videoUrl: "/videos/video3.mp4" }, 
+                { id: 4, title: "Instalação do Linux", videoUrl: "/videos/video4.mp4" }, 
+                { id: 5, title: "Primeiros Passos", videoUrl: "/videos/video5.mp4" }] 
+            },
+
+            { id: 2, title: "Comandos Terminal", 
+                description: "Domine o terminal Linux e aprenda comandos essenciais...", 
+                duration: "3 horas", 
+                lessons: [
+                { id: 1, title: "Navegação Básica", videoUrl: "/videos/video6.mp4" }, 
+                { id: 2, title: "Manipulação de Arquivos", videoUrl: "/videos/video7.mp4" }, 
+                { id: 3, title: "Permissões e Donos", videoUrl: "/videos/video8.mp4" }, 
+                { id: 4, title: "Processos e Serviços", videoUrl: "/videos/video9.mp4" }, 
+                { id: 5, title: "Redirecionamentos", videoUrl: "/videos/video10.mp4" }, 
+                { id: 6, title: "Scripts Básicos", videoUrl: "/videos/video11.mp4" }, 
+                { id: 7, title: "Ferramentas Úteis", videoUrl: "/videos/video12.mp4" }] 
+            },
+
+            { id: 3, title: "Administração Linux", 
+                description: "Aprenda a gerenciar sistemas Linux como um administrador...", 
+                duration: "4 horas", 
+                lessons: [
+                    { id: 1, title: "Gerenciamento de Usuários", videoUrl: "/videos/video13.mp4" }, 
+                    { id: 2, title: "Gerenciamento de Pacotes", videoUrl: "/videos/video14.mp4" }, 
+                    { id: 3, title: "Configuração de Rede", videoUrl: "/videos/video15.mp4" }, 
+                    { id: 4, title: "Serviços e Daemons", videoUrl: "/videos/video16.mp4" }, 
+                    { id: 5, title: "Backup e Restauração", videoUrl: "/videos/video17.mp4" }, 
+                    { id: 6, title: "Monitoramento", videoUrl: "/videos/video18.mp4" }, 
+                    { id: 7, title: "Segurança Básica", videoUrl: "/videos/video19.mp4" }, 
+                    { id: 8, title: "Troubleshooting", videoUrl: "/videos/video20.mp4" }] 
+            }
+        ];
 
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('authToken');
@@ -410,10 +458,10 @@
             try {
                 // Busca todas as informações em paralelo
                 const [userRes, progressRes, certsRes, coursesRes] = await Promise.all([
-                    fetch('/api/users/me', { headers: { 'Authorization': `Bearer ${token}` } }),
-                    fetch('/api/progress', { headers: { 'Authorization': `Bearer ${token}` } }),
-                    fetch('/api/users/me/certificates', { headers: { 'Authorization': `Bearer ${token}` } }),
-                    fetch('/api/courses', { headers: { 'Authorization': `Bearer ${token}` } })
+                    fetch('/api/users/me', { headers: { 'Authorization': `Bearer ${token}` }, cache: 'no-cache' }),
+                    fetch('/api/progress', { headers: { 'Authorization': `Bearer ${token}` }, cache: 'no-cache' }),
+                    fetch('/api/users/me/certificates', { headers: { 'Authorization': `Bearer ${token}` }, cache: 'no-cache' }),
+                    fetch('/api/courses', { headers: { 'Authorization': `Bearer ${token}` }, cache: 'no-cache' })
                 ]);
 
                 currentUser = await userRes.json();
@@ -442,7 +490,7 @@
             try {
                 const response = await fetch(`${API_BASE}/progress`, { headers: { 'Authorization': `Bearer ${token}` } });
                 const progress = await response.json();
-                
+
                 courses.forEach(course => {
                     course.lessons.forEach(lesson => {
                         lesson.completed = progress.some(p => p.course_id === course.id && p.lesson_id === lesson.id);
@@ -468,11 +516,11 @@
                 const card = document.createElement('div');
                 card.className = 'course-card';
                 let actionButtons = `<button class="btn btn-primary" onclick="viewCourse(${course.id})">${course.progress > 0 ? 'Continuar' : 'Começar'}</button>`;
-                
+
                 if (course.completed) {
-                     actionButtons += `<button class="btn btn-secondary" onclick="generateCertificate(${course.id}, event)">Emitir Certificado</button>`;
+                    actionButtons += `<button class="btn btn-secondary" onclick="generateCertificate(${course.id}, event)">Emitir Certificado</button>`;
                 }
-                
+
                 card.innerHTML = `
                     <h3>${course.title}</h3>
                     <p>${course.description}</p>
@@ -484,44 +532,44 @@
             });
         }
 
-         async function downloadCertificate(certId, button) {
-        try {
-            button.innerHTML = 'Baixando...';
-            const response = await fetch(`${API_BASE}/certificates/generate/${certId}`);
-            if (!response.ok) {
-                throw new Error('Falha ao baixar a imagem.');
+        async function downloadCertificate(certId, button) {
+            try {
+                button.innerHTML = 'Baixando...';
+                const response = await fetch(`${API_BASE}/certificates/generate/${certId}`);
+                if (!response.ok) {
+                    throw new Error('Falha ao baixar a imagem.');
+                }
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `certificado-${certId}.png`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+            } catch (error) {
+                showToast(error.message);
+            } finally {
+                // Atualiza a UI para mostrar que o certificado foi emitido
+                button.textContent = 'Certificado Emitido';
+                button.disabled = true;
+
+                const courseId = parseInt(button.id.split('-')[2]);
+                const course = courses.find(c => c.id === courseId);
+                const cert = { course_name: course.title, certificate_id: certId };
+
+                const actionsContainer = document.getElementById(`actions-${course.id}`);
+                const linkedinButton = document.createElement('a');
+                linkedinButton.href = getLinkedInShareUrl(cert);
+                linkedinButton.target = '_blank';
+                linkedinButton.className = 'btn btn-linkedin';
+                linkedinButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2ZM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.25 6.5 1.75 1.75 0 0 1 6.5 8.25ZM19 19h-3v-4.75c0-1.4-1.2-2.5-2.5-2.5S11 12.85 11 14.25V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.6-1.4c2.5 0 4.5 2.2 4.5 5.1V19z"></path></svg> Compartilhar`;
+                actionsContainer.appendChild(linkedinButton);
             }
-            const blob = await response.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = `certificado-${certId}.png`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            a.remove();
-        } catch (error) {
-            showToast(error.message);
-        } finally {
-             // Atualiza a UI para mostrar que o certificado foi emitido
-            button.textContent = 'Certificado Emitido';
-            button.disabled = true;
-
-            const courseId = parseInt(button.id.split('-')[2]);
-            const course = courses.find(c => c.id === courseId);
-            const cert = { course_name: course.title, certificate_id: certId };
-
-            const actionsContainer = document.getElementById(`actions-${course.id}`);
-            const linkedinButton = document.createElement('a');
-            linkedinButton.href = getLinkedInShareUrl(cert);
-            linkedinButton.target = '_blank';
-            linkedinButton.className = 'btn btn-linkedin';
-            linkedinButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2ZM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.25 6.5 1.75 1.75 0 0 1 6.5 8.25ZM19 19h-3v-4.75c0-1.4-1.2-2.5-2.5-2.5S11 12.85 11 14.25V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.6-1.4c2.5 0 4.5 2.2 4.5 5.1V19z"></path></svg> Compartilhar`;
-            actionsContainer.appendChild(linkedinButton);
         }
-    }
-        
+
         async function completeLesson(courseId, lessonId) {
             const token = localStorage.getItem('authToken');
             const course = courses.find(c => c.id === courseId);
@@ -535,10 +583,10 @@
                     body: JSON.stringify({ courseId, lessonId, totalLessonsInCourse: course.lessons.length })
                 });
                 if (!response.ok) throw new Error('Falha ao salvar progresso.');
-                
+
                 lesson.completed = true;
                 calculateProgress(course);
-                renderCourses(); 
+                renderCourses();
                 if (course.completed) {
                     setTimeout(() => showToast(`🎉 Parabéns! Você concluiu o curso "${course.title}"!`), 500);
                 }
@@ -550,7 +598,7 @@
         async function generateCertificate(courseId, event) {
             const course = courses.find(c => c.id === courseId);
             if (!course || !course.completed || !currentUser) return showToast('Você precisa concluir o curso primeiro!');
-            
+
             const token = localStorage.getItem('authToken');
             const button = event.target;
             button.disabled = true;
@@ -575,7 +623,7 @@
                 });
 
                 if (!createResponse.ok) throw new Error((await createResponse.json()).message || 'Falha ao registrar o certificado.');
-                
+
                 const generatedCert = await createResponse.json();
                 showToast(`✅ Certificado "${generatedCert.certificate_id}" registrado! O download começará em seguida.`);
 
@@ -611,7 +659,7 @@
 
             document.getElementById('modalTitle').textContent = course.title;
             let lessonsHtml = `<ul class="lesson-list">`;
-                
+
             course.lessons.forEach(lesson => {
                 lessonsHtml += `
                     <li class="lesson-item ${lesson.completed ? 'completed' : ''}">
@@ -622,7 +670,7 @@
                     </li>
                 `;
             });
-            
+
             lessonsHtml += '</ul>';
             document.getElementById('modalContent').innerHTML = lessonsHtml;
             document.getElementById('courseModal').style.display = 'flex';
@@ -649,5 +697,5 @@
     </script>
 
 </body>
-</html>
 
+</html>
