@@ -470,15 +470,14 @@
                 courses = await coursesRes.json();
 
                 // Processa os dados
-                courses.forEach(course => {
-                    course.lessons.forEach(lesson => {
-                        lesson.completed = progress.some(p => p.course_id === course.id && p.lesson_id === lesson.id);
-                    });
-                    calculateProgress(course);
+             courses.forEach(course => {
+                (course.lessons || []).forEach(lesson => {
+                    lesson.completed = progress.some(p => p.course_id === course.id && p.lesson_id === lesson.id);
                 });
+                calculateProgress(course);
+            });
 
                 renderCourses();
-                updateUIWithExistingCerts(existingCerts);
 
             } catch (error) {
                 console.error("Erro na inicialização:", error);
@@ -504,8 +503,15 @@
         }
 
         function calculateProgress(course) {
-            const completedLessons = course.lessons.filter(l => l.completed).length;
-            course.progress = Math.round((completedLessons / course.lessons.length) * 100);
+            const lessons = course.lessons || [];
+            if (lessons.length === 0) {
+                course.progress = 0;
+                course.completed = false;
+                return;
+            }
+
+            const completedLessons = lessons.filter(l => l.completed).length;
+            course.progress = Math.round((completedLessons / lessons.length) * 100);
             course.completed = course.progress === 100;
         }
 
