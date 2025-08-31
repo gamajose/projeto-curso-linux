@@ -2,34 +2,43 @@
 const pool = require('../config/database');
 const bcrypt = require('bcrypt');
 
-// Função para buscar os dados do usuário logado
+// Função para buscar os dados do usuário logado (CORRIGIDA)
 exports.getMe = async (req, res) => {
     try {
-        // Busca todas as colunas para preencher o formulário de perfil
         const userResult = await pool.query(
-            "SELECT * FROM users WHERE id = $1",
+            // Seleciona todas as colunas, incluindo as novas de gamificação
+            `SELECT id, name, email, avatar_url, xp, level, cpf, birth_date, gender, 
+             phone_fixed, phone_mobile, address_street, address_number, address_district, 
+             address_city, address_state, address_zipcode, linkedin_profile, organization, "position", observations 
+             FROM users WHERE id = $1`,
             [req.user.id]
         );
+
         if (userResult.rows.length === 0) {
+            // Envia a resposta de erro e PARA a execução com 'return'
             return res.status(404).json({ message: "Usuário não encontrado." });
         }
-        // Remove o hash da senha antes de enviar para o frontend
-        const user = userResult.rows[0];
-        delete user.password_hash; 
-        res.json(user);
+
+        // Envia a resposta de sucesso e PARA a execução
+        res.json(userResult.rows[0]);
+
     } catch (error) {
         console.error("Erro ao buscar dados do usuário:", error);
-        res.status(500).json({ message: "Erro interno no servidor." });
+        // Só envia uma resposta de erro se a de sucesso ainda não foi enviada
+        if (!res.headersSent) {
+            res.status(500).json({ message: "Erro interno no servidor." });
+        }
     }
 };
 
-// Função para atualizar o perfil do usuário
+// Função para atualizar o perfil do usuário (sem alterações)
 exports.updateMe = async (req, res) => {
     const userId = req.user.id;
     const { name, cpf, birth_date, gender, phone_fixed, phone_mobile, address_street, address_number, address_district, address_city, address_state, address_zipcode, linkedin_profile, organization, position, observations } = req.body;
 
-    let avatar_url = req.body.avatar_url;
+    let avatar_url = req.body.avatar_url; // Mantém a URL existente se não houver novo upload
     if (req.file) {
+        // O caminho deve ser relativo à pasta 'public'
         avatar_url = `/uploads/avatars/${req.file.filename}`;
     }
 
@@ -50,7 +59,7 @@ exports.updateMe = async (req, res) => {
     }
 };
 
-// ✅ CÓDIGO COMPLETO DA FUNÇÃO DE ALTERAR SENHA
+// Função para alterar a senha (sem alterações)
 exports.changePassword = async (req, res) => {
     const { currentPassword, newPassword } = req.body;
     const userId = req.user.id;
@@ -62,24 +71,57 @@ exports.changePassword = async (req, res) => {
     try {
         const userResult = await pool.query("SELECT * FROM users WHERE id = $1", [userId]);
         const user = userResult.rows[0];
-
-        // 1. Verifica se a senha atual fornecida bate com a do banco
+        
         const isMatch = await bcrypt.compare(currentPassword, user.password_hash);
         if (!isMatch) {
             return res.status(400).json({ message: "A senha atual está incorreta." });
         }
 
-        // 2. Criptografa a nova senha
         const salt = await bcrypt.genSalt(10);
         const newPasswordHash = await bcrypt.hash(newPassword, salt);
 
-        // 3. Atualiza a senha no banco de dados
         await pool.query("UPDATE users SET password_hash = $1 WHERE id = $2", [newPasswordHash, userId]);
         
         res.json({ message: "Senha alterada com sucesso." });
 
     } catch (error) {
         console.error("Erro ao alterar senha:", error);
+        res.status(500).json({ message: "Erro interno no servidor." });
+    }
+};
+
+// Novas funções de gamificação
+exports.getUserBadges = async (req, res) => {
+    try {
+        const badgesResult = await pool.query(
+            `SELECT b.name, b.description, b.image_url 
+             FROM user_badges ub 
+             JOIN badges b ON ub.badge_id = b.id 
+             WHERE ub.user_id = $1`,
+            [req.user.id]
+        );
+        res.json(badgesResult.rows);
+    } catch (error) {
+        console.error("Erro ao buscar insígnias do usuário:", error);
+        res.status(500).json({ message: "Erro interno no servidor." });
+    }
+};
+
+exports.getUserCertificates = async (req, res) => {
+    try {
+        const userResult = await pool.query("SELECT name FROM users WHERE id = $1", [req.user.id]);
+        if (userResult.rows.length === 0) {
+            return res.status(404).json({ message: "Usuário não encontrado." });
+        }
+        const userName = userResult.rows[0].name;
+
+        const certificatesResult = await pool.query(
+            "SELECT * FROM certificates WHERE participant_name = $1 ORDER BY completion_date DESC",
+            [userName]
+        );
+        res.json(certificatesResult.rows);
+    } catch (error) {
+        console.error("Erro ao buscar certificados do usuário:", error);
         res.status(500).json({ message: "Erro interno no servidor." });
     }
 };

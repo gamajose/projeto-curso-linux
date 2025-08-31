@@ -37,6 +37,18 @@ class Certificate {
         }
     }
 
+    static async findByParticipantAndCourse(participantName, courseName) {
+        try {
+            const result = await db.query(
+                'SELECT * FROM certificates WHERE participant_name = $1 AND course_name = $2',
+                [participantName, courseName]
+            );
+            return result.rows[0];
+        } catch (error) {
+            throw error;
+        }
+    }
+
     static async create(certificateData) {
         try {
             const { 

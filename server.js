@@ -7,6 +7,8 @@ const app = express();
 const certificateRoutes = require('./src/routes/certificates');
 const authRoutes = require('./src/routes/auth');
 const userRoutes = require('./src/routes/users');
+const progressRoutes = require('./src/routes/progress');
+const rankingRoutes = require('./src/routes/ranking');
 
 app.set('trust proxy', 1);
 
@@ -34,6 +36,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/certificates', certificateRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/progress', progressRoutes);
+app.use('/api/ranking', rankingRoutes);
 
 // Rota de saúde
 app.get('/health', (req, res) => {
@@ -92,6 +96,10 @@ app.get('/profile', (req, res) => {
 
 app.get('/change-password', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'change-password.html'));
+});
+
+app.get('/dashboard', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
 // Inicialização do servidor

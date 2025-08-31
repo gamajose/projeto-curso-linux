@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Painel - Academy Z</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background-color: #0b0f14;
+            color: #e5e7eb;
+            line-height: 1.6;
+            padding: 20px;
+            background-image: linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #1f2937;
+            margin-bottom: 30px;
+        }
+
+        .logo,
+        .logo:link,
+        .logo:visited,
+        .logo:hover,
+        .logo:active {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff88 !important;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 25px;
+        }
+
+        nav a {
+            color: #94a3b8;
+            text-decoration: none;
+        }
+
+        nav a.active {
+            color: #00ff88;
+        }
+
+        .user-menu-container {
+            position: relative;
+        }
+
+        .user-menu-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #334155;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 120%;
+            background-color: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            min-width: 180px;
+            z-index: 10;
+            padding: 5px 0;
+        }
+
+        .user-dropdown a {
+            color: #94a3b8;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 30px;
+        }
+
+        .main-panel,
+        .side-panel {
+            background-color: #0e141a;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .panel-header {
+            color: #00ff88;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #1f2937;
+        }
+
+        .user-profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .user-profile-header .avatar {
+            width: 80px;
+            height: 80px;
+        }
+
+        .user-name {
+            font-size: 1.8rem;
+        }
+
+        .user-level {
+            background: #4fd1c5;
+            color: #0b0f14;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .xp-bar-container {
+            margin-bottom: 20px;
+        }
+
+        .xp-label {
+            display: flex;
+            justify-content: space-between;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        .xp-bar {
+            background: #1f2937;
+            border-radius: 10px;
+            height: 12px;
+            overflow: hidden;
+        }
+
+        .xp-bar-fill {
+            background: #00ff88;
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s;
+        }
+
+        .cert-list,
+        .badge-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .cert-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #111827;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .badge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 15px;
+        }
+
+        .badge-item {
+            text-align: center;
+        }
+
+        .badge-item img {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 5px;
+        }
+
+        .badge-item p {
+            font-size: 0.8rem;
+            color: #94a3b8;
+        }
+
+        .ranking-panel {
+            background-color: #0e141a;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 25px;
+        }
+
+        .ranking-tabs {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #1f2937;
+        }
+
+        .ranking-tabs button {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            padding: 0 5px 10px 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            border-bottom: 2px solid transparent;
+        }
+
+        .ranking-tabs button.active {
+            color: #00ff88;
+            border-bottom-color: #00ff88;
+        }
+
+        .ranking-list {
+            list-style: none;
+        }
+
+        .ranking-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .rank-position {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #94a3b8;
+            width: 40px;
+        }
+
+        .rank-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+
+        .rank-name {
+            font-weight: bold;
+            flex-grow: 1;
+        }
+
+        .rank-xp {
+            font-weight: bold;
+            color: #4fd1c5;
+        }
+
+        .cert-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-secondary {
+            background-color: #334155;
+            color: #e5e7eb;
+        }
+
+        .btn-linkedin {
+            background-color: #0A66C2;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="/home" id="logo-link" class="logo"><span>Academy Z</span></a>
+            <nav>
+                <ul>
+                    <li><a href="/home">Home</a></li>
+                    <li><a href="/cursos">Cursos</a></li>
+                    <li><a href="/dashboard" class="active">Meu Painel</a></li>
+                    <li><a href="/verificar">Verificação</a></li>
+                </ul>
+                <ul id="nav-auth-links"></ul>
+            </nav>
+        </header>
+
+        <main class="dashboard-grid">
+            <div class="main-panel">
+                <h2 class="panel-header">Meus Certificados</h2>
+                <div id="certificatesContainer" class="cert-list">
+                    <p>Você ainda não emitiu nenhum certificado.</p>
+                </div>
+            </div>
+            <div class="side-panel">
+                <div id="userProfile">
+                </div>
+
+                <div id="rankingPanel" class="ranking-panel" style="margin-top: 30px;">
+                    <div class="ranking-tabs">
+                        <button id="weeklyBtn" class="active" onclick="renderRanking('weekly')">Semanal</button>
+                        <button id="monthlyBtn" onclick="renderRanking('monthly')">Mensal</button>
+                    </div>
+                    <ol id="rankingList" class="ranking-list">
+                    </ol>
+                </div>
+
+                <h2 class="panel-header" style="margin-top: 30px;">Minhas Insígnias</h2>
+                <div id="badgesContainer" class="badge-grid">
+                    <p>Você ainda não possui insígnias.</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/main.js"></script>
+    <script>
+
+        const API_BASE = '/api';
+        const LEVEL_THRESHOLDS = { 1: 0, 2: 100, 3: 250, 4: 500, 5: 800, 6: 1200, 7: 1700, 8: 2300, 9: 3000, 10: 4000 };
+        let weeklyRanking = [];
+        let monthlyRanking = [];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/';
+                return;
+            }
+            loadDashboardData(token);
+        });
+
+        async function loadDashboardData(token) {
+            const headers = { 'Authorization': `Bearer ${token}` };
+            try {
+                const [userRes, certsRes, badgesRes, weeklyRes, monthlyRes] = await Promise.all([
+                    fetch('/api/users/me', { headers }),
+                    fetch('/api/users/me/certificates', { headers }),
+                    fetch('/api/users/me/badges', { headers }),
+                    fetch('/api/ranking/weekly', { headers }),
+                    fetch('/api/ranking/monthly', { headers })
+                ]);
+
+                renderUserProfile(await userRes.json());
+                renderCertificates(await certsRes.json());
+                renderBadges(await badgesRes.json());
+                weeklyRanking = await weeklyRes.json();
+                monthlyRanking = await monthlyRes.json();
+                renderRanking('weekly');
+
+            } catch (error) {
+                console.error('Erro ao carregar dados do painel:', error);
+            }
+        }
+
+        function renderRanking(period) {
+            const container = document.getElementById('rankingList');
+            const weeklyBtn = document.getElementById('weeklyBtn');
+            const monthlyBtn = document.getElementById('monthlyBtn');
+
+            container.innerHTML = '<p>Carregando ranking...</p>';
+
+            const data = (period === 'weekly') ? weeklyRanking : monthlyRanking;
+
+            // Atualiza o estilo dos botões
+            weeklyBtn.classList.toggle('active', period === 'weekly');
+            monthlyBtn.classList.toggle('active', period === 'monthly');
+
+            if (!data || data.length === 0) {
+                container.innerHTML = '<p style="color: #94a3b8; font-size: 0.9rem;">Nenhum dado de ranking disponível para este período.</p>';
+                return;
+            }
+
+            container.innerHTML = ''; // Limpa o container
+            data.forEach((user, index) => {
+                const rank = index + 1;
+                const item = document.createElement('li');
+                item.className = 'ranking-item';
+                item.innerHTML = `
+                    <span class="rank-position">${rank}</span>
+                    <img src="${user.avatar_url || '/images/avatar-padrao.png'}" alt="Avatar" class="rank-avatar">
+                    <div class="rank-name">${user.name.split(' ')[0]}</div>
+                    <div class="rank-xp">${user.xp_earned} XP</div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function renderUserProfile(user) {
+            const container = document.getElementById('userProfile');
+            const currentLevelXP = LEVEL_THRESHOLDS[user.level];
+            const nextLevelXP = LEVEL_THRESHOLDS[user.level + 1] || user.xp;
+            const xpForNextLevel = nextLevelXP - currentLevelXP;
+            const userProgressXP = user.xp - currentLevelXP;
+            const progressPercentage = xpForNextLevel > 0 ? (userProgressXP / xpForNextLevel) * 100 : 100;
+
+            container.innerHTML = `
+                <div class="user-profile-header">
+                    <img src="${user.avatar_url || '/images/avatar-padrao.png'}" alt="Avatar" class="avatar">
+                    <div>
+                        <h3 class="user-name">${user.name}</h3>
+                        <span class="user-level">NÍVEL ${user.level}</span>
+                    </div>
+                </div>
+                <div class="xp-bar-container">
+                    <div class="xp-label">
+                        <span>XP: ${user.xp}</span>
+                        <span>Próximo Nível: ${nextLevelXP} XP</span>
+                    </div>
+                    <div class="xp-bar">
+                        <div class="xp-bar-fill" style="width: ${progressPercentage}%"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCertificates(certs) {
+            const container = document.getElementById('certificatesContainer');
+            if (!certs || certs.length === 0) {
+                container.innerHTML = '<p style="color: #94a3b8;">Você ainda não emitiu nenhum certificado.</p>';
+                return;
+            }
+            container.innerHTML = '';
+            certs.forEach(cert => {
+                const certDate = new Date(cert.completion_date).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+                const certItem = document.createElement('div');
+                certItem.className = 'cert-item';
+                certItem.innerHTML = `
+                    <div>
+                        <strong>${cert.course_name}</strong>
+                        <p style="font-size: 0.9rem; color: #94a3b8;">Emitido em: ${certDate}</p>
+                    </div>
+                    <div class="cert-actions">
+                        <button class="btn btn-secondary" onclick="downloadCertificateFromDashboard('${cert.certificate_id}', this)">Download</button>
+                        <a href="${getLinkedInShareUrl(cert)}" target="_blank" class="btn btn-linkedin">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2ZM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.25 6.5 1.75 1.75 0 0 1 6.5 8.25ZM19 19h-3v-4.75c0-1.4-1.2-2.5-2.5-2.5S11 12.85 11 14.25V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.6-1.4c2.5 0 4.5 2.2 4.5 5.1V19z"></path></svg>
+                            <span>Compartilhar</span>
+                        </a>
+                    </div>`;
+                container.appendChild(certItem);
+            });
+        }
+
+        async function downloadCertificateFromDashboard(certId, button) {
+            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = 'Baixando...';
+            try {
+                const response = await fetch(`${API_BASE}/certificates/generate/${certId}`);
+                if (!response.ok) throw new Error('Falha ao baixar a imagem.');
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `certificado-${certId}.png`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+            } catch (error) {
+                alert(`Erro: ${error.message}`);
+            } finally {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+        }
+
+        function renderBadges(badges) {
+            const container = document.getElementById('badgesContainer');
+            if (badges.length === 0) return;
+            container.innerHTML = '';
+            badges.forEach(badge => {
+                container.innerHTML += `
+                    <div class="badge-item" title="${badge.description}">
+                        <img src="${badge.image_url}" alt="${badge.name}">
+                        <p>${badge.name}</p>
+                    </div>
+                `;
+            });
+        }
+
+        function getLinkedInShareUrl(cert) {
+            const name = encodeURIComponent(cert.course_name);
+            const organizationName = encodeURIComponent("Red Innovations");
+            const issueDate = new Date(cert.completion_date);
+            const issueYear = issueDate.getFullYear();
+            const issueMonth = issueDate.getMonth() + 1;
+            const certUrl = encodeURIComponent(`http://academyz.com.br/verify?id=${cert.certificate_id}`);
+            const certId = encodeURIComponent(cert.certificate_id);
+
+            return `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${name}&organizationName=${organizationName}&issueYear=${issueYear}&issueMonth=${issueMonth}&certUrl=${certUrl}&certId=${certId}`;
+        }
+
+    </script>
+</body>
+
+</html>

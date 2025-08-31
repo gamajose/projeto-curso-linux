@@ -185,6 +185,7 @@
         .course-actions {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
         
         .btn {
@@ -220,6 +221,24 @@
         
         .btn-certificate:hover {
             background: #f59e0b;
+        }
+
+        .btn-linkedin {
+            background-color: #0A66C2;
+            color: white;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-linkedin:hover {
+            background-color: #004182;
+        }
+
+        .btn-linkedin svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
         }
         
         .modal {
@@ -329,7 +348,7 @@
                     <path d="M2 17L12 22L22 17" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     <path d="M2 12L12 17L22 12" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                 </svg>
-                <span>Red Innovations</span>
+                <span>Academy Z</span>
             </a>
             <nav>
                 <ul>
@@ -369,10 +388,11 @@
 
     <script src="/js/main.js"></script>
     <script>
-        // **CORREÇÃO APLICADA AQUI**
         const API_BASE = '/api';
+        let currentUser = null;
+        let lastGeneratedCert = null;
         
-        const courses = [
+        let courses = [
             {
                 id: 1,
                 title: "Introdução ao Linux",
@@ -425,37 +445,42 @@
             }
         ];
 
-        function loadProgress() {
-            const saved = localStorage.getItem('courseProgress');
-            if (saved) {
-                const progress = JSON.parse(saved);
-                courses.forEach(course => {
-                    if (progress[course.id]) {
-                        course.progress = progress[course.id].progress;
-                        course.completed = progress[course.id].completed;
-                        course.lessons.forEach(lesson => {
-                            if (progress[course.id].lessons[lesson.id]) {
-                                lesson.completed = progress[course.id].lessons[lesson.id];
-                            }
-                        });
-                    }
-                });
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/';
+                return;
+            }
+            initializeApp(token);
+        });
+
+        async function initializeApp(token) {
+            try {
+                const userRes = await fetch('/api/users/me', { headers: { 'Authorization': `Bearer ${token}` } });
+                currentUser = await userRes.json();
+                await loadProgress(token);
+            } catch (error) {
+                console.error("Erro na inicialização:", error);
+                localStorage.removeItem('authToken');
+                window.location.href = '/';
             }
         }
 
-        function saveProgress() {
-            const progress = {};
-            courses.forEach(course => {
-                progress[course.id] = {
-                    progress: course.progress,
-                    completed: course.completed,
-                    lessons: {}
-                };
-                course.lessons.forEach(lesson => {
-                    progress[course.id].lessons[lesson.id] = lesson.completed;
+        async function loadProgress(token) {
+            try {
+                const response = await fetch(`${API_BASE}/progress`, { headers: { 'Authorization': `Bearer ${token}` } });
+                const progress = await response.json();
+                
+                courses.forEach(course => {
+                    course.lessons.forEach(lesson => {
+                        lesson.completed = progress.some(p => p.course_id === course.id && p.lesson_id === lesson.id);
+                    });
+                    calculateProgress(course);
                 });
-            });
-            localStorage.setItem('courseProgress', JSON.stringify(progress));
+                renderCourses();
+            } catch (error) {
+                console.error("Erro ao carregar progresso:", error);
+            }
         }
 
         function calculateProgress(course) {
@@ -470,157 +495,104 @@
             courses.forEach(course => {
                 const card = document.createElement('div');
                 card.className = 'course-card';
+                let actionButtons = `<button class="btn btn-primary" onclick="viewCourse(${course.id})">${course.progress > 0 ? 'Continuar' : 'Começar'}</button>`;
+                
+                if (course.completed) {
+                     actionButtons += `<button class="btn btn-secondary" onclick="generateCertificate(${course.id}, event)">Emitir Certificado</button>`;
+                }
+                
                 card.innerHTML = `
                     <h3>${course.title}</h3>
                     <p>${course.description}</p>
-                    <div class="course-info">
-                        <span>${course.duration}</span>
-                        <span>${course.lessons.length} aulas</span>
-                    </div>
-                    <div class="progress-container">
-                        <div class="progress-bar" style="width: ${course.progress}%"></div>
-                    </div>
-                    <div class="course-actions">
-                        <button class="btn btn-primary" onclick="viewCourse(${course.id})">
-                            ${course.progress > 0 ? 'Continuar' : 'Começar'}
-                        </button>
-                        ${course.completed ? `<button class="btn btn-certificate" onclick="generateCertificate(${course.id}, event)">Emitir Certificado</button>` : ''}
-                    </div>
+                    <div class="course-info"><span>${course.duration}</span><span>${course.lessons.length} aulas</span></div>
+                    <div class="progress-container"><div class="progress-bar" style="width: ${course.progress}%"></div></div>
+                    <div class="course-actions" id="actions-${course.id}">${actionButtons}</div>
                 `;
                 container.appendChild(card);
             });
         }
 
-        function closeModal() {
-            const modal = document.getElementById('courseModal');
-            const modalContent = document.getElementById('modalContent');
-            modal.style.display = 'none';
-            modalContent.innerHTML = ''; 
-        }
+         async function downloadCertificate(certId, button) {
+        try {
+            button.innerHTML = 'Baixando...';
+            const response = await fetch(`${API_BASE}/certificates/generate/${certId}`);
+            if (!response.ok) {
+                throw new Error('Falha ao baixar a imagem.');
+            }
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = `certificado-${certId}.png`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            a.remove();
+        } catch (error) {
+            alert(error.message);
+        } finally {
+             // Atualiza a UI para mostrar que o certificado foi emitido
+            button.textContent = 'Certificado Emitido';
+            button.disabled = true;
 
-        function viewCourse(courseId) {
+            const courseId = parseInt(button.id.split('-')[2]);
             const course = courses.find(c => c.id === courseId);
-            if (!course) return;
+            const cert = { course_name: course.title, certificate_id: certId };
 
-            document.getElementById('modalTitle').textContent = course.title;
-            
-            let lessonsHtml = `
-                <p>${course.description}</p>
-                <p><strong>Duração:</strong> ${course.duration}</p>
-                <p><strong>Progresso:</strong> ${course.progress}%</p>
-                <h3 style="margin: 20px 0 10px 0; color: #00ff88;">Aulas</h3>
-                <ul class="lesson-list">
-            `;
-
-            course.lessons.forEach(lesson => {
-                let actionButtons = '';
-                if (lesson.completed) {
-                    actionButtons = `
-                        <span style="color: #00ff88; margin-right: 15px;">✓ Concluída</span>
-                        <button class="btn btn-primary" onclick="playVideo(${course.id}, ${lesson.id})">Rever</button>
-                        <button class="btn btn-secondary" onclick="resetLesson(${course.id}, ${lesson.id})">Recomeçar</button>
-                    `;
-                } else {
-                    actionButtons = `<button class="btn btn-primary" onclick="playVideo(${course.id}, ${lesson.id})">Assistir</button>`;
-                }
-
-                lessonsHtml += `
-                    <li class="lesson-item ${lesson.completed ? 'completed' : ''}">
-                        <div class="lesson-info">
-                            <div class="lesson-title">Aula ${lesson.id}: ${lesson.title}</div>
-                            <div class="lesson-duration">Duração: ${lesson.duration}</div>
-                        </div>
-                        <div class="lesson-actions">${actionButtons}</div>
-                    </li>
-                `;
-            });
-
-            lessonsHtml += '</ul>';
-            document.getElementById('modalContent').innerHTML = lessonsHtml;
-            document.getElementById('courseModal').style.display = 'flex';
+            const actionsContainer = document.getElementById(`actions-${course.id}`);
+            const linkedinButton = document.createElement('a');
+            linkedinButton.href = getLinkedInShareUrl(cert);
+            linkedinButton.target = '_blank';
+            linkedinButton.className = 'btn btn-linkedin';
+            linkedinButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2ZM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.25 6.5 1.75 1.75 0 0 1 6.5 8.25ZM19 19h-3v-4.75c0-1.4-1.2-2.5-2.5-2.5S11 12.85 11 14.25V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.6-1.4c2.5 0 4.5 2.2 4.5 5.1V19z"></path></svg> Compartilhar`;
+            actionsContainer.appendChild(linkedinButton);
         }
-
-        function playVideo(courseId, lessonId) {
+    }
+        
+        async function completeLesson(courseId, lessonId) {
+            const token = localStorage.getItem('authToken');
             const course = courses.find(c => c.id === courseId);
             const lesson = course.lessons.find(l => l.id === lessonId);
+            if (lesson.completed) return;
 
-            const modalContent = document.getElementById('modalContent');
-            document.getElementById('modalTitle').textContent = `Aula ${lesson.id}: ${lesson.title}`;
-
-            modalContent.innerHTML = `
-                <div style="width: 100%; max-width: 100%; background: #000;">
-                    <video controls autoplay style="width: 100%; height: auto;">
-                        <source src="${lesson.videoUrl}" type="video/mp4">
-                        O seu navegador não suporta a tag de vídeo.
-                    </video>
-                </div>
-                <div style="margin-top: 20px; display: flex; gap: 15px;">
-                    ${!lesson.completed ? `<button class="btn btn-primary" onclick="completeLesson(${course.id}, ${lesson.id}); viewCourse(${course.id});">Marcar como Concluída</button>` : ''}
-                    <button class="btn btn-secondary" onclick="viewCourse(${course.id})">Voltar para as Aulas</button>
-                </div>
-            `;
-        }
-
-        function completeLesson(courseId, lessonId) {
-            const course = courses.find(c => c.id === courseId);
-            const lesson = course.lessons.find(l => l.id === lessonId);
-            
-            if (!lesson.completed) {
+            try {
+                const response = await fetch(`${API_BASE}/progress/complete-lesson`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify({ courseId, lessonId, totalLessonsInCourse: course.lessons.length })
+                });
+                if (!response.ok) throw new Error('Falha ao salvar progresso.');
+                
                 lesson.completed = true;
                 calculateProgress(course);
-                saveProgress();
-                renderCourses();
+                renderCourses(); 
                 if (course.completed) {
-                    setTimeout(() => alert(`🎉 Parabéns! Concluiu o curso "${course.title}"!`), 500);
+                    setTimeout(() => alert(`🎉 Parabéns! Você concluiu o curso "${course.title}"!`), 500);
                 }
-            }
-        }
-
-        function resetLesson(courseId, lessonId) {
-            const course = courses.find(c => c.id === courseId);
-            const lesson = course.lessons.find(l => l.id === lessonId);
-
-            if (lesson.completed) {
-                lesson.completed = false;
-                calculateProgress(course);
-                saveProgress();
-                renderCourses();
-                viewCourse(courseId);
+            } catch (error) {
+                alert(error.message);
             }
         }
 
         async function generateCertificate(courseId, event) {
             const course = courses.find(c => c.id === courseId);
-            if (!course || !course.completed) {
-                return alert('Precisa de concluir todas as aulas do curso primeiro!');
-            }
-
-            const studentName = prompt('Digite o seu nome completo para o certificado:');
-            if (!studentName) return;
-
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                alert('Precisa de estar autenticado para emitir um certificado.');
-                return window.location.href = '/';
-            }
+            if (!course || !course.completed || !currentUser) return alert('Você precisa concluir o curso primeiro!');
             
+            const token = localStorage.getItem('authToken');
             const button = event.target;
-            const originalText = button.innerHTML;
+            button.disabled = true;
+            button.innerHTML = 'Processando...';
+            button.id = `btn-emitir-${course.id}`;
 
             try {
-                button.disabled = true;
-                button.innerHTML = 'A Gerar...';
-
                 const certId = `LINUX${new Date().getFullYear()}-${Math.random().toString(36).substring(2, 11).toUpperCase()}`;
 
                 const createResponse = await fetch(`${API_BASE}/certificates`, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({
-                        participant_name: studentName,
+                        participant_name: currentUser.name,
                         course_name: course.title,
                         hours: parseInt(course.duration, 10),
                         issue_date: new Date().toISOString().split('T')[0],
@@ -630,52 +602,77 @@
                     })
                 });
 
-                if (!createResponse.ok) {
-                    const errorData = await createResponse.json();
-                    throw new Error(errorData.message || 'Falha ao registar o certificado.');
-                }
+                if (!createResponse.ok) throw new Error((await createResponse.json()).message || 'Falha ao registrar o certificado.');
                 
-                const newCert = await createResponse.json();
+                const generatedCert = await createResponse.json();
+                alert(`✅ Certificado "${generatedCert.certificate_id}" registrado! O download começará em seguida.`);
 
-                const downloadUrl = `${API_BASE}/certificates/generate/${newCert.certificate_id}`;
-                const downloadResponse = await fetch(downloadUrl);
-
-                if (!downloadResponse.ok) {
-                    throw new Error(`Falha ao transferir a imagem. Estado: ${downloadResponse.status}`);
-                }
-
-                const blob = await downloadResponse.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                a.download = `certificado-${newCert.certificate_id}.png`;
-                document.body.appendChild(a);
-                a.click();
-                a.remove();
-                window.URL.revokeObjectURL(url);
-                
-                alert(`✅ Certificado "${newCert.certificate_id}" transferido com sucesso!`);
+                // Chama a função de download
+                await downloadCertificate(generatedCert.certificate_id, button);
 
             } catch (error) {
                 console.error('Erro ao gerar certificado:', error);
                 alert(`❌ Erro: ${error.message}`);
-            } finally {
                 button.disabled = false;
-                button.innerHTML = originalText;
+                button.innerHTML = 'Emitir Certificado';
             }
         }
 
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-        document.getElementById('courseModal').addEventListener('click', function(e) { 
-            if (e.target.classList.contains('modal')) {
-                closeModal();
-            }
-        });
-        document.addEventListener('DOMContentLoaded', () => {
-            loadProgress();
-            renderCourses();
-        });
+        function getLinkedInShareUrl(cert) {
+            const name = encodeURIComponent(cert.course_name);
+            const organizationName = encodeURIComponent("Red Innovations");
+            const issueDate = new Date(cert.completion_date);
+            const issueYear = issueDate.getFullYear();
+            const issueMonth = issueDate.getMonth() + 1;
+            const certUrl = encodeURIComponent(`http://academyz.com.br/verify?id=${cert.certificate_id}`);
+            const certId = encodeURIComponent(cert.certificate_id);
+            return `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${name}&organizationName=${organizationName}&issueYear=${issueYear}&issueMonth=${issueMonth}&certUrl=${certUrl}&certId=${certId}`;
+        }
+
+        function closeModal() {
+            document.getElementById('courseModal').style.display = 'none';
+        }
+
+        function viewCourse(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            if (!course) return;
+
+            document.getElementById('modalTitle').textContent = course.title;
+            let lessonsHtml = `<ul class="lesson-list">`;
+                
+            course.lessons.forEach(lesson => {
+                lessonsHtml += `
+                    <li class="lesson-item ${lesson.completed ? 'completed' : ''}">
+                        <span>${lesson.title} (${lesson.duration})</span>
+                        <div class="lesson-actions">
+                            <button class="btn btn-primary" onclick="playVideo(${course.id}, ${lesson.id})">${lesson.completed ? 'Rever' : 'Assistir'}</button>
+                        </div>
+                    </li>
+                `;
+            });
+            
+            lessonsHtml += '</ul>';
+            document.getElementById('modalContent').innerHTML = lessonsHtml;
+            document.getElementById('courseModal').style.display = 'flex';
+        }
+
+        function playVideo(courseId, lessonId) {
+            const course = courses.find(c => c.id === courseId);
+            const lesson = course.lessons.find(l => l.id === lessonId);
+            document.getElementById('modalTitle').textContent = `Aula: ${lesson.title}`;
+            document.getElementById('modalContent').innerHTML = `
+                <div style="background: #000; padding: 10px;">
+                    <video controls autoplay style="width: 100%;">
+                        <source src="${lesson.videoUrl}" type="video/mp4">
+                        Seu navegador não suporta vídeos.
+                    </video>
+                </div>
+                <div style="margin-top: 20px; display: flex; gap: 15px;">
+                    ${!lesson.completed ? `<button class="btn btn-primary" onclick="completeLesson(${course.id}, ${lesson.id}); viewCourse(${course.id});">Marcar como Concluída</button>` : ''}
+                    <button class="btn btn-secondary" onclick="viewCourse(${course.id})">Voltar para Aulas</button>
+                </div>
+            `;
+        }
 
     </script>
 </body>

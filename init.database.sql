@@ -91,3 +91,30 @@ ADD COLUMN linkedin_profile VARCHAR(255),
 ADD COLUMN organization VARCHAR(100),
 ADD COLUMN "position" VARCHAR(100),
 ADD COLUMN observations TEXT;
+
+ALTER TABLE users
+ADD COLUMN xp INTEGER DEFAULT 0,
+ADD COLUMN level INTEGER DEFAULT 1;
+
+CREATE TABLE user_course_progress (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    course_id INTEGER NOT NULL,
+    lesson_id INTEGER NOT NULL,
+    completed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, course_id, lesson_id)
+);
+
+CREATE TABLE badges (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    image_url VARCHAR(255) NOT NULL -- Caminho para a imagem da insígnia
+);
+
+CREATE TABLE user_badges (
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    badge_id INTEGER REFERENCES badges(id) ON DELETE CASCADE,
+    earned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, badge_id)
+);

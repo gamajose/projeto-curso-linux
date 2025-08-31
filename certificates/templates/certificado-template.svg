@@ -51,7 +51,7 @@
 
       <text x="0" y="330" class="mono soft" font-size="18">
         <tspan class="white">Carga horária:</tspan> 20h • 
-        <tspan class="white">Data:</tspan> 01/10/2025 • 
+        <tspan class="white">Data:</tspan> {{DATA_CONCLUSAO}} • 
         <tspan class="white">Modalidade:</tspan> Online
       </text>
 
@@ -60,7 +60,7 @@
         <tspan class="green">[OK]</tspan> ./verifica_certificado --id {{CERTIFICATE_ID}} 
       </text>
       <text x="0" y="415" class="mono soft" font-size="16">
-        <tspan class="green">[OK]</tspan> assinatura digital válida • hash: a7b9c3d2e1f4
+        <tspan class="green">[OK]</tspan> assinatura digital válida • hash:  {{HASH_VERIFICACAO}}
       </text>
 
       <g transform="translate(0,510)">

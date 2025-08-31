@@ -35,12 +35,28 @@ exports.generateCertificateImage = async (req, res) => {
 
 exports.createCertificate = async (req, res) => {
     try {
+        const { participant_name, course_name } = req.body;
+
+        // VERIFICA SE O CERTIFICADO JÁ EXISTE
+        const existingCert = await Certificate.findByParticipantAndCourse(participant_name, course_name);
+        if (existingCert) {
+            console.log('Certificado já existe, retornando o existente:', existingCert.certificate_id);
+            return res.status(200).json(existingCert); // Retorna o certificado existente
+        }
+        
+        // Se não existir, cria um novo
         const newCertificate = await Certificate.create({
             ...req.body,
             hash_verificacao: crypto.randomBytes(6).toString('hex')
         });
         res.status(201).json(newCertificate);
+
     } catch (error) {
+        // Trata o erro de duplicidade que pode vir do banco de dados (garantia extra)
+        if (error.code === '23505') { // Código de erro para violação de unique constraint
+            const existingCert = await Certificate.findByParticipantAndCourse(req.body.participant_name, req.body.course_name);
+            return res.status(200).json(existingCert);
+        }
         res.status(500).json({ error: 'Erro ao criar certificado' });
     }
 };

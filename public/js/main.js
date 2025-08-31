@@ -52,7 +52,7 @@ function renderUserMenu(user) {
                 <span>${user.name.split(' ')[0]}</span>
             </div>
             <div id="userDropdown" class="user-dropdown">
-                <a href="/profile">Editar Perfil</a>
+                <a href="/dashboard">Meu Painel</a>  <a href="/profile">Editar Perfil</a>
                 <a href="/change-password">Alterar Senha</a>
                 <a href="#" id="logoutButton">Sair</a>
             </div>

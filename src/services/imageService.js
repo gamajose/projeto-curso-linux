@@ -38,7 +38,7 @@ class ImageService {
             
             console.log('Gerando QR Code localmente...');
 
-            const qrCodeImageBase64 = await QRCode.toDataURL(verificationUrl, {
+            const qrCodeImageBase64 = await QRCode.toDataURL(qrCodeVerificationUrl, {
                 width: 232,
                 margin: 1,
                 errorCorrectionLevel: 'H'

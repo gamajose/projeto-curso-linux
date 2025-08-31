@@ -1,54 +1,263 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificação de Certificado - Red Innovations</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Fira Code', monospace; }
-        body { background-color: #0b0f14; color: #e5e7eb; line-height: 1.6; padding: 20px; background-image: linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px); background-size: 20px 20px; min-height: 100vh; display: flex; flex-direction: column; }
-        .container { max-width: 800px; margin: 0 auto; padding: 20px; flex: 1; }
-        header { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #1f2937; margin-bottom: 30px; }
-        .logo, .logo:link, .logo:visited, .logo:hover, .logo:active { font-size: 24px; font-weight: bold; color: #00ff88 !important; display: flex; align-items: center; cursor: pointer; text-decoration: none; }
-        .logo:hover { opacity: 0.8; }
-        .logo svg { margin-right: 10px; }
-        nav a { color: #94a3b8; text-decoration: none; transition: color 0.3s; }
-        nav a:hover { color: #00ff88; }
-        .terminal-window { background-color: #0e141a; border-radius: 14px; border: 2px solid #1f2937; overflow: hidden; }
-        .terminal-header { background-color: #111827; padding: 12px 20px; display: flex; align-items: center; }
-        .terminal-buttons { display: flex; margin-right: 15px; }
-        .terminal-button { width: 14px; height: 14px; border-radius: 50%; margin-right: 10px; }
-        .button-close { background-color: #ff5f56; }
-        .button-minimize { background-color: #ffbd2e; }
-        .button-maximize { background-color: #27c93f; }
-        .terminal-title { color: #94a3b8; font-size: 18px; }
-        .terminal-body { padding: 30px; }
-        .command-input { display: flex; align-items: center; margin-bottom: 20px; }
-        .prompt { color: #94a3b8; margin-right: 10px; white-space: nowrap; }
-        .prompt-symbol { color: #00ff88; }
-        input[type="text"] { background: transparent; border: 1px solid #334155; color: #e5e7eb; font-family: 'Fira Code', monospace; font-size: 16px; width: 100%; outline: none; padding: 8px 12px; border-radius: 4px; }
-        button { background-color: #00ff88; color: #0b0f14; border: none; padding: 10px 20px; border-radius: 4px; font-weight: bold; cursor: pointer; transition: background-color 0.3s; margin-left: 10px; }
-        button:hover { background-color: #00cc6a; }
-        .result-area { margin-top: 20px; padding: 20px; background-color: #0b1220; border-radius: 8px; border: 1px solid #1f2937; }
-        .certificate-info { display: none; }
-        .certificate-info.valid { display: block; color: #00ff88; }
-        .certificate-info.invalid { display: block; color: #ff5f56; }
-        .cert-details { margin-top: 15px; padding-top: 15px; border-top: 1px solid #334155; }
-        .cert-details p { margin-bottom: 8px; color: #94a3b8; }
-        .cert-details span { color: #e5e7eb; }
-        .hash-code { font-family: monospace; background-color: #1a202c; padding: 5px 10px; border-radius: 4px; color: #00ff88; margin-top: 10px; display: inline-block; }
-        .action-buttons { margin-top: 20px; display: flex; gap: 10px; }
-        footer { text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #1f2937; color: #94a3b8; font-size: 14px; }
-        .loading { display: inline-block; width: 12px; height: 12px; border: 2px solid rgba(0, 255, 136, 0.3); border-radius: 50%; border-top-color: #00ff88; animation: spin 1s ease-in-out infinite; margin-left: 8px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Fira Code', monospace;
+        }
+
+        body {
+            background-color: #0b0f14;
+            color: #e5e7eb;
+            line-height: 1.6;
+            padding: 20px;
+            background-image: linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #1f2937;
+            margin-bottom: 30px;
+        }
+
+        .logo,
+        .logo:link,
+        .logo:visited,
+        .logo:hover,
+        .logo:active {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff88 !important;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
+        }
+
+        .logo svg {
+            margin-right: 10px;
+        }
+
+        nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: #00ff88;
+        }
+
+        .terminal-window {
+            background-color: #0e141a;
+            border-radius: 14px;
+            border: 2px solid #1f2937;
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background-color: #111827;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+        }
+
+        .terminal-buttons {
+            display: flex;
+            margin-right: 15px;
+        }
+
+        .terminal-button {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .button-close {
+            background-color: #ff5f56;
+        }
+
+        .button-minimize {
+            background-color: #ffbd2e;
+        }
+
+        .button-maximize {
+            background-color: #27c93f;
+        }
+
+        .terminal-title {
+            color: #94a3b8;
+            font-size: 18px;
+        }
+
+        .terminal-body {
+            padding: 30px;
+        }
+
+        .command-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .prompt {
+            color: #94a3b8;
+            margin-right: 10px;
+            white-space: nowrap;
+        }
+
+        .prompt-symbol {
+            color: #00ff88;
+        }
+
+        input[type="text"] {
+            background: transparent;
+            border: 1px solid #334155;
+            color: #e5e7eb;
+            font-family: 'Fira Code', monospace;
+            font-size: 16px;
+            width: 100%;
+            outline: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #00ff88;
+            color: #0b0f14;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-left: 10px;
+        }
+
+        button:hover {
+            background-color: #00cc6a;
+        }
+
+        .result-area {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #0b1220;
+            border-radius: 8px;
+            border: 1px solid #1f2937;
+        }
+
+        .certificate-info {
+            display: none;
+        }
+
+        .certificate-info.valid {
+            display: block;
+            color: #00ff88;
+        }
+
+        .certificate-info.invalid {
+            display: block;
+            color: #ff5f56;
+        }
+
+        .cert-details {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #334155;
+        }
+
+        .cert-details p {
+            margin-bottom: 8px;
+            color: #94a3b8;
+        }
+
+        .cert-details span {
+            color: #e5e7eb;
+        }
+
+        .hash-code {
+            font-family: monospace;
+            background-color: #1a202c;
+            padding: 5px 10px;
+            border-radius: 4px;
+            color: #00ff88;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .action-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #1f2937;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border: 2px solid rgba(0, 255, 136, 0.3);
+            border-radius: 50%;
+            border-top-color: #00ff88;
+            animation: spin 1s ease-in-out infinite;
+            margin-left: 8px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
+
 <body>
     <div class="container">
         <header>
             <a href="/" class="logo">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 17L12 22L22 17" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M2 12L12 17L22 12" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                <span>Red Innovations</span>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#00ff88" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M2 17L12 22L22 17" stroke="#00ff88" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M2 12L12 17L22 12" stroke="#00ff88" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                <span>Academy Z</span>
             </a>
             <nav>
                 <a href="/">Acessar Plataforma</a>
@@ -74,7 +283,8 @@
 
                 <div id="resultado" class="result-area">
                     <div id="placeholderText">
-                        <span class="prompt-symbol">[INFO]</span> Digite o ID do certificado para validar a sua autenticidade.
+                        <span class="prompt-symbol">[INFO]</span> Digite o ID do certificado para validar a sua
+                        autenticidade.
                     </div>
                     <div id="certificateResult" class="certificate-info">
                         <div id="resultText"></div>
@@ -118,13 +328,13 @@
                 }
 
                 const certificado = await response.json();
-                
+
                 resultado.className = 'certificate-info valid';
                 resultadoTexto.innerHTML = `✅ Certificado <strong>VÁLIDO</strong> verificado com sucesso!`;
                 detalhesCert.innerHTML = `
                     <p><span>Nome:</span> ${certificado.participant_name}</p>
                     <p><span>Curso:</span> ${certificado.course_name}</p>
-                    <p><span>Data de Conclusão:</span> ${new Date(certificado.completion_date).toLocaleDateString('pt-BR', {timeZone: 'UTC'})}</p>
+                    <p><span>Data de Conclusão:</span> ${new Date(certificado.completion_date).toLocaleDateString('pt-BR', { timeZone: 'UTC' })}</p>
                     <p><span>Carga Horária:</span> ${certificado.hours} horas</p>
                     <div class="hash-code">Hash de Verificação: ${certificado.hash_verificacao}</div>
                 `;
@@ -151,10 +361,11 @@
                 verificarCertificado();
             }
         });
-        
+
         document.getElementById('certificateId').addEventListener('keypress', e => {
             if (e.key === 'Enter') verificarCertificado();
         });
     </script>
 </body>
+
 </html>
