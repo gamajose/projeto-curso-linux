@@ -9,6 +9,8 @@ const authRoutes = require('./src/routes/auth');
 const userRoutes = require('./src/routes/users');
 const progressRoutes = require('./src/routes/progress');
 const rankingRoutes = require('./src/routes/ranking');
+const courseRoutes = require('./src/routes/courses');
+
 
 app.set('trust proxy', 1);
 
@@ -38,6 +40,7 @@ app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/ranking', rankingRoutes);
+app.use('/api/courses', courseRoutes);
 
 // Rota de saúde
 app.get('/health', (req, res) => {

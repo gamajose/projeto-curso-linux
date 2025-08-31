@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recuperar Senha - Red Innovations</title>
+    <link rel="stylesheet" href="/css/custom.css">
     <style>
-        /* Estilos são os mesmos da tela de login para manter a consistência */
         * {
             margin: 0;
             padding: 0;
@@ -201,17 +201,19 @@
                 });
 
                 const data = await response.json();
-                alert(data.message); // Exibe a mensagem de confirmação
+                showToast(data.message); // Exibe a mensagem de confirmação
 
             } catch (error) {
                 console.error('Erro na recuperação:', error);
-                alert('❌ Erro ao enviar a solicitação. Tente novamente.');
+                showToast('❌ Erro ao enviar a solicitação. Tente novamente.');
             } finally {
                 button.disabled = false;
                 button.textContent = 'Enviar Link de Recuperação';
             }
         });
     </script>
+    
+    <script src="/js/notifications.js"></script>
 </body>
 
 </html>

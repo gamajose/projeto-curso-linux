@@ -389,13 +389,64 @@
 
     <script src="/js/main.js"></script>        
     <script src="/js/notifications.js"></script>
-    
+
     <script>
         const API_BASE = '/api';
         let currentUser = null;
         let lastGeneratedCert = null;
         
-        let courses = [];
+        let courses = [
+            {
+                id: 1,
+                title: "Introdução ao Linux",
+                description: "Aprenda os conceitos fundamentais do sistema operacional Linux, sua história e distribuições.",
+                duration: "2 horas",
+                lessons: [
+                    { id: 1, title: "O que é Linux?", duration: "15 min", completed: false, videoUrl: "/videos/video1.mp4" },
+                    { id: 2, title: "História do Linux", duration: "20 min", completed: false, videoUrl: "/videos/video2.mp4" },
+                    { id: 3, title: "Distribuições Linux", duration: "25 min", completed: false, videoUrl: "/videos/video3.mp4" },
+                    { id: 4, title: "Instalação do Linux", duration: "30 min", completed: false, videoUrl: "/videos/video4.mp4" },
+                    { id: 5, title: "Primeiros Passos", duration: "30 min", completed: false, videoUrl: "/videos/video5.mp4" }
+                ],
+                completed: false,
+                progress: 0
+            },
+            {
+                id: 2,
+                title: "Comandos Terminal",
+                description: "Domine o terminal Linux e aprenda comandos essenciais para produtividade.",
+                duration: "3 horas",
+                lessons: [
+                    { id: 1, title: "Navegação Básica", duration: "20 min", completed: false, videoUrl: "/videos/video6.mp4" },
+                    { id: 2, title: "Manipulação de Arquivos", duration: "25 min", completed: false, videoUrl: "/videos/video7.mp4" },
+                    { id: 3, title: "Permissões e Donos", duration: "30 min", completed: false, videoUrl: "/videos/video8.mp4" },
+                    { id: 4, title: "Processos e Serviços", duration: "25 min", completed: false, videoUrl: "/videos/video9.mp4" },
+                    { id: 5, title: "Redirecionamentos", duration: "30 min", completed: false, videoUrl: "/videos/video10.mp4" },
+                    { id: 6, title: "Scripts Básicos", duration: "30 min", completed: false, videoUrl: "/videos/video11.mp4" },
+                    { id: 7, title: "Ferramentas Úteis", duration: "20 min", completed: false, videoUrl: "/videos/video12.mp4" }
+                ],
+                completed: false,
+                progress: 0
+            },
+            {
+                id: 3,
+                title: "Administração Linux",
+                description: "Aprenda a gerenciar sistemas Linux como um administrador profissional.",
+                duration: "4 horas",
+                lessons: [
+                    { id: 1, title: "Gerenciamento de Usuários", duration: "25 min", completed: false, videoUrl: "/videos/video13.mp4" },
+                    { id: 2, title: "Gerenciamento de Pacotes", duration: "30 min", completed: false, videoUrl: "/videos/video14.mp4" },
+                    { id: 3, title: "Configuração de Rede", duration: "35 min", completed: false, videoUrl: "/videos/video15.mp4" },
+                    { id: 4, title: "Serviços e Daemons", duration: "30 min", completed: false, videoUrl: "/videos/video16.mp4" },
+                    { id: 5, title: "Backup e Restauração", duration: "25 min", completed: false, videoUrl: "/videos/video17.mp4" },
+                    { id: 6, title: "Monitoramento", duration: "30 min", completed: false, videoUrl: "/videos/video18.mp4" },
+                    { id: 7, title: "Segurança Básica", duration: "25 min", completed: false, videoUrl: "/videos/video19.mp4" },
+                    { id: 8, title: "Troubleshooting", duration: "30 min", completed: false, videoUrl: "/videos/video20.mp4" }
+                ],
+                completed: false,
+                progress: 0
+            }
+        ];
 
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('authToken');
@@ -408,33 +459,13 @@
 
         async function initializeApp(token) {
             try {
-                // Busca todas as informações em paralelo
-                const [userRes, progressRes, certsRes, coursesRes] = await Promise.all([
-                    fetch('/api/users/me', { headers: { 'Authorization': `Bearer ${token}` } }),
-                    fetch('/api/progress', { headers: { 'Authorization': `Bearer ${token}` } }),
-                    fetch('/api/users/me/certificates', { headers: { 'Authorization': `Bearer ${token}` } }),
-                    fetch('/api/courses', { headers: { 'Authorization': `Bearer ${token}` } })
-                ]);
-
+                const userRes = await fetch('/api/users/me', { headers: { 'Authorization': `Bearer ${token}` } });
                 currentUser = await userRes.json();
-                const progress = await progressRes.json();
-                const existingCerts = await certsRes.json();
-                courses = await coursesRes.json();
-
-                // Processa os dados
-                courses.forEach(course => {
-                    course.lessons.forEach(lesson => {
-                        lesson.completed = progress.some(p => p.course_id === course.id && p.lesson_id === lesson.id);
-                    });
-                    calculateProgress(course);
-                });
-
-                renderCourses();
-                updateUIWithExistingCerts(existingCerts);
-
+                await loadProgress(token);
             } catch (error) {
                 console.error("Erro na inicialização:", error);
-                showToast('Erro ao carregar dados. Tente novamente.', 'error');
+                localStorage.removeItem('authToken');
+                window.location.href = '/';
             }
         }
 

@@ -1,12 +1,18 @@
+// public/js/main.js
 document.addEventListener('DOMContentLoaded', async () => {
     const navAuthLinks = document.getElementById('nav-auth-links');
-    const logoLink = document.getElementById('logo-link'); // <-- Pega o elemento do logo
+    const logoLink = document.getElementById('logo-link');
     const token = localStorage.getItem('authToken');
 
     if (token) {
         // --- USUÁRIO ESTÁ LOGADO ---
         if (logoLink) {
-            logoLink.href = '/home'; // <-- ✅ ALTERAÇÃO PRINCIPAL: Muda o link do logo para /home
+            // Verifica a página atual para decidir o link do logo
+            if (window.location.pathname === '/' || window.location.pathname === '/login.html') {
+                 logoLink.href = '/home';
+            } else {
+                 logoLink.href = '/home';
+            }
         }
 
         try {
@@ -15,8 +21,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             });
 
             if (!response.ok) {
+                // Se o token for inválido (expirado, etc.), desloga o usuário silenciosamente
                 localStorage.removeItem('authToken');
                 renderDefaultMenu();
+                // Apenas redireciona se não estiver na página inicial/login
+                if (window.location.pathname !== '/' && window.location.pathname !== '/login.html') {
+                    window.location.href = '/';
+                }
                 return;
             }
             const user = await response.json();
@@ -52,7 +63,8 @@ function renderUserMenu(user) {
                 <span>${user.name.split(' ')[0]}</span>
             </div>
             <div id="userDropdown" class="user-dropdown">
-                <a href="/dashboard">Meu Painel</a>  <a href="/profile">Editar Perfil</a>
+                <a href="/dashboard">Meu Painel</a>
+                <a href="/profile">Editar Perfil</a>
                 <a href="/change-password">Alterar Senha</a>
                 <a href="#" id="logoutButton">Sair</a>
             </div>
@@ -62,16 +74,25 @@ function renderUserMenu(user) {
     const userMenuButton = document.getElementById('userMenuButton');
     const userDropdown = document.getElementById('userDropdown');
 
-    userMenuButton.addEventListener('click', (e) => {
-        e.stopPropagation();
-        userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
-    });
+    if(userMenuButton) {
+        userMenuButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            userDropdown.style.display = userDropdown.style.display === 'block' ? 'none' : 'block';
+        });
+    }
 
     document.getElementById('logoutButton').addEventListener('click', (e) => {
         e.preventDefault();
         localStorage.removeItem('authToken');
-        alert('Você foi desconectado.');
-        window.location.href = '/';
+        
+        // **SUBSTITUIÇÃO DO ALERT**
+        if (typeof showToast === 'function') {
+            showToast('Você foi desconectado.', 'info');
+        } else {
+            alert('Você foi desconectado.'); // Fallback caso o script de toast não carregue
+        }
+
+        setTimeout(() => { window.location.href = '/'; }, 1500); // Delay para a notificação ser lida
     });
     
     window.addEventListener('click', () => {

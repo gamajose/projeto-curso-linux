@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Red Innovations</title>
+    <link rel="stylesheet" href="/css/custom.css">
     <style>
-        /* Estilos Globais e Fundo (mesmo estilo do seu site) */
         * {
             margin: 0;
             padding: 0;
@@ -197,14 +197,15 @@
                 // Opcional: Salvar o token para manter o usuário logado
                 localStorage.setItem('authToken', data.token);
                 
-                alert('✅ Login bem-sucedido! Redirecionando...');
+                showToast('✅ Login bem-sucedido! Redirecionando...');
                 window.location.href = '/home'; // Redireciona para a página principal após o login
             } catch (error) {
                 console.error('Erro no login:', error);
-                alert(`❌ Falha no login: ${error.message}`);
+                showToast(`❌ Falha no login: ${error.message}`);
             }
         });
     </script>
     <script src="/js/main.js"></script>
+    <script src="/js/notifications.js"></script>
 </body>
 </html>

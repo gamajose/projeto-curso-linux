@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cadastro - Red Innovations</title>
+    <link rel="stylesheet" href="/css/custom.css">
     <style>
-        /* Estilos são os mesmos da tela de login para manter a consistência */
         * {
             margin: 0;
             padding: 0;
@@ -213,14 +213,16 @@
                     throw new Error(data.message || 'Erro no servidor.');
                 }
 
-                alert('✅ Conta criada com sucesso! Você será redirecionado para o login.');
+                showToast('✅ Conta criada com sucesso! Você será redirecionado para o login.');
                 window.location.href = '/'; // Redireciona para a página de login
             } catch (error) {
                 console.error('Erro no registro:', error);
-                alert(`❌ Falha no registro: ${error.message}`);
+                showToast(`❌ Falha no registro: ${error.message}`);
             }
         });
     </script>
+
+    <script src="/js/notifications.js"></script>
 </body>
 
 </html>

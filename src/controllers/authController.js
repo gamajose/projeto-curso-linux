@@ -5,21 +5,37 @@ const nodemailer = require('nodemailer');
 const crypto = require('crypto');
 
 exports.register = async (req, res) => {
-    const { name, email, password } = req.body;
-    if (!name || !email || !password) {
+    const { name, email, password, username } = req.body;
+
+    // Validação de campos
+    if (!name || !email || !password || !username) {
         return res.status(400).json({ message: 'Todos os campos são obrigatórios.' });
     }
+
+    // Validação de senha forte
+    if (password.length < 8 || !/\d/.test(password) || !/[a-zA-Z]/.test(password)) {
+        return res.status(400).json({ message: 'A senha deve ter no mínimo 8 caracteres, incluindo letras e números.' });
+    }
+    
+    // Validação de nome de usuário
+    if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+        return res.status(400).json({ message: 'Nome de usuário inválido. Use de 3 a 20 letras, números ou underscores.' });
+    }
+
     try {
         const salt = await bcrypt.genSalt(10);
         const password_hash = await bcrypt.hash(password, salt);
         const newUser = await pool.query(
-            "INSERT INTO users (name, email, password_hash) VALUES ($1, $2, $3) RETURNING id, name, email",
-            [name, email, password_hash]
+            "INSERT INTO users (name, email, password_hash, username) VALUES ($1, $2, $3, $4) RETURNING id, name, email, username",
+            [name, email, password_hash, username]
         );
         res.status(201).json(newUser.rows[0]);
     } catch (error) {
         console.error('Erro no registro:', error);
-        res.status(500).json({ message: 'Erro ao registrar usuário. O e-mail já pode estar em uso.' });
+        if (error.code === '23505') { // Erro de violação de unicidade
+             return res.status(400).json({ message: 'E-mail ou nome de usuário já está em uso.' });
+        }
+        res.status(500).json({ message: 'Erro ao registrar usuário.' });
     }
 };
 

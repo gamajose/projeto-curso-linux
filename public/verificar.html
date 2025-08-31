@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificar Certificados - Red Innovations</title>
+    <link rel="stylesheet" href="/css/custom.css">
     <style>
         * {
             margin: 0;
@@ -663,7 +664,7 @@
 
             } catch (error) {
                 console.error('❌ Erro ao baixar Imagem:', error.message);
-                alert(`Erro ao baixar certificado: ${error.message}`);
+                showToast(`Erro ao baixar certificado: ${error.message}`);
                 const botao = document.querySelector('#actionButtons button');
                 botao.textContent = 'Baixar Imagem (PNG)';
             }
@@ -725,6 +726,8 @@
         });
     </script>
     <script src="/js/main.js"></script>
+
+    <script src="/js/notifications.js"></script>
 </body>
 
 </html>

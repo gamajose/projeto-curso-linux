@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verificar e Baixar Certificados - Red Innovations</title>
+    <link rel="stylesheet" href="/css/custom.css">
     <style>
         * {
             margin: 0;
@@ -567,7 +568,7 @@
             const certId = document.getElementById('certificateId').value.trim().toUpperCase();
             
             if (!certId) {
-                alert('Por favor, digite um ID de certificado.');
+                showToast('Por favor, digite um ID de certificado.');
                 return;
             }
             
@@ -575,13 +576,13 @@
                 const response = await fetch(`${API_BASE}/certificates/${certId}`);
                 
                 if (response.ok) {
-                    alert('✅ Certificado válido! Redirecionando para verificação...');
+                    showToast('✅ Certificado válido! Redirecionando para verificação...');
                     window.location.href = `/verificar?certificate=${certId}`;
                 } else {
-                    alert('❌ Certificado não encontrado');
+                    showToast('❌ Certificado não encontrado');
                 }
             } catch (error) {
-                alert('Erro ao verificar certificado');
+                showToast('Erro ao verificar certificado');
             }
         }
 
@@ -716,4 +717,5 @@
         }
     </style>
     <script src="/js/main.js"></script>
+    <script src="/js/notifications.js"></script>
 </body>
