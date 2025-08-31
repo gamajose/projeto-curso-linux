@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Senha - Red Innovations</title>
+    <style>
+        /* Estilos são os mesmos da tela de login para manter a consistência */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Fira Code', 'JetBrains Mono', monospace; }
+        body { background-color: #0b0f14; color: #e5e7eb; display: flex; align-items: center; justify-content: center; min-height: 100vh; background-image: linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px); background-size: 20px 20px; }
+        .form-window { width: 90%; max-width: 450px; background-color: #0e141a; border: 1px solid #1f2937; border-radius: 14px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); overflow: hidden; }
+        .title-bar { background-color: #111827; padding: 10px 15px; display: flex; align-items: center; gap: 10px; }
+        .title-bar .dot { width: 14px; height: 14px; border-radius: 50%; }
+        .dot-red { background-color: #ff5f56; } .dot-yellow { background-color: #ffbd2e; } .dot-green { background-color: #27c93f; }
+        .title-text { color: #94a3b8; margin-left: 10px; }
+        .form-content { padding: 30px 40px; }
+        .prompt { color: #94a3b8; margin-bottom: 25px; } .prompt .green { color: #00ff88; }
+        .prompt .cursor { display: inline-block; width: 10px; height: 1.2em; background-color: #00ff88; animation: blink 1s step-end infinite; }
+        @keyframes blink { from, to { background-color: transparent; } 50% { background-color: #00ff88; } }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #94a3b8; }
+        .form-group input { width: 100%; padding: 12px; background-color: #1f2937; border: 1px solid #334155; border-radius: 6px; color: #e5e7eb; font-size: 1rem; outline: none; transition: border-color 0.3s, box-shadow 0.3s; }
+        .form-group input:focus { border-color: #00ff88; box-shadow: 0 0 10px rgba(0, 255, 136, 0.3); }
+        .btn { width: 100%; padding: 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1rem; transition: background-color 0.3s; background-color: #00ff88; color: #0b0f14; }
+        .btn:hover { background-color: #00cc6a; }
+        .links { margin-top: 20px; text-align: center; font-size: 0.9rem; }
+        .links a { color: #4fd1c5; text-decoration: none; }
+        .links a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+    <div class="form-window">
+        <div class="title-bar">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+            <div class="title-text">user@linux: ~/recover-password</div>
+        </div>
+        <div class="form-content">
+            <div class="prompt">
+                <span>user@host:</span><span class="green">~</span><span>$ ./recuperar-senha</span><span class="cursor"></span>
+            </div>
+            <form id="recoverForm">
+                <div class="form-group">
+                    <label for="email">email_cadastrado:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <button type="submit" class="btn">Enviar Link de Recuperação</button>
+            </form>
+            <div class="links">
+                <a href="/">Lembrou a senha? Faça o login</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('recoverForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const button = event.target.querySelector('button');
+            button.disabled = true;
+            button.textContent = 'Enviando...';
+
+            try {
+                const response = await fetch('/api/auth/recover', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email })
+                });
+
+                const data = await response.json();
+                alert(data.message); // Exibe a mensagem de confirmação
+                
+            } catch (error) {
+                console.error('Erro na recuperação:', error);
+                alert('❌ Erro ao enviar a solicitação. Tente novamente.');
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Enviar Link de Recuperação';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,31 @@
+{
+  "name": "curso-linux",
+  "version": "1.0.0",
+  "description": "Sistema de geração e verificação de certificados",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "install:sharp": "npm install --os=linux --cpu=x64 sharp",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
+    "express": "^4.18.2",
+    "html2pdf.js": "^0.11.2",
+    "jsonwebtoken": "^9.0.2",
+    "jspdf": "^3.0.2",
+    "jspdf-autotable": "^5.0.2",
+    "multer": "^2.0.2",
+    "nodemailer": "^7.0.5",
+    "pdf-lib": "^1.17.1",
+    "pdfkit": "^0.13.0",
+    "pg": "^8.11.3",
+    "qrcode": "^1.5.4",
+    "sharp": "^0.34.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil - Academy Z</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+        }
+
+        body {
+            background-color: #0b0f14;
+            color: #e5e7eb;
+            line-height: 1.6;
+            padding: 20px;
+            background-image: linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #1f2937;
+            margin-bottom: 30px;
+        }
+
+        .logo, .logo:link, .logo:visited, .logo:hover, .logo:active {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff88 !important;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .logo:hover {
+            opacity: 0.8;
+        }
+
+        .logo svg {
+            margin-right: 10px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 25px;
+        }
+
+        nav ul li a {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover, nav ul li a.active {
+            color: #00ff88;
+        }
+        
+        .user-menu-container {
+            position: relative;
+        }
+
+        .user-menu-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+        
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #334155;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 120%;
+            background-color: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            min-width: 180px;
+            z-index: 10;
+        }
+
+        .user-dropdown a {
+            color: #94a3b8;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .user-dropdown a:hover {
+            background-color: #1f2937;
+            color: #00ff88;
+        }
+
+        .profile-window {
+            width: 100%;
+            max-width: 900px;
+            margin: 20px auto;
+            background-color: #0e141a;
+            border: 1px solid #1f2937;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        .profile-header {
+            padding: 20px 30px;
+            background-color: #111827;
+            border-bottom: 1px solid #1f2937;
+        }
+
+        .profile-header h1 {
+            color: #00ff88;
+            font-size: 1.5rem;
+        }
+
+        .profile-content {
+            padding: 30px;
+        }
+
+        .profile-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #1f2937;
+        }
+
+        .profile-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .profile-section h2 {
+            color: #4fd1c5;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #94a3b8;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background-color: #1f2937;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #e5e7eb;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: #00ff88;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            background-color: #00ff88;
+            color: #0b0f14;
+            transition: background-color 0.3s;
+        }
+        
+        .btn:hover {
+            background-color: #00cc6a;
+        }
+
+        .btn-secondary {
+            background-color: #334155;
+            color: #e5e7eb;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+
+        .avatar-upload-area {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .avatar-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid #334155;
+            object-fit: cover;
+        }
+
+        #avatar-upload-label {
+            cursor: pointer;
+            color: #4fd1c5;
+            text-decoration: underline;
+        }
+
+        #avatar {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="/home" id="logo-link" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Red Innovations</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="/home">Home</a></li>
+                    <li><a href="/cursos">Cursos</a></li>
+                    <li><a href="/verificar">Verificação</a></li>
+                    <li><a href="#">Contato</a></li>
+                </ul>
+                <ul id="nav-auth-links"></ul>
+            </nav>
+        </header>
+
+        <main>
+            <div class="profile-window">
+                <div class="profile-header">
+                    <h1>Editar Perfil</h1>
+                </div>
+                <div class="profile-content">
+                    <form id="profileForm">
+                        <div class="profile-section">
+                            <div class="form-group avatar-upload-area">
+                                <img src="/images/avatar-padrao.png" alt="Avatar Preview" id="avatarPreview" class="avatar-preview">
+                                <div>
+                                    <label for="avatar" id="avatar-upload-label">Trocar imagem</label>
+                                    <input type="file" id="avatar" name="avatar" accept="image/*">
+                                    <small style="color: #94a3b8; display: block;">PNG, JPG, GIF até 5MB</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profile-section">
+                            <h2>Dados Pessoais</h2>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="name">Nome Completo:</label>
+                                    <input type="text" id="name" name="name" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email:</label>
+                                    <input type="email" id="email" name="email" disabled style="cursor: not-allowed; background-color: #334155;">
+                                </div>
+                                <div class="form-group">
+                                    <label for="cpf">CPF:</label>
+                                    <input type="text" id="cpf" name="cpf" placeholder="000.000.000-00" maxlength="11">
+                                </div>
+                                <div class="form-group">
+                                    <label for="birth_date">Data de Nascimento:</label>
+                                    <input type="date" id="birth_date" name="birth_date">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profile-section">
+                            <h2>Endereço</h2>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="address_zipcode">CEP:</label>
+                                    <input type="text" id="address_zipcode" name="address_zipcode" placeholder="00000-000">
+                                </div>
+                                <div class="form-group">
+                                    <label for="address_street">Rua:</label>
+                                    <input type="text" id="address_street" name="address_street">
+                                </div>
+                                <div class="form-group">
+                                    <label for="address_number">Número:</label>
+                                    <input type="text" id="address_number" name="address_number">
+                                </div>
+                                <div class="form-group">
+                                    <label for="address_district">Bairro:</label>
+                                    <input type="text" id="address_district" name="address_district">
+                                </div>
+                                <div class="form-group">
+                                    <label for="address_city">Cidade:</label>
+                                    <input type="text" id="address_city" name="address_city">
+                                </div>
+                                <div class="form-group">
+                                    <label for="address_state">Estado:</label>
+                                    <input type="text" id="address_state" name="address_state">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profile-section">
+                            <h2>Profissional</h2>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="linkedin_profile">Perfil LinkedIn:</label>
+                                    <input type="url" id="linkedin_profile" name="linkedin_profile" placeholder="https://linkedin.com/in/seu-usuario">
+                                </div>
+                                <div class="form-group">
+                                    <label for="organization">Organização:</label>
+                                    <input type="text" id="organization" name="organization">
+                                </div>
+                                <div class="form-group">
+                                    <label for="position">Cargo:</label>
+                                    <input type="text" id="position" name="position">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn">Salvar Alterações</button>
+                            <button type="button" class="btn btn-secondary" onclick="window.location.href='/home'">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/main.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/';
+                return;
+            }
+
+            const form = document.getElementById('profileForm');
+            
+            // Lógica de preview do avatar
+            const avatarInput = document.getElementById('avatar');
+            const avatarPreview = document.getElementById('avatarPreview');
+            avatarInput.addEventListener('change', () => {
+                const file = avatarInput.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        avatarPreview.src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Carregar dados do usuário
+            fetch('/api/users/me', { headers: { 'Authorization': `Bearer ${token}` } })
+                .then(res => res.ok ? res.json() : Promise.reject('Falha ao carregar dados'))
+                .then(user => {
+                    for (const key in user) {
+                        const input = document.getElementById(key);
+                        if (input && user[key]) {
+                            if (input.type === 'date') {
+                                input.value = new Date(user[key]).toISOString().split('T')[0];
+                            } else {
+                                input.value = user[key];
+                            }
+                        }
+                    }
+                    if (user.avatar_url) avatarPreview.src = user.avatar_url;
+                });
+
+            // Envio do formulário
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const formData = new FormData(form);
+
+                try {
+                    const response = await fetch('/api/users/me', {
+                        method: 'PUT',
+                        headers: { 'Authorization': `Bearer ${token}` },
+                        body: formData
+                    });
+                    const result = await response.json();
+                    if (!response.ok) {
+                        throw new Error(result.message || 'Falha ao atualizar o perfil.');
+                    }
+                    alert('✅ Perfil atualizado com sucesso!');
+                    window.location.href = '/home';
+                } catch (error) {
+                    alert(`❌ Erro: ${error.message}`);
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

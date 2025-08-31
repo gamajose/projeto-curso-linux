@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursos - Em Breve</title>
+    <style>
+        /* Estilos Globais e Fundo */
+        body {
+            background-color: #0b0f14; /* Cor de fundo principal */
+            font-family: "Fira Code", "JetBrains Mono", "Ubuntu Mono", "DejaVu Sans Mono", monospace;
+            color: #e5e7eb;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Estilo da Janela do Terminal */
+        .terminal-window {
+            width: 90%;
+            max-width: 800px;
+            background-color: #0e141a;
+            border: 2px solid #1f2937;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        /* Barra de Título do Terminal */
+        .title-bar {
+            background-color: #111827;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .title-bar .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background-color: #ff5f56; }
+        .dot-yellow { background-color: #ffbd2e; }
+        .dot-green { background-color: #27c93f; }
+
+        /* Conteúdo do Terminal */
+        .content {
+            padding: 40px;
+        }
+
+        .prompt {
+            font-size: 1.2em;
+            color: #94a3b8;
+        }
+
+        .prompt .green {
+            color: #00ff88;
+        }
+
+        .message {
+            margin-top: 20px;
+            font-size: 2.5em;
+            font-weight: 700;
+            color: #00ff88; /* Cor verde de destaque */
+        }
+
+        /* Estilo para os pontos da animação */
+        .loading-dot {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="terminal-window">
+        <div class="title-bar">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+        </div>
+        <div class="content">
+            <div class="prompt">
+                <span>user@academyz:</span><span class="green">~</span><span>$ ls ./cursos</span>
+            </div>
+            <div class="message">
+                Em breve<span class="loading-dot">.</span><span class="loading-dot">.</span><span class="loading-dot">.</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Script para a animação dos pontos
+        document.addEventListener('DOMContentLoaded', () => {
+            const dots = document.querySelectorAll('.loading-dot');
+            let dotIndex = 0;
+
+            setInterval(() => {
+                // Se o índice for o último, reseta todos os pontos
+                if (dotIndex >= dots.length) {
+                    dots.forEach(dot => dot.style.opacity = '0');
+                    dotIndex = 0;
+                }
+
+                // Torna o ponto atual visível
+                if (dots[dotIndex]) {
+                    dots[dotIndex].style.opacity = '1';
+                }
+                
+                dotIndex++;
+            }, 600); // A cada 600 milissegundos
+        });
+    </script>
+
+</body>
+</html>

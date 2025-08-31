@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursos Linux - Red Innovations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Fira Code', 'JetBrains Mono', 'Ubuntu Mono', 'DejaVu Sans Mono', monospace;
+        }
+        
+        body {
+            background-color: #0b0f14;
+            color: #e5e7eb;
+            line-height: 1.6;
+            padding: 20px;
+            background-image: 
+                linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #1f2937;
+            margin-bottom: 30px;
+        }
+        
+        .logo, .logo:link, .logo:visited, .logo:hover, .logo:active {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff88 !important;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
+        }
+
+        .logo svg {
+            margin-right: 10px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 25px;
+        }
+        
+        nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        nav a:hover, nav a.active {
+            color: #00ff88;
+        }
+
+        .user-menu-container {
+            position: relative;
+        }
+
+        .user-menu-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+        
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #334155;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 120%;
+            background-color: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            min-width: 180px;
+            z-index: 10;
+        }
+
+        .user-dropdown a {
+            color: #94a3b8;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+        }
+        
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .hero h1 {
+            font-size: 2.5rem;
+            color: #00ff88;
+            margin-bottom: 15px;
+        }
+        
+        .hero p {
+            color: #94a3b8;
+            font-size: 1.1rem;
+        }
+        
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        
+        .course-card {
+            background: #0e141a;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 25px;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        
+        .course-card:hover {
+            transform: translateY(-5px);
+            border-color: #00ff88;
+        }
+        
+        .course-card h3 {
+            color: #00ff88;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+        
+        .course-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        .progress-container {
+            background: #1f2937;
+            border-radius: 10px;
+            height: 8px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            background: #00ff88;
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+        
+        .course-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary {
+            background: #00ff88;
+            color: #0b0f14;
+        }
+        
+        .btn-primary:hover {
+            background: #00cc6a;
+        }
+        
+        .btn-secondary {
+            background: #334155;
+            color: #e5e7eb;
+        }
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+        
+        .btn-certificate {
+            background: #fbbf24;
+            color: #0b0f14;
+        }
+        
+        .btn-certificate:hover {
+            background: #f59e0b;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(11, 15, 20, 0.95);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            -webkit-backdrop-filter: blur(5px);
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: #0e141a;
+            border: 2px solid #00ff88;
+            border-radius: 12px;
+            padding: 25px;
+            max-width: 90vw;
+            width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #1f2937;
+        }
+        
+        .modal-header h2 {
+            color: #00ff88;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .lesson-list {
+            list-style: none;
+        }
+        
+        .lesson-item {
+            padding: 15px;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0b0f14;
+        }
+        
+        .lesson-item.completed {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.05);
+        }
+        
+        .lesson-info {
+            flex: 1;
+        }
+        
+        .lesson-title {
+            color: #e5e7eb;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        .lesson-duration {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+        
+        .lesson-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #1f2937;
+            color: #94a3b8;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <a href="/" id="logo-link" class="logo" style="text-decoration: none;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span>Red Innovations</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="/home">Home</a></li>
+                    <li><a href="/cursos" class="active">Cursos</a></li>
+                    <li><a href="/verificar">Verificação</a></li>
+                    <li><a href="#">Contato</a></li>
+                </ul>
+                <ul id="nav-auth-links">
+                    <li><a href="/">Login</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <div class="hero">
+            <h1>Curso de Linux</h1>
+            <p>Aprenda Linux do básico ao avançado e receba seu certificado</p>
+        </div>
+
+        <div class="courses-grid" id="coursesContainer"></div>
+
+        <div class="modal" id="courseModal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle">Detalhes do Curso</h2>
+                    <button class="close-modal" onclick="closeModal()">×</button>
+                </div>
+                <div id="modalContent"></div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Red Innovations &copy; 2025 - Curso de Linux</p>
+            <p>Instrutor: José Moraes - Diretor: Danilo Germano</p>
+        </footer>
+    </div>
+
+    <script src="/js/main.js"></script>
+    <script>
+        // **CORREÇÃO APLICADA AQUI**
+        const API_BASE = '/api';
+        
+        const courses = [
+            {
+                id: 1,
+                title: "Introdução ao Linux",
+                description: "Aprenda os conceitos fundamentais do sistema operacional Linux, sua história e distribuições.",
+                duration: "2 horas",
+                lessons: [
+                    { id: 1, title: "O que é Linux?", duration: "15 min", completed: false, videoUrl: "/videos/video1.mp4" },
+                    { id: 2, title: "História do Linux", duration: "20 min", completed: false, videoUrl: "/videos/video2.mp4" },
+                    { id: 3, title: "Distribuições Linux", duration: "25 min", completed: false, videoUrl: "/videos/video3.mp4" },
+                    { id: 4, title: "Instalação do Linux", duration: "30 min", completed: false, videoUrl: "/videos/video4.mp4" },
+                    { id: 5, title: "Primeiros Passos", duration: "30 min", completed: false, videoUrl: "/videos/video5.mp4" }
+                ],
+                completed: false,
+                progress: 0
+            },
+            {
+                id: 2,
+                title: "Comandos Terminal",
+                description: "Domine o terminal Linux e aprenda comandos essenciais para produtividade.",
+                duration: "3 horas",
+                lessons: [
+                    { id: 1, title: "Navegação Básica", duration: "20 min", completed: false, videoUrl: "/videos/video6.mp4" },
+                    { id: 2, title: "Manipulação de Arquivos", duration: "25 min", completed: false, videoUrl: "/videos/video7.mp4" },
+                    { id: 3, title: "Permissões e Donos", duration: "30 min", completed: false, videoUrl: "/videos/video8.mp4" },
+                    { id: 4, title: "Processos e Serviços", duration: "25 min", completed: false, videoUrl: "/videos/video9.mp4" },
+                    { id: 5, title: "Redirecionamentos", duration: "30 min", completed: false, videoUrl: "/videos/video10.mp4" },
+                    { id: 6, title: "Scripts Básicos", duration: "30 min", completed: false, videoUrl: "/videos/video11.mp4" },
+                    { id: 7, title: "Ferramentas Úteis", duration: "20 min", completed: false, videoUrl: "/videos/video12.mp4" }
+                ],
+                completed: false,
+                progress: 0
+            },
+            {
+                id: 3,
+                title: "Administração Linux",
+                description: "Aprenda a gerenciar sistemas Linux como um administrador profissional.",
+                duration: "4 horas",
+                lessons: [
+                    { id: 1, title: "Gerenciamento de Usuários", duration: "25 min", completed: false, videoUrl: "/videos/video13.mp4" },
+                    { id: 2, title: "Gerenciamento de Pacotes", duration: "30 min", completed: false, videoUrl: "/videos/video14.mp4" },
+                    { id: 3, title: "Configuração de Rede", duration: "35 min", completed: false, videoUrl: "/videos/video15.mp4" },
+                    { id: 4, title: "Serviços e Daemons", duration: "30 min", completed: false, videoUrl: "/videos/video16.mp4" },
+                    { id: 5, title: "Backup e Restauração", duration: "25 min", completed: false, videoUrl: "/videos/video17.mp4" },
+                    { id: 6, title: "Monitoramento", duration: "30 min", completed: false, videoUrl: "/videos/video18.mp4" },
+                    { id: 7, title: "Segurança Básica", duration: "25 min", completed: false, videoUrl: "/videos/video19.mp4" },
+                    { id: 8, title: "Troubleshooting", duration: "30 min", completed: false, videoUrl: "/videos/video20.mp4" }
+                ],
+                completed: false,
+                progress: 0
+            }
+        ];
+
+        function loadProgress() {
+            const saved = localStorage.getItem('courseProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                courses.forEach(course => {
+                    if (progress[course.id]) {
+                        course.progress = progress[course.id].progress;
+                        course.completed = progress[course.id].completed;
+                        course.lessons.forEach(lesson => {
+                            if (progress[course.id].lessons[lesson.id]) {
+                                lesson.completed = progress[course.id].lessons[lesson.id];
+                            }
+                        });
+                    }
+                });
+            }
+        }
+
+        function saveProgress() {
+            const progress = {};
+            courses.forEach(course => {
+                progress[course.id] = {
+                    progress: course.progress,
+                    completed: course.completed,
+                    lessons: {}
+                };
+                course.lessons.forEach(lesson => {
+                    progress[course.id].lessons[lesson.id] = lesson.completed;
+                });
+            });
+            localStorage.setItem('courseProgress', JSON.stringify(progress));
+        }
+
+        function calculateProgress(course) {
+            const completedLessons = course.lessons.filter(l => l.completed).length;
+            course.progress = Math.round((completedLessons / course.lessons.length) * 100);
+            course.completed = course.progress === 100;
+        }
+
+        function renderCourses() {
+            const container = document.getElementById('coursesContainer');
+            container.innerHTML = '';
+            courses.forEach(course => {
+                const card = document.createElement('div');
+                card.className = 'course-card';
+                card.innerHTML = `
+                    <h3>${course.title}</h3>
+                    <p>${course.description}</p>
+                    <div class="course-info">
+                        <span>${course.duration}</span>
+                        <span>${course.lessons.length} aulas</span>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: ${course.progress}%"></div>
+                    </div>
+                    <div class="course-actions">
+                        <button class="btn btn-primary" onclick="viewCourse(${course.id})">
+                            ${course.progress > 0 ? 'Continuar' : 'Começar'}
+                        </button>
+                        ${course.completed ? `<button class="btn btn-certificate" onclick="generateCertificate(${course.id}, event)">Emitir Certificado</button>` : ''}
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('courseModal');
+            const modalContent = document.getElementById('modalContent');
+            modal.style.display = 'none';
+            modalContent.innerHTML = ''; 
+        }
+
+        function viewCourse(courseId) {
+            const course = courses.find(c => c.id === courseId);
+            if (!course) return;
+
+            document.getElementById('modalTitle').textContent = course.title;
+            
+            let lessonsHtml = `
+                <p>${course.description}</p>
+                <p><strong>Duração:</strong> ${course.duration}</p>
+                <p><strong>Progresso:</strong> ${course.progress}%</p>
+                <h3 style="margin: 20px 0 10px 0; color: #00ff88;">Aulas</h3>
+                <ul class="lesson-list">
+            `;
+
+            course.lessons.forEach(lesson => {
+                let actionButtons = '';
+                if (lesson.completed) {
+                    actionButtons = `
+                        <span style="color: #00ff88; margin-right: 15px;">✓ Concluída</span>
+                        <button class="btn btn-primary" onclick="playVideo(${course.id}, ${lesson.id})">Rever</button>
+                        <button class="btn btn-secondary" onclick="resetLesson(${course.id}, ${lesson.id})">Recomeçar</button>
+                    `;
+                } else {
+                    actionButtons = `<button class="btn btn-primary" onclick="playVideo(${course.id}, ${lesson.id})">Assistir</button>`;
+                }
+
+                lessonsHtml += `
+                    <li class="lesson-item ${lesson.completed ? 'completed' : ''}">
+                        <div class="lesson-info">
+                            <div class="lesson-title">Aula ${lesson.id}: ${lesson.title}</div>
+                            <div class="lesson-duration">Duração: ${lesson.duration}</div>
+                        </div>
+                        <div class="lesson-actions">${actionButtons}</div>
+                    </li>
+                `;
+            });
+
+            lessonsHtml += '</ul>';
+            document.getElementById('modalContent').innerHTML = lessonsHtml;
+            document.getElementById('courseModal').style.display = 'flex';
+        }
+
+        function playVideo(courseId, lessonId) {
+            const course = courses.find(c => c.id === courseId);
+            const lesson = course.lessons.find(l => l.id === lessonId);
+
+            const modalContent = document.getElementById('modalContent');
+            document.getElementById('modalTitle').textContent = `Aula ${lesson.id}: ${lesson.title}`;
+
+            modalContent.innerHTML = `
+                <div style="width: 100%; max-width: 100%; background: #000;">
+                    <video controls autoplay style="width: 100%; height: auto;">
+                        <source src="${lesson.videoUrl}" type="video/mp4">
+                        O seu navegador não suporta a tag de vídeo.
+                    </video>
+                </div>
+                <div style="margin-top: 20px; display: flex; gap: 15px;">
+                    ${!lesson.completed ? `<button class="btn btn-primary" onclick="completeLesson(${course.id}, ${lesson.id}); viewCourse(${course.id});">Marcar como Concluída</button>` : ''}
+                    <button class="btn btn-secondary" onclick="viewCourse(${course.id})">Voltar para as Aulas</button>
+                </div>
+            `;
+        }
+
+        function completeLesson(courseId, lessonId) {
+            const course = courses.find(c => c.id === courseId);
+            const lesson = course.lessons.find(l => l.id === lessonId);
+            
+            if (!lesson.completed) {
+                lesson.completed = true;
+                calculateProgress(course);
+                saveProgress();
+                renderCourses();
+                if (course.completed) {
+                    setTimeout(() => alert(`🎉 Parabéns! Concluiu o curso "${course.title}"!`), 500);
+                }
+            }
+        }
+
+        function resetLesson(courseId, lessonId) {
+            const course = courses.find(c => c.id === courseId);
+            const lesson = course.lessons.find(l => l.id === lessonId);
+
+            if (lesson.completed) {
+                lesson.completed = false;
+                calculateProgress(course);
+                saveProgress();
+                renderCourses();
+                viewCourse(courseId);
+            }
+        }
+
+        async function generateCertificate(courseId, event) {
+            const course = courses.find(c => c.id === courseId);
+            if (!course || !course.completed) {
+                return alert('Precisa de concluir todas as aulas do curso primeiro!');
+            }
+
+            const studentName = prompt('Digite o seu nome completo para o certificado:');
+            if (!studentName) return;
+
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                alert('Precisa de estar autenticado para emitir um certificado.');
+                return window.location.href = '/';
+            }
+            
+            const button = event.target;
+            const originalText = button.innerHTML;
+
+            try {
+                button.disabled = true;
+                button.innerHTML = 'A Gerar...';
+
+                const certId = `LINUX${new Date().getFullYear()}-${Math.random().toString(36).substring(2, 11).toUpperCase()}`;
+
+                const createResponse = await fetch(`${API_BASE}/certificates`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        participant_name: studentName,
+                        course_name: course.title,
+                        hours: parseInt(course.duration, 10),
+                        issue_date: new Date().toISOString().split('T')[0],
+                        completion_date: new Date().toISOString().split('T')[0],
+                        certificate_id: certId,
+                        modalidade: 'Online'
+                    })
+                });
+
+                if (!createResponse.ok) {
+                    const errorData = await createResponse.json();
+                    throw new Error(errorData.message || 'Falha ao registar o certificado.');
+                }
+                
+                const newCert = await createResponse.json();
+
+                const downloadUrl = `${API_BASE}/certificates/generate/${newCert.certificate_id}`;
+                const downloadResponse = await fetch(downloadUrl);
+
+                if (!downloadResponse.ok) {
+                    throw new Error(`Falha ao transferir a imagem. Estado: ${downloadResponse.status}`);
+                }
+
+                const blob = await downloadResponse.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `certificado-${newCert.certificate_id}.png`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                
+                alert(`✅ Certificado "${newCert.certificate_id}" transferido com sucesso!`);
+
+            } catch (error) {
+                console.error('Erro ao gerar certificado:', error);
+                alert(`❌ Erro: ${error.message}`);
+            } finally {
+                button.disabled = false;
+                button.innerHTML = originalText;
+            }
+        }
+
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+        document.getElementById('courseModal').addEventListener('click', function(e) { 
+            if (e.target.classList.contains('modal')) {
+                closeModal();
+            }
+        });
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProgress();
+            renderCourses();
+        });
+
+    </script>
+</body>
+</html>
+

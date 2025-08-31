@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Red Innovations</title>
+    <style>
+        /* Estilos Globais e Fundo (mesmo estilo do seu site) */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Fira Code', 'JetBrains Mono', 'Ubuntu Mono', 'DejaVu Sans Mono', monospace;
+        }
+        
+        body {
+            background-color: #0b0f14;
+            color: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-image: 
+                linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        /* Estilo da Janela de Login (estilo terminal) */
+        .login-window {
+            width: 90%;
+            max-width: 450px;
+            background-color: #0e141a;
+            border: 1px solid #1f2937;
+            border-radius: 14px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        /* Barra de Título */
+        .title-bar {
+            background-color: #111827;
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .title-bar .dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background-color: #ff5f56; }
+        .dot-yellow { background-color: #ffbd2e; }
+        .dot-green { background-color: #27c93f; }
+        .title-text { color: #94a3b8; margin-left: 10px; }
+
+        /* Conteúdo do Formulário */
+        .login-content {
+            padding: 30px 40px;
+        }
+
+        .prompt {
+            color: #94a3b8;
+            margin-bottom: 25px;
+        }
+        .prompt .green { color: #00ff88; }
+        .prompt .cursor {
+            display: inline-block;
+            width: 10px;
+            height: 1.2em;
+            background-color: #00ff88;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            from, to { background-color: transparent; }
+            50% { background-color: #00ff88; }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #94a3b8;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            background-color: #1f2937;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: #e5e7eb;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-group input:focus {
+            border-color: #00ff88;
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.3);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: background-color 0.3s;
+            background-color: #00ff88;
+            color: #0b0f14;
+        }
+
+        .btn:hover {
+            background-color: #00cc6a;
+        }
+        
+        .links {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+        
+        .links a {
+            color: #4fd1c5;
+            text-decoration: none;
+        }
+        
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="login-window">
+        <div class="title-bar">
+            <div class="dot dot-red"></div>
+            <div class="dot dot-yellow"></div>
+            <div class="dot dot-green"></div>
+            <div class="title-text">user@linux: ~/login</div>
+        </div>
+        <div class="login-content">
+            <div class="prompt">
+                <span>user@host:</span><span class="green">~</span><span>$ ./iniciar-sessao</span><span class="cursor"></span>
+            </div>
+
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">login_email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">login_senha:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn">Autenticar</button>
+            </form>
+            
+            <div class="links">
+                <a href="/register.html">Criar uma conta</a>
+                <span style="color: #94a3b8; margin: 0 10px;">|</span>
+                <a href="/recover.html">Esqueceu a senha?</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Erro no servidor.');
+                }
+
+                // Opcional: Salvar o token para manter o usuário logado
+                localStorage.setItem('authToken', data.token);
+                
+                alert('✅ Login bem-sucedido! Redirecionando...');
+                window.location.href = '/home'; // Redireciona para a página principal após o login
+            } catch (error) {
+                console.error('Erro no login:', error);
+                alert(`❌ Falha no login: ${error.message}`);
+            }
+        });
+    </script>
+    <script src="/js/main.js"></script>
+</body>
+</html>
