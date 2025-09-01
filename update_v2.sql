@@ -32,4 +32,14 @@ INSERT INTO lessons (course_id, id, title, duration, video_url) VALUES
 (1, 4, 'Instalação do Linux', '30 min', '/videos/video4.mp4'),
 (1, 5, 'Primeiros Passos', '30 min', '/videos/video5.mp4') ON CONFLICT (course_id, id) DO NOTHING;
 
--- Adicione aqui os outros cursos e aulas seguindo o mesmo padrão
+
+
+-- Exemplo para a primeira aula (ID = 1)
+UPDATE lessons SET video_url = 'https://www.youtube.com/watch?v=u1xrNaTO1bI&list=RDu1xrNaTO1bI&start_radio=1' WHERE id = 1;
+
+-- Exemplo para a segunda aula (ID = 2)
+UPDATE lessons SET video_url = 'https://www.youtube.com/watch?v=SEU_CODIGO_DO_VIDEO_2' WHERE id = 2;
+
+
+
+-- ... e assim por diante para todas as suas 20 aulas.

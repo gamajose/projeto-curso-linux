@@ -467,7 +467,8 @@
                 currentUser = await userRes.json();
                 const progress = await progressRes.json();
                 const existingCerts = await certsRes.json();
-                courses = await coursesRes.json();
+                const data = await coursesRes.json();
+                courses = Array.isArray(data) ? data : [];
 
                 // Processa os dados
              courses.forEach(course => {
@@ -660,7 +661,7 @@
         }
 
         function viewCourse(courseId) {
-            const course = courses.find(c => c.id === courseId);
+            const course = courses.find(c => c.id == courseId);
             if (!course) return;
 
             document.getElementById('modalTitle').textContent = course.title;
@@ -683,15 +684,19 @@
         }
 
         function playVideo(courseId, lessonId) {
-            const course = courses.find(c => c.id === courseId);
-            const lesson = course.lessons.find(l => l.id === lessonId);
+            const course = courses.find(c => c.id == courseId);
+            const lesson = course.lessons.find(l => l.id == lessonId);
             document.getElementById('modalTitle').textContent = `Aula: ${lesson.title}`;
             document.getElementById('modalContent').innerHTML = `
-                <div style="background: #000; padding: 10px;">
-                    <video controls autoplay style="width: 100%;">
-                        <source src="${lesson.videoUrl}" type="video/mp4">
-                        Seu navegador não suporta vídeos.
-                    </video>
+                <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000;">
+                    <iframe
+                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
+                        src="${lesson.video_url}"
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen>
+                    </iframe>
                 </div>
                 <div style="margin-top: 20px; display: flex; gap: 15px;">
                     ${!lesson.completed ? `<button class="btn btn-primary" onclick="completeLesson(${course.id}, ${lesson.id}); viewCourse(${course.id});">Marcar como Concluída</button>` : ''}
