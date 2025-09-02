@@ -311,8 +311,13 @@
                                     <input type="text" id="name" name="name" required>
                                 </div>
                                 <div class="form-group">
+                                    <label for="username">Nome de Usuário:</label>
+                                    <input type="text" id="username" name="username">
+                                </div>
+                                <div class="form-group">
                                     <label for="email">Email:</label>
                                     <input type="email" id="email" name="email" disabled style="cursor: not-allowed; background-color: #334155;">
+                                    <small>O email não pode ser alterado.</small>
                                 </div>
                                 <div class="form-group">
                                     <label for="cpf">CPF:</label>
@@ -382,18 +387,17 @@
 
     <script src="/js/main.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             const token = localStorage.getItem('authToken');
             if (!token) {
                 window.location.href = '/';
                 return;
             }
 
-            const form = document.getElementById('profileForm');
-            
-            // Lógica de preview do avatar
+            const form = document.getElementById('profileForm');            
             const avatarInput = document.getElementById('avatar');
             const avatarPreview = document.getElementById('avatarPreview');
+
             avatarInput.addEventListener('change', () => {
                 const file = avatarInput.files[0];
                 if (file) {
@@ -411,7 +415,13 @@
                 .then(user => {
                     for (const key in user) {
                         const input = document.getElementById(key);
-                        if (input && user[key]) {
+
+                       if (key === 'cpf' && input) {
+                            input.placeholder = user[key] || '___.___.___-__';
+                            input.value = '';
+                        } 
+
+                        else if (input && user[key]) {
                             if (input.type === 'date') {
                                 input.value = new Date(user[key]).toISOString().split('T')[0];
                             } else {
@@ -420,6 +430,10 @@
                         }
                     }
                     if (user.avatar_url) avatarPreview.src = user.avatar_url;
+                })
+                .catch(error => {
+                    console.error("Erro ao carregar perfil:", error);
+                    showToast('❌ Erro: Não foi possível carregar os dados do perfil.');
                 });
 
             // Envio do formulário

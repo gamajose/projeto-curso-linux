@@ -2,12 +2,11 @@
 const pool = require('../config/database');
 const bcrypt = require('bcrypt');
 
-// Função para buscar os dados do usuário logado (CORRIGIDA)
+// Função para buscar os dados do usuário
 exports.getMe = async (req, res) => {
     try {
         const userResult = await pool.query(
-            // Seleciona todas as colunas, incluindo as novas de gamificação
-            `SELECT id, name, email, avatar_url, xp, level, cpf, birth_date, gender, 
+            `SELECT id, name, email, username, avatar_url, xp, level, cpf, birth_date, gender, 
              phone_fixed, phone_mobile, address_street, address_number, address_district, 
              address_city, address_state, address_zipcode, linkedin_profile, organization, "position", observations 
              FROM users WHERE id = $1`,
@@ -15,16 +14,23 @@ exports.getMe = async (req, res) => {
         );
 
         if (userResult.rows.length === 0) {
-            // Envia a resposta de erro e PARA a execução com 'return'
             return res.status(404).json({ message: "Usuário não encontrado." });
         }
 
-        // Envia a resposta de sucesso e PARA a execução
-        res.json(userResult.rows[0]);
+        const user = userResult.rows[0];
+
+        if (user.cpf) {
+            // Remove qualquer formatação existente para garantir
+            const cleanedCpf = user.cpf.replace(/\D/g, ''); 
+            if (cleanedCpf.length === 11) {
+                user.cpf = cleanedCpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '***.***.$3-$4');
+            }
+        }
+
+        res.json(user);
 
     } catch (error) {
         console.error("Erro ao buscar dados do usuário:", error);
-        // Só envia uma resposta de erro se a de sucesso ainda não foi enviada
         if (!res.headersSent) {
             res.status(500).json({ message: "Erro interno no servidor." });
         }
@@ -34,27 +40,54 @@ exports.getMe = async (req, res) => {
 // Função para atualizar o perfil do usuário (sem alterações)
 exports.updateMe = async (req, res) => {
     const userId = req.user.id;
-    const { name, cpf, birth_date, gender, phone_fixed, phone_mobile, address_street, address_number, address_district, address_city, address_state, address_zipcode, linkedin_profile, organization, position, observations } = req.body;
+    let { name, username, cpf, birth_date, gender, phone_fixed, phone_mobile, address_street, address_number, address_district, address_city, address_state, address_zipcode, linkedin_profile, organization, position, observations } = req.body;
 
-    let avatar_url = req.body.avatar_url; // Mantém a URL existente se não houver novo upload
-    if (req.file) {
-        // O caminho deve ser relativo à pasta 'public'
-        avatar_url = `/uploads/avatars/${req.file.filename}`;
+    if (username && !/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+        return res.status(400).json({ message: 'Nome de usuário inválido. Use de 3 a 20 letras, números ou underscores.' });
     }
 
     try {
-        const updatedUser = await pool.query(
-            `UPDATE users SET 
-                name = $1, cpf = $2, birth_date = $3, gender = $4, phone_fixed = $5, phone_mobile = $6, 
-                address_street = $7, address_number = $8, address_district = $9, address_city = $10, 
-                address_state = $11, address_zipcode = $12, linkedin_profile = $13, organization = $14, 
-                "position" = $15, observations = $16, avatar_url = $17 
-            WHERE id = $18 RETURNING id, name, email, avatar_url`,
-            [name, cpf, birth_date, gender, phone_fixed, phone_mobile, address_street, address_number, address_district, address_city, address_state, address_zipcode, linkedin_profile, organization, position, observations, avatar_url, userId]
-        );
+        const currentUserResult = await pool.query('SELECT avatar_url FROM users WHERE id = $1', [userId]);
+        let avatar_url = currentUserResult.rows[0].avatar_url;
+
+        if (req.file) {
+            avatar_url = `/uploads/avatars/${req.file.filename}`;
+        }
+
+        const fieldsToUpdate = { name, username, cpf, birth_date, gender, phone_fixed, phone_mobile, address_street, address_number, address_district, address_city, address_state, address_zipcode, linkedin_profile, organization, "position": position, observations, avatar_url };
+        
+        const updates = [];
+        const values = [];
+        let queryIndex = 1;
+
+        for (const [key, value] of Object.entries(fieldsToUpdate)) {
+            if (value !== undefined && value !== null) {
+                updates.push(`"${key}" = $${queryIndex++}`);
+                values.push(value);
+            }
+        }
+        
+        if (updates.length === 0) {
+            return res.status(400).json({ message: 'Nenhum dado fornecido para atualização.' });
+        }
+
+        values.push(userId);
+
+        const query = `UPDATE users SET ${updates.join(', ')} WHERE id = $${queryIndex} RETURNING id, name, email, username, avatar_url`;
+
+        const updatedUser = await pool.query(query, values);
+
+        if (updatedUser.rows[0].cpf) {
+             updatedUser.rows[0].cpf = decrypt(updatedUser.rows[0].cpf);
+        }
+        
         res.json(updatedUser.rows[0]);
+
     } catch (error) {
         console.error("Erro ao atualizar perfil:", error);
+        if (error.code === '23505') {
+            return res.status(400).json({ message: 'O nome de usuário ou e-mail já está em uso.' });
+        }
         res.status(500).json({ message: "Erro interno no servidor." });
     }
 };

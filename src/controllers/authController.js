@@ -71,10 +71,10 @@ exports.login = async (req, res) => {
 
     try {
         const isEmail = login.includes('@');
-        const query = isEmail
 
-            ? userQuery = 'SELECT * FROM users WHERE email = $1'
-            : userQuery = 'SELECT * FROM users WHERE username = $1';
+        const query = isEmail
+            ? 'SELECT * FROM users WHERE email = $1'
+            : 'SELECT * FROM users WHERE username = $1';
         
         const userResult = await pool.query(query, [login]);
 
@@ -95,7 +95,8 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: 'Credenciais inválidas.' });
         }
         
-        const token = jwt.sign({ id: user.id, name: user.name }, process.env.JWT_SECRET, { expireIn: '8h' });
+        const token = jwt.sign({ id: user.id, name: user.name }, process.env.JWT_SECRET, { expiresIn: '8h' });
+        
         res.json({ token, user: { id: user.id, name: user.name, email: user.email, username: user.username } });
 
     } catch (error) {
