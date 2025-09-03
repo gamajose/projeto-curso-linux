@@ -450,6 +450,7 @@
                 <ul>
                     <li><a href="/home" class="active">Home</a></li>
                     <li><a href="/cursos">Cursos</a></li>
+                    <li><a href="/faq">FAQ</a></li>
                     <li><a href="/verificar">Verificação</a></li>
                     <li><a href="#">Contato</a></li>
                 </ul>
@@ -563,6 +564,23 @@
             }
         }
 
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = '/';
+                return;
+            }
+
+            async function loadUserProfile() {
+            }
+            loadUserProfile();
+
+            window.logout = function() {
+                localStorage.removeItem('authToken');
+                window.location.href = '/';
+            };
+        });
+
         // Função de verificação (igual à da página de verificação)
         async function verificarCertificado() {
             const certId = document.getElementById('certificateId').value.trim().toUpperCase();
@@ -598,7 +616,6 @@
     </script>
 
     <style>
-        /* ESTILOS ADICIONAIS PARA A HOME */
         .hero {
             text-align: center;
             padding: 60px 20px;
@@ -718,4 +735,6 @@
     </style>
     <script src="/js/main.js"></script>
     <script src="/js/notifications.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/chat.js"></script>
 </body>

@@ -81,3 +81,120 @@
 @keyframes spin {
     to { transform: rotate(360deg); }
 }
+
+.page-header {
+    text-align: center;
+    margin-bottom: 40px;
+    border-bottom: 1px solid #00ff884d;
+    padding-bottom: 20px;
+}
+
+.faq-container details {
+    background-color: #1a222c;
+    border: 1px solid #00ff884d;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    padding: 15px 20px;
+    transition: background-color 0.3s;
+}
+
+.faq-container details[open] {
+    background-color: #2c3a4a;
+}
+
+.faq-container summary {
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 1.1em;
+    list-style: none;
+}
+
+.faq-container summary::before {
+    content: '▶ ';
+    font-size: 0.8em;
+    margin-right: 10px;
+    transition: transform 0.2s;
+}
+
+.faq-container details[open] summary::before {
+    transform: rotate(90deg);
+}
+
+.faq-container details p {
+    margin-top: 15px;
+    padding-left: 25px;
+    color: #b0c4de;
+    line-height: 1.7;
+}
+
+.chat-window {
+    height: 60vh;
+    border: 1px solid #00ff884d;
+    border-radius: 8px;
+    padding: 15px;
+    overflow-y: auto;
+    background-color: #1a222c;
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column-reverse;
+}
+
+#messages {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#messages li {
+    padding: 8px 12px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    max-width: 80%;
+    word-wrap: break-word;
+    line-height: 1.4;
+}
+
+#messages li strong {
+    color: #00ff88;
+    margin-right: 8px;
+    font-size: 0.9em;
+}
+
+.my-message {
+    background-color: #00ff88;
+    color: #0b0f14;
+    align-self: flex-end;
+    border-bottom-right-radius: 3px;
+}
+
+.my-message strong {
+    color: #1a222c;
+}
+
+.other-message {
+    background-color: #2c3a4a;
+    color: #e5e7eb;
+    align-self: flex-start;
+    border-bottom-left-radius: 3px;
+}
+
+.other-message strong {
+    color: #55d9a1;
+}
+
+#chatForm {
+    display: flex;
+    gap: 10px;
+}
+
+#chatForm input {
+    flex-grow: 1;
+    background-color: #2c3a4a;
+}
+
+#chatForm button {
+    padding: 10px 20px;
+}

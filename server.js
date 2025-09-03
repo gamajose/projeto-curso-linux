@@ -1,46 +1,51 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const fs = require('fs');
+require("dotenv").config();
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+const fs = require("fs");
 const app = express();
-const certificateRoutes = require('./src/routes/certificates');
-const authRoutes = require('./src/routes/auth');
-const userRoutes = require('./src/routes/users');
-const progressRoutes = require('./src/routes/progress');
-const rankingRoutes = require('./src/routes/ranking');
-const courseRoutes = require('./src/routes/courses');
 
+// Rotas da API
+const certificateRoutes = require("./src/routes/certificates");
+const authRoutes = require("./src/routes/auth");
+const userRoutes = require("./src/routes/users");
+const progressRoutes = require("./src/routes/progress");
+const rankingRoutes = require("./src/routes/ranking");
+const courseRoutes = require("./src/routes/courses");
 
-app.set('trust proxy', 1);
+// --- Configuração do Servidor para o Chat ---
+const http = require("http");
+const { Server } = require("socket.io");
+const server = http.createServer(app);
+const io = new Server(server);
 
-// Configure CORS
+app.set("trust proxy", 1);
+
 const corsOptions = {
-    origin: [
+  origin: [
         'https://academyz.com.br',
         'https://www.academyz.com.br',
         'http://academyz.com.br',
         'http://www.academyz.com.br',
         'http://localhost:3001',
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
-    credentials: true
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+  credentials: true,
 };
 
 // Middleware
 app.use(cors(corsOptions));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
-
-// Rotas
-app.use('/api/certificates', certificateRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/users', userRoutes);
-app.use('/api/progress', progressRoutes);
-app.use('/api/ranking', rankingRoutes);
-app.use('/api/courses', courseRoutes);
+// Rotas da API
+app.use("/api/certificates", certificateRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/progress", progressRoutes);
+app.use("/api/ranking", rankingRoutes);
+app.use("/api/courses", courseRoutes);
 
 // Rota de saúde
 app.get('/health', (req, res) => {
@@ -52,11 +57,9 @@ app.get('/health', (req, res) => {
     });
 });
 
-
-// Handle preflight requests
 app.options('*', cors(corsOptions));
 
-// Servir páginas diferentes
+// Servir páginas HTML
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
@@ -105,9 +108,32 @@ app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-// Inicialização do servidor
+app.get('/faq', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'faq.html'))
+});
+
+app.get('/chat', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'chat.html'))
+});
+
+
+// Lógica do Chat com Socket.IO
+io.on('connection', (socket) => {
+    console.log('✅ Um usuário se conectou ao chat');
+
+    socket.on('disconnect', () => {
+        console.log('❌ Usuário desconectado do chat');
+    });
+
+    // Ouve por mensagens do chat e retransmite para todos
+    socket.on('chat message', (data) => {
+        io.emit('chat message', data);
+    });
+});
+
+// Inicialização do Servidor
 const PORT = process.env.PORT || 3001;
-const pool = require('./src/config/database');
+const pool = require("./src/config/database");
 
 async function startServer() {
     try {
@@ -115,34 +141,51 @@ async function startServer() {
         console.log('✅ Conectado ao PostgreSQL com sucesso!');
         client.release();
         
-        const templatePath = path.join(__dirname, 'certificates', 'templates', 'certificado-template.svg');
-        if (fs.existsSync(templatePath)) {
-            console.log('✅ Template encontrado em:', templatePath);
-        } else {
-            console.warn('⚠️ Template não encontrado em:', templatePath);
-        }
-        
-        const server = app.listen(PORT, () => {
+        server.listen(PORT, () => {
             console.log(`✅ Servidor rodando na porta ${PORT}`);
             console.log(`📍 Acesse: http://academyz.com.br:${PORT}`);
         });
-
-        // Desligamento limpo do servidor (sem referências a serviços)
-        const shutdown = () => {
-            console.log('\n🛑 Desligando servidor...');
-            server.close(() => {
-                console.log('✅ Servidor desligado');
-                process.exit(0);
-            });
-        };
-
-        process.on('SIGINT', shutdown);
-        process.on('SIGTERM', shutdown);
 
     } catch (error) {
         console.error('❌ Erro ao iniciar o servidor:', error.message, error.stack);
         process.exit(1);
     }
 }
+
+// async function startServer() {
+//     try {
+//         const client = await pool.connect();
+//         console.log('✅ Conectado ao PostgreSQL com sucesso!');
+//         client.release();
+        
+//         const templatePath = path.join(__dirname, 'certificates', 'templates', 'certificado-template.svg');
+//         if (fs.existsSync(templatePath)) {
+//             console.log('✅ Template encontrado em:', templatePath);
+//         } else {
+//             console.warn('⚠️ Template não encontrado em:', templatePath);
+//         }
+        
+//         const server = app.listen(PORT, () => {
+//             console.log(`✅ Servidor rodando na porta ${PORT}`);
+//             console.log(`📍 Acesse: http://academyz.com.br:${PORT}`);
+//         });
+
+//         // Desligamento limpo do servidor (sem referências a serviços)
+//         const shutdown = () => {
+//             console.log('\n🛑 Desligando servidor...');
+//             server.close(() => {
+//                 console.log('✅ Servidor desligado');
+//                 process.exit(0);
+//             });
+//         };
+
+//         process.on('SIGINT', shutdown);
+//         process.on('SIGTERM', shutdown);
+
+//     } catch (error) {
+//         console.error('❌ Erro ao iniciar o servidor:', error.message, error.stack);
+//         process.exit(1);
+//     }
+// }
 
 startServer();
