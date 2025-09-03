@@ -1,3 +1,5 @@
+// public/js/chat.js
+
 document.addEventListener('DOMContentLoaded', () => {
     const chatHTML = `
         <button class="chat-popup-btn" id="openChatBtn">💬</button>
@@ -25,43 +27,85 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatForm = document.getElementById('chatForm');
     const messageInput = document.getElementById('messageInput');
     const chatMessagesList = document.getElementById('chat-messages-list');
+    const chatMessagesDiv = document.querySelector('.chat-messages');
 
     const socket = io();
-    let currentUser = { name: 'Anônimo' };
+    let currentUser = { id: null, name: 'Anônimo', username: 'Anônimo', avatar_url: '/images/avatar-padrao.png' };
 
     const token = localStorage.getItem('authToken');
     if (token) {
-        fetch('/api/users/me', {
-            headers: { 'Authorization': `Bearer ${token}` }
-        })
-        .then(response => response.ok ? response.json() : Promise.reject())
+        fetch('/api/users/me', { headers: { 'Authorization': `Bearer ${token}` } })
+        .then(response => response.ok ? response.json() : Promise.reject('Token inválido'))
         .then(user => {
-            currentUser = user;
+            currentUser = {
+                id: user.id,
+                username: user.username || user.name.split(' ')[0],
+                avatar_url: user.avatar_url || '/images/avatar-padrao.png'
+            };
         })
         .catch(error => console.error('Erro ao buscar dados do usuário para o chat:', error));
     }
 
-    openChatBtn.addEventListener('click', () => chatPopup.classList.add('open'));
+    openChatBtn.addEventListener('click', () => {
+        chatPopup.classList.add('open');
+        chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+    });
     closeChatBtn.addEventListener('click', () => chatPopup.classList.remove('open'));
+
+    const renderMessage = (data, isHistory = false) => {
+        const item = document.createElement('li');
+        const isMe = data.userId === currentUser.id;
+
+        item.className = isMe ? 'my-message message-container' : 'other-message message-container';
+
+        const avatarSrc = data.avatar || '/images/avatar-padrao.png';
+
+        item.innerHTML = `
+            <img src="${avatarSrc}" alt="Avatar" class="chat-avatar">
+            <div class="message-content">
+                <span class="message-nickname">${data.username}</span>
+                <div class="message-text">${data.text.replace(/<a/g, '<a target="_blank"')}</div>
+            </div>
+        `;
+        
+        chatMessagesList.appendChild(item);
+    };
 
     chatForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        if (messageInput.value) {
+        const messageText = messageInput.value;
+        if (!messageText) return;
+
+        if (messageText.toLowerCase().startsWith('/faq ') || messageText.toLowerCase().startsWith('/ask ')) {
+            const commandLength = messageText.startsWith('/faq ') ? 5 : 5;
+            const question = messageText.substring(commandLength);
+
+            fetch('/api/chat/ask-local', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ question: question })
+            }).catch(err => console.error("Erro ao chamar API do chat local:", err));
+
+        } else {
             const messageData = {
-                user: currentUser.name,
-                text: messageInput.value
+                userId: currentUser.id,
+                username: currentUser.username,
+                avatar: currentUser.avatar_url,
+                text: messageText
             };
             socket.emit('chat message', messageData);
-            messageInput.value = '';
         }
+        messageInput.value = '';
     });
 
     socket.on('chat message', (data) => {
-        const item = document.createElement('li');
-        const isMe = data.user === currentUser.name;
-        item.className = isMe ? 'my-message' : 'other-message';
-        item.innerHTML = `<strong>${data.user}:</strong> ${data.text}`;
-        chatMessagesList.appendChild(item);
-        chatMessagesList.scrollTop = chatMessagesList.scrollHeight;
+        renderMessage(data);
+        chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+    });
+
+    socket.on('chat history', (history) => {
+        chatMessagesList.innerHTML = '';
+        history.forEach(data => renderMessage(data));
+        chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
     });
 });
