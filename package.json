@@ -6,7 +6,10 @@
   "scripts": {
     "start": "node server.js",
     "install:sharp": "npm install --os=linux --cpu=x64 sharp",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "migrate": "node migrate.js",
+    "migrate:list": "node migrate.js --list",
+    "migrate:check": "node migrate.js --check"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

@@ -179,12 +179,18 @@ app.post("/api/chat/ask-local", (req, res) => {
 // Inicialização do servidor
 const PORT = process.env.PORT || 3001;
 const pool = require('./src/config/database');
+const DatabaseMigrations = require('./src/config/migrations');
 
 async function startServer() {
     try {
         const client = await pool.connect();
         console.log('✅ Conectado ao PostgreSQL com sucesso!');
         client.release();
+
+        // Executar migrations automáticas
+        console.log('\n🔧 Verificando estrutura do banco de dados...');
+        await DatabaseMigrations.runAll();
+        console.log('✅ Banco de dados pronto!\n');
         
         const templatePath = path.join(__dirname, 'certificates', 'templates', 'certificado-template.svg');
         if (fs.existsSync(templatePath)) {
