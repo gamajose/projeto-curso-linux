@@ -75,6 +75,7 @@ class Certificate {
                 diretor, 
                 organizacao, 
                 hash_verificacao,
+                template_type = 'cert-mod-linux',
                 valido = true
             } = certificateData;
             
@@ -82,12 +83,12 @@ class Certificate {
                 `INSERT INTO certificates 
                  (participant_name, course_name, hours, issue_date, completion_date, 
                   certificate_id, modalidade, instrutor, diretor, organizacao, 
-                  hash_verificacao, valido) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) 
+                  hash_verificacao, template_type, valido) 
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) 
                  RETURNING *`,
                 [participant_name, course_name, hours, issue_date, completion_date,
                  certificate_id, modalidade, instrutor, diretor, organizacao,
-                 hash_verificacao, valido]
+                 hash_verificacao, template_type, valido]
             );
             
             return result.rows[0];
@@ -121,6 +122,7 @@ class Certificate {
                 diretor, 
                 organizacao, 
                 hash_verificacao,
+                template_type,
                 valido 
             } = certificateData;
             
@@ -129,13 +131,13 @@ class Certificate {
                  SET participant_name = $1, course_name = $2, hours = $3, 
                      issue_date = $4, completion_date = $5, certificate_id = $6,
                      modalidade = $7, instrutor = $8, diretor = $9, 
-                     organizacao = $10, hash_verificacao = $11, valido = $12,
-                     updated_at = CURRENT_TIMESTAMP
-                 WHERE id = $13 
+                     organizacao = $10, hash_verificacao = $11, template_type = $12,
+                     valido = $13, updated_at = CURRENT_TIMESTAMP
+                 WHERE id = $14 
                  RETURNING *`,
                 [participant_name, course_name, hours, issue_date, completion_date,
                  certificate_id, modalidade, instrutor, diretor, organizacao,
-                 hash_verificacao, valido, id]
+                 hash_verificacao, template_type, valido, id]
             );
             
             return result.rows[0];

@@ -5,9 +5,23 @@ const QRCode = require('qrcode');
 
 class ImageService {
     constructor() {
-        this.templatePath = path.join(__dirname, '..', '..', 'certificates', 'templates', 'certificado-template.svg');
-        this.assinaturaJosePath = path.join(__dirname, '..', '..', 'certificates', 'templates', 'Joseluiz.png');
-        this.assinaturaDaniloPath = path.join(__dirname, '..', '..', 'certificates', 'templates', 'danilo.png');
+        this.templatesDir = path.join(__dirname, '..', '..', 'certificates', 'templates');
+        this.assinaturaJosePath = path.join(this.templatesDir, 'Joseluiz.png');
+        this.assinaturaDaniloPath = path.join(this.templatesDir, 'danilo.png');
+    }
+
+    getTemplatePath(templateType) {
+        // Define o arquivo de template baseado no tipo
+        const templateFile = `${templateType || 'cert-mod-linux'}.svg`;
+        const templatePath = path.join(this.templatesDir, templateFile);
+        
+        // Se o template não existir, usa o padrão
+        if (!fs.existsSync(templatePath)) {
+            console.warn(`⚠️ Template ${templateFile} não encontrado, usando cert-mod-linux.svg`);
+            return path.join(this.templatesDir, 'cert-mod-linux.svg');
+        }
+        
+        return templatePath;
     }
 
     getImageAsBase64(filePath) {
@@ -22,9 +36,12 @@ class ImageService {
 
     async generateCertificateImageFromData(certificateData) {
         console.log('🚀 Iniciando geração de imagem para:', certificateData.participant_name);
+        console.log('📄 Template selecionado:', certificateData.template_type || 'cert-mod-linux');
 
         try {
-            let svgContent = fs.readFileSync(this.templatePath, 'utf8');
+            // Carrega o template correto
+            const templatePath = this.getTemplatePath(certificateData.template_type);
+            let svgContent = fs.readFileSync(templatePath, 'utf8');
 
             const assinaturaJoseBase64 = this.getImageAsBase64(this.assinaturaJosePath);
             const assinaturaDaniloBase64 = this.getImageAsBase64(this.assinaturaDaniloPath);
@@ -53,15 +70,17 @@ class ImageService {
             `;
 
             const replacements = {
-                '{{NOME_DO_PARTICIPANTE}}': certificateData.participant_name,
-                '{{NOME_DO_CURSO}}': certificateData.course_name,
-                '{{CARGA_HORARIA}}': `${certificateData.hours}h`,
-                '{{DATA_CONCLUSAO}}': completionDate,
+                '{{PARTICIPANT_NAME}}': certificateData.participant_name,
+                '{{COURSE_NAME}}': certificateData.course_name,
+                '{{HOURS}}': `${certificateData.hours}h`,
+                '{{COMPLETION_DATE}}': completionDate,
                 '{{MODALIDADE}}': certificateData.modalidade,
                 '{{CERTIFICATE_ID}}': certificateData.certificate_id,
+                '{{HASH}}': certificateData.hash_verificacao,
                 '{{HASH_VERIFICACAO}}': certificateData.hash_verificacao,
                 '{{IMAGEM_ASSINATURA_JOSE}}': assinaturaJoseBase64,
                 '{{IMAGEM_ASSINATURA_DANILO}}': assinaturaDaniloBase64,
+                '{{QR_CODE}}': qrCodeBlock,
                 '{{QR_CODE_BLOCK}}': qrCodeBlock,
                 '{{URL_VERIFICACAO}}': textVerificationUrl.replace(/^https?:\/\//, '')
             };

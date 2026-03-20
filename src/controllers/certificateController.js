@@ -73,7 +73,7 @@ exports.getStats = async (req, res) => {
 
 exports.createCertificateAdmin = async (req, res) => {
     try {
-        const { participant_name, course_name, hours, modalidade, issue_date, completion_date } = req.body;
+        const { participant_name, course_name, hours, modalidade, issue_date, completion_date, template_type } = req.body;
 
         // Validações
         if (!participant_name || !course_name || !hours || !issue_date || !completion_date) {
@@ -97,6 +97,7 @@ exports.createCertificateAdmin = async (req, res) => {
             completion_date,
             certificate_id,
             modalidade: modalidade || 'Online',
+            template_type: template_type || 'cert-mod-linux',
             hash_verificacao
         });
 

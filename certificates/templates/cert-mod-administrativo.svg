@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000">
+  <defs>
+    <linearGradient id="scanAdmin" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" style="stop-color:#4a90e2;stop-opacity:0.12" />
+      <stop offset="100%" style="stop-color:#357abd;stop-opacity:0.12" />
+    </linearGradient>
+    <linearGradient id="borderAdmin" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a90e2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#357abd;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="1000" fill="#ffffff"/>
+  <rect width="1400" height="1000" fill="url(#scanAdmin)"/>
+
+  <!-- Border corporativo -->
+  <rect x="40" y="40" width="1320" height="920" fill="none" stroke="url(#borderAdmin)" stroke-width="3" rx="8"/>
+  <rect x="50" y="50" width="1300" height="900" fill="none" stroke="url(#borderAdmin)" stroke-width="1" rx="6"/>
+
+  <!-- Elementos decorativos corporativos -->
+  <g opacity="0.08">
+    <rect x="160" y="120" width="60" height="60" fill="#4a90e2" rx="5"/>
+    <circle cx="1240" cy="150" r="35" fill="#357abd"/>
+    <rect x="160" y="820" width="60" height="60" fill="#357abd" rx="5"/>
+    <circle cx="1240" cy="850" r="35" fill="#4a90e2"/>
+  </g>
+
+  <!-- Header -->
+  <text x="700" y="120" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#4a90e2" text-anchor="middle">ACADEMY Z</text>
+  <text x="700" y="155" font-family="Arial, sans-serif" font-size="18" fill="#357abd" text-anchor="middle">Área: Gestão & Administração</text>
+
+  <!-- Title -->
+  <text x="700" y="240" font-family="Georgia, serif" font-size="56" font-weight="bold" fill="#2d3748" text-anchor="middle">CERTIFICADO</text>
+  <line x1="480" y1="260" x2="920" y2="260" stroke="url(#borderAdmin)" stroke-width="2"/>
+
+  <!-- Corpo do texto -->
+  <text x="700" y="325" font-family="Arial, sans-serif" font-size="20" fill="#4a5568" text-anchor="middle">Certificamos que</text>
+
+  <!-- Nome do participante -->
+  <text x="700" y="390" font-family="Georgia, serif" font-size="42" font-weight="bold" fill="#2d3748" text-anchor="middle" id="participantName">{{PARTICIPANT_NAME}}</text>
+  <line x1="290" y1="405" x2="1110" y2="405" stroke="#4a90e2" stroke-width="2"/>
+
+  <!-- Texto do curso -->
+  <text x="700" y="468" font-family="Arial, sans-serif" font-size="20" fill="#4a5568" text-anchor="middle">concluiu com êxito o curso de</text>
+
+  <!-- Nome do curso -->
+  <text x="700" y="530" font-family="Georgia, serif" font-size="36" font-weight="bold" fill="#4a90e2" text-anchor="middle" id="courseName">{{COURSE_NAME}}</text>
+
+  <!-- Informações do curso -->
+  <text x="700" y="592" font-family="Arial, sans-serif" font-size="18" fill="#4a5568" text-anchor="middle">
+    com carga horária de <tspan font-weight="bold" fill="#357abd">{{HOURS}}</tspan>
+  </text>
+  <text x="700" y="622" font-family="Arial, sans-serif" font-size="18" fill="#4a5568" text-anchor="middle">
+    realizado na modalidade <tspan font-weight="bold" fill="#357abd">{{MODALIDADE}}</tspan>
+  </text>
+
+  <!-- Data -->
+  <text x="700" y="675" font-family="Arial, sans-serif" font-size="18" fill="#4a5568" text-anchor="middle">
+    Emitido em <tspan font-weight="bold">{{COMPLETION_DATE}}</tspan>
+  </text>
+
+  <!-- Assinatura -->
+  <g transform="translate(700, 760)">
+    <line x1="-150" y1="0" x2="150" y2="0" stroke="#2d3748" stroke-width="1"/>
+    <text x="0" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2d3748" text-anchor="middle">José Moraes</text>
+    <text x="0" y="45" font-family="Arial, sans-serif" font-size="14" fill="#718096" text-anchor="middle">Coordenador Administrativo</text>
+  </g>
+
+  <!-- QR Code -->
+  <g id="qrcode" transform="translate(1150, 740)">
+    {{QR_CODE}}
+  </g>
+
+  <!-- Footer -->
+  <text x="700" y="930" font-family="Arial, sans-serif" font-size="12" fill="#718096" text-anchor="middle">
+    Certificado ID: <tspan font-weight="bold" fill="#4a90e2">{{CERTIFICATE_ID}}</tspan>
+  </text>
+  <text x="700" y="950" font-family="Arial, sans-serif" font-size="12" fill="#718096" text-anchor="middle">
+    Verificação: <tspan fill="#357abd">academyz.com.br/verificar/{{HASH}}</tspan>
+  </text>
+</svg>

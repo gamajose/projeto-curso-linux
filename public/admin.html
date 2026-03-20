@@ -284,16 +284,8 @@
 
                     <div class="form-group">
                         <label for="courseName">Nome do Curso *</label>
-                        <select id="courseName" name="courseName" required>
-                            <option value="">Selecione um curso</option>
-                            <option value="Curso de Linux">Curso de Linux</option>
-                            <option value="Curso de GCP">Curso de GCP</option>
-                            <option value="Curso de AWS">Curso de AWS</option>
-                            <option value="Curso de Azure">Curso de Azure</option>
-                            <option value="Curso de DevOps">Curso de DevOps</option>
-                            <option value="Curso de Docker">Curso de Docker</option>
-                            <option value="Curso de Kubernetes">Curso de Kubernetes</option>
-                        </select>
+                        <input type="text" id="courseName" name="courseName" required 
+                               placeholder="Ex: Curso de GCP, Marketing Digital, Programação Python, etc.">
                     </div>
                 </div>
 
@@ -310,6 +302,22 @@
                             <option value="Online">Online</option>
                             <option value="Presencial">Presencial</option>
                             <option value="Híbrido">Híbrido</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="templateType">Modelo de Certificado *</label>
+                        <select id="templateType" name="templateType" required>
+                            <option value="">Selecione o modelo</option>
+                            <option value="cert-mod-linux">🐧 Linux / TI / Infraestrutura</option>
+                            <option value="cert-mod-programacao">💻 Programação & Desenvolvimento</option>
+                            <option value="cert-mod-marketing">📱 Marketing Digital</option>
+                            <option value="cert-mod-design">🎨 Design & Criatividade</option>
+                            <option value="cert-mod-direito">⚖️ Direito & Legislação</option>
+                            <option value="cert-mod-administrativo">📊 Gestão & Administração</option>
+                            <option value="cert-mod-geral">📜 Geral / Outros</option>
                         </select>
                     </div>
                 </div>
@@ -447,11 +455,12 @@
 
             const formData = {
                 participant_name: document.getElementById('participantName').value.trim(),
-                course_name: document.getElementById('courseName').value,
+                course_name: document.getElementById('courseName').value.trim(),
                 hours: parseInt(document.getElementById('hours').value),
                 modalidade: document.getElementById('modalidade').value,
                 issue_date: document.getElementById('issueDate').value,
-                completion_date: document.getElementById('completionDate').value
+                completion_date: document.getElementById('completionDate').value,
+                template_type: document.getElementById('templateType').value
             };
 
             try {

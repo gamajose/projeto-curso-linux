@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000">
+  <defs>
+    <linearGradient id="scanDireito" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" style="stop-color:#8b5a3c;stop-opacity:0.12" />
+      <stop offset="100%" style="stop-color:#d4a574;stop-opacity:0.12" />
+    </linearGradient>
+    <linearGradient id="borderDireito" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#8b5a3c;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d4a574;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1400" height="1000" fill="#faf8f5"/>
+  <rect width="1400" height="1000" fill="url(#scanDireito)"/>
+
+  <!-- Border elegante -->
+  <rect x="40" y="40" width="1320" height="920" fill="none" stroke="url(#borderDireito)" stroke-width="4" rx="5"/>
+  <rect x="48" y="48" width="1304" height="904" fill="none" stroke="url(#borderDireito)" stroke-width="2" rx="3"/>
+  <rect x="55" y="55" width="1290" height="890" fill="none" stroke="url(#borderDireito)" stroke-width="1" rx="2"/>
+
+  <!-- Símbolos jurídicos decorativos -->
+  <g opacity="0.08">
+    <text x="150" y="170" font-family="serif" font-size="60" fill="#8b5a3c">§</text>
+    <text x="1250" y="170" font-family="serif" font-size="60" fill="#8b5a3c">⚖</text>
+    <text x="150" y="870" font-family="serif" font-size="60" fill="#d4a574">⚖</text>
+    <text x="1250" y="870" font-family="serif" font-size="60" fill="#d4a574">§</text>
+  </g>
+
+  <!-- Header -->
+  <text x="700" y="120" font-family="Georgia, serif" font-size="30" font-weight="bold" fill="#8b5a3c" text-anchor="middle">ACADEMY Z</text>
+  <text x="700" y="155" font-family="Georgia, serif" font-size="18" fill="#8b5a3c" text-anchor="middle" font-style="italic">Área: Direito & Legislação</text>
+
+  <!-- Title -->
+  <text x="700" y="245" font-family="Georgia, serif" font-size="58" font-weight="bold" fill="#2d3748" text-anchor="middle">CERTIFICADO</text>
+  <line x1="450" y1="265" x2="950" y2="265" stroke="url(#borderDireito)" stroke-width="2"/>
+
+  <!-- Corpo do texto formal -->
+  <text x="700" y="335" font-family="Georgia, serif" font-size="20" fill="#4a5568" text-anchor="middle">Certificamos, para os devidos fins, que</text>
+
+  <!-- Nome do participante -->
+  <text x="700" y="405" font-family="Georgia, serif" font-size="44" font-weight="bold" fill="#2d3748" text-anchor="middle" id="participantName">{{PARTICIPANT_NAME}}</text>
+  <line x1="270" y1="423" x2="1130" y2="423" stroke="#8b5a3c" stroke-width="2"/>
+
+  <!-- Texto do curso -->
+  <text x="700" y="485" font-family="Georgia, serif" font-size="20" fill="#4a5568" text-anchor="middle">concluiu com êxito e aproveitamento o curso de</text>
+
+  <!-- Nome do curso -->
+  <text x="700" y="550" font-family="Georgia, serif" font-size="38" font-weight="bold" fill="#8b5a3c" text-anchor="middle" id="courseName">{{COURSE_NAME}}</text>
+
+  <!-- Informações do curso -->
+  <text x="700" y="615" font-family="Georgia, serif" font-size="18" fill="#4a5568" text-anchor="middle">
+    com carga horária total de <tspan font-weight="bold" fill="#8b5a3c">{{HOURS}}</tspan>
+  </text>
+  <text x="700" y="645" font-family="Georgia, serif" font-size="18" fill="#4a5568" text-anchor="middle">
+    realizado na modalidade <tspan font-weight="bold" fill="#8b5a3c">{{MODALIDADE}}</tspan>
+  </text>
+
+  <!-- Data -->
+  <text x="700" y="700" font-family="Georgia, serif" font-size="18" fill="#4a5568" text-anchor="middle">
+    Emitido em <tspan font-weight="bold">{{COMPLETION_DATE}}</tspan>
+  </text>
+
+  <!-- Assinatura -->
+  <g transform="translate(700, 780)">
+    <line x1="-160" y1="0" x2="160" y2="0" stroke="#2d3748" stroke-width="1.5"/>
+    <text x="0" y="28" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="#2d3748" text-anchor="middle">José Moraes</text>
+    <text x="0" y="50" font-family="Georgia, serif" font-size="14" fill="#718096" text-anchor="middle" font-style="italic">Coordenador Jurídico</text>
+  </g>
+
+  <!-- QR Code -->
+  <g id="qrcode" transform="translate(1150, 755)">
+    {{QR_CODE}}
+  </g>
+
+  <!-- Footer -->
+  <text x="700" y="925" font-family="Georgia, serif" font-size="12" fill="#718096" text-anchor="middle">
+    Certificado ID: <tspan font-weight="bold" fill="#8b5a3c">{{CERTIFICATE_ID}}</tspan>
+  </text>
+  <text x="700" y="945" font-family="Georgia, serif" font-size="12" fill="#718096" text-anchor="middle">
+    Verificação: <tspan fill="#8b5a3c">academyz.com.br/verificar/{{HASH}}</tspan>
+  </text>
+</svg>

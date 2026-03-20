@@ -208,39 +208,58 @@ class DatabaseMigrations {
      * Cria a tabela de certificados
      */
     static async createCertificatesTable() {
-        const query = `
-            CREATE TABLE IF NOT EXISTS certificates (
-                id SERIAL PRIMARY KEY,
-                participant_name VARCHAR(255) NOT NULL,
-                course_name VARCHAR(255) NOT NULL,
-                hours INTEGER NOT NULL,
-                issue_date DATE NOT NULL,
-                completion_date DATE NOT NULL,
-                certificate_id VARCHAR(50) UNIQUE NOT NULL,
-                modalidade VARCHAR(100) DEFAULT 'Online',
-                instrutor VARCHAR(255) DEFAULT 'José Moraes',
-                diretor VARCHAR(255) DEFAULT 'Danilo Germano',
-                organizacao VARCHAR(255) DEFAULT 'Academy Z',
-                hash_verificacao VARCHAR(50) UNIQUE NOT NULL,
-                valido BOOLEAN DEFAULT true,
-                download_count INTEGER DEFAULT 0,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-
-            -- Criar índices
-            CREATE INDEX IF NOT EXISTS idx_certificates_participant_name ON certificates(participant_name);
-            CREATE INDEX IF NOT EXISTS idx_certificates_course_name ON certificates(course_name);
-            CREATE INDEX IF NOT EXISTS idx_certificates_certificate_id ON certificates(certificate_id);
-            CREATE INDEX IF NOT EXISTS idx_certificates_hash_verificacao ON certificates(hash_verificacao);
-            CREATE INDEX IF NOT EXISTS idx_certificates_issue_date ON certificates(issue_date);
-            CREATE INDEX IF NOT EXISTS idx_certificates_completion_date ON certificates(completion_date);
-            CREATE INDEX IF NOT EXISTS idx_certificates_name_course ON certificates(participant_name, course_name);
-            CREATE INDEX IF NOT EXISTS idx_certificates_org_issue_date ON certificates(organizacao, issue_date);
-        `;
-
         try {
-            await pool.query(query);
+            // Criar tabela se não existir
+            const createTableQuery = `
+                CREATE TABLE IF NOT EXISTS certificates (
+                    id SERIAL PRIMARY KEY,
+                    participant_name VARCHAR(255) NOT NULL,
+                    course_name VARCHAR(255) NOT NULL,
+                    hours INTEGER NOT NULL,
+                    issue_date DATE NOT NULL,
+                    completion_date DATE NOT NULL,
+                    certificate_id VARCHAR(50) UNIQUE NOT NULL,
+                    modalidade VARCHAR(100) DEFAULT 'Online',
+                    instrutor VARCHAR(255) DEFAULT 'José Moraes',
+                    diretor VARCHAR(255) DEFAULT 'Danilo Germano',
+                    organizacao VARCHAR(255) DEFAULT 'Academy Z',
+                    hash_verificacao VARCHAR(50) UNIQUE NOT NULL,
+                    valido BOOLEAN DEFAULT true,
+                    download_count INTEGER DEFAULT 0,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            `;
+            await pool.query(createTableQuery);
+
+            // Adicionar coluna template_type se não existir
+            const addTemplateTypeQuery = `
+                DO $$ 
+                BEGIN
+                    IF NOT EXISTS (
+                        SELECT 1 FROM information_schema.columns 
+                        WHERE table_name = 'certificates' AND column_name = 'template_type'
+                    ) THEN
+                        ALTER TABLE certificates ADD COLUMN template_type VARCHAR(50) DEFAULT 'cert-mod-linux';
+                    END IF;
+                END $$;
+            `;
+            await pool.query(addTemplateTypeQuery);
+
+            // Criar índices
+            const createIndexesQuery = `
+                CREATE INDEX IF NOT EXISTS idx_certificates_participant_name ON certificates(participant_name);
+                CREATE INDEX IF NOT EXISTS idx_certificates_course_name ON certificates(course_name);
+                CREATE INDEX IF NOT EXISTS idx_certificates_certificate_id ON certificates(certificate_id);
+                CREATE INDEX IF NOT EXISTS idx_certificates_hash_verificacao ON certificates(hash_verificacao);
+                CREATE INDEX IF NOT EXISTS idx_certificates_issue_date ON certificates(issue_date);
+                CREATE INDEX IF NOT EXISTS idx_certificates_completion_date ON certificates(completion_date);
+                CREATE INDEX IF NOT EXISTS idx_certificates_name_course ON certificates(participant_name, course_name);
+                CREATE INDEX IF NOT EXISTS idx_certificates_org_issue_date ON certificates(organizacao, issue_date);
+                CREATE INDEX IF NOT EXISTS idx_certificates_template_type ON certificates(template_type);
+            `;
+            await pool.query(createIndexesQuery);
+
             console.log('✅ Tabela "certificates" verificada/criada');
         } catch (error) {
             console.error('❌ Erro ao criar tabela "certificates":', error.message);
