@@ -603,9 +603,8 @@
                     <p><span>Data de conclusão:</span> ${formatarData(certificado.completion_date) || 'Não informada'}</p>
                     <p><span>Carga horária:</span> ${certificado.hours || '0'} horas</p>
                     <p><span>Modalidade:</span> ${certificado.modalidade || 'Não informada'}</p>
-                    <p><span>Organização:</span> ${certificado.organizacao || 'Não informada'}</p>
-                    <p><span>Instrutor:</span> ${certificado.instrutor || 'Não informado'}</p>
-                    <p><span>Diretor:</span> ${certificado.diretor || 'Não informado'}</p>
+                    <p><span>Organização:</span> Academy Z</p>
+                    <p><span>Instrutor:</span> ${certificado.instrutor || 'José Moraes'}</p>
                     <div class="hash-code">Hash: ${certificado.hash_verificacao || 'Não informado'}</div>
                 `;
 
@@ -717,8 +716,19 @@
             }
         });
 
-        // Verificar se há parâmetro na URL
+        // Verificar se há parâmetro na URL ou hash no path
         document.addEventListener('DOMContentLoaded', function () {
+            // Verifica se há hash no path (formato: /verificar/hash)
+            const pathParts = window.location.pathname.split('/');
+            if (pathParts.length > 2 && pathParts[1] === 'verificar') {
+                const hash = pathParts[2];
+                if (hash) {
+                    verificarPorHash(hash);
+                    return;
+                }
+            }
+
+            // Verifica parâmetro na query string (formato antigo)
             const urlParams = new URLSearchParams(window.location.search);
             const certificateId = urlParams.get('certificate');
 
@@ -727,6 +737,67 @@
                 verificarCertificado();
             }
         });
+
+        // Função para verificar por hash
+        async function verificarPorHash(hash) {
+            const resultado = document.getElementById('certificateResult');
+            const resultadoTexto = document.getElementById('resultText');
+            const resultadoIcon = document.getElementById('resultIcon');
+            const detalhesCert = document.getElementById('certDetails');
+            const botoesAcao = document.getElementById('actionButtons');
+            const placeholder = document.getElementById('placeholderText');
+
+            placeholder.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_BASE}/certificates/verify-hash/${hash}`);
+
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error('Certificado não encontrado');
+                    } else {
+                        throw new Error(`Erro ao buscar certificado: ${response.statusText}`);
+                    }
+                }
+
+                const certificado = await response.json();
+                console.log('📋 Certificado retornado:', certificado);
+
+                // Preenche o campo com o ID do certificado
+                document.getElementById('certificateId').value = certificado.certificate_id;
+
+                resultado.className = 'certificate-info valid';
+                resultadoIcon.innerHTML = '✅';
+                resultadoTexto.innerHTML = `Certificado <strong>VÁLIDO</strong> verificado com sucesso!`;
+
+                detalhesCert.innerHTML = `
+                    <p><span>Nome:</span> ${certificado.participant_name || 'Não informado'}</p>
+                    <p><span>Curso:</span> ${certificado.course_name || 'Não informado'}</p>
+                    <p><span>Data de conclusão:</span> ${formatarData(certificado.completion_date) || 'Não informada'}</p>
+                    <p><span>Carga horária:</span> ${certificado.hours || '0'} horas</p>
+                    <p><span>Modalidade:</span> ${certificado.modalidade || 'Não informada'}</p>
+                    <p><span>Organização:</span> Academy Z</p>
+                    <p><span>Instrutor:</span> ${certificado.instrutor || 'José Moraes'}</p>
+                    <div class="hash-code">Hash: ${certificado.hash_verificacao || 'Não informado'}</div>
+                `;
+
+                botoesAcao.innerHTML = `
+                    <button onclick="baixarCertificado('${certificado.certificate_id}')">Baixar Imagem (PNG)</button>
+                    <button onclick="visualizarCertificado('${certificado.certificate_id}')" class="secondary">Visualizar</button>
+                `;
+
+                resultado.style.display = 'block';
+
+            } catch (error) {
+                console.error('❌ Erro na verificação:', error.message);
+                resultado.className = 'certificate-info invalid';
+                resultadoIcon.innerHTML = '❌';
+                resultadoTexto.innerHTML = `Erro: ${error.message}`;
+                detalhesCert.innerHTML = `<p>Hash de verificação inválido ou certificado não encontrado.</p>`;
+                botoesAcao.innerHTML = '';
+                resultado.style.display = 'block';
+            }
+        }
     </script>
     <script src="/js/main.js"></script>
 

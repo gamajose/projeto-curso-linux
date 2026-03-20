@@ -50,9 +50,9 @@
       <text x="0" y="280" class="mono cyan" font-size="32" font-weight="600">Curso de Linux</text>
 
       <text x="0" y="330" class="mono soft" font-size="18">
-        <tspan class="white">Carga horária:</tspan> 20h • 
+        <tspan class="white">Carga horária:</tspan> {{CARGA_HORARIA}} • 
         <tspan class="white">Data:</tspan> {{DATA_CONCLUSAO}} • 
-        <tspan class="white">Modalidade:</tspan> Online
+        <tspan class="white">Modalidade:</tspan> {{MODALIDADE}}
       </text>
 
       <rect x="0" y="360" width="760" height="1" fill="#1f2937"/>
@@ -62,20 +62,18 @@
       <text x="0" y="415" class="mono soft" font-size="16">
         <tspan class="green">[OK]</tspan> assinatura digital válida • hash:  {{HASH_VERIFICACAO}}
       </text>
+      <text x="0" y="440" class="mono soft" font-size="14">
+        <tspan class="soft">Verificação:</tspan>
+      </text>
+      <text x="0" y="465" class="mono cyan" font-size="14">{{URL_VERIFICACAO}}/{{HASH_VERIFICACAO}}</text>
 
       <g transform="translate(0,510)">
         <rect x="0" y="0" width="760" height="1" fill="#1f2d37"/>
         
-        <g transform="translate(0,30)">
+        <g transform="translate(230,30)">
           <image href="{{IMAGEM_ASSINATURA_JOSE}}" x="25" y="-5" width="250" height="100" />
           <rect x="0" y="55" width="300" height="1" fill="#334155"/>
           <text x="150" y="80" class="mono white" font-size="18" text-anchor="middle">José Moraes - Instrutor</text>
-        </g>
-        
-        <g transform="translate(420,30)">
-          <image href="{{IMAGEM_ASSINATURA_DANILO}}" x="25" y="-5" width="250" height="100" />
-          <rect x="0" y="55" width="300" height="1" fill="#334155"/>
-          <text x="150" y="80" class="mono white" font-size="18" text-anchor="middle">Danilo Germano - Diretor</text>
         </g>
       </g>
 
@@ -83,8 +81,8 @@
         <rect x="0" y="0" width="280" height="280" rx="8" ry="8" fill="#0b1220" stroke="#1f2937"/>
         <rect x="24" y="24" width="232" height="232" fill="#0e141a" stroke="#334155"/>
         {{QR_CODE_BLOCK}}
-        <text x="0" y="320" class="mono soft" font-size="16">Red Innovations</text>
-        <text x="0" y="345" class="mono white" font-size="14">redinnovations.com</text>
+        <text x="140" y="320" class="mono soft" font-size="16" text-anchor="middle">Academy Z</text>
+        <text x="140" y="345" class="mono white" font-size="14" text-anchor="middle">academyz.com.br</text>
       </g>
 
       <text x="0" y="760" class="mono soft" font-size="16">

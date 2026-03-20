@@ -8,6 +8,9 @@ const authenticateToken = require('../middleware/auth');
 // Rota de estatísticas (para a home page)
 router.get('/stats', certificateController.getStats);
 
+// Rota para buscar detalhes de um certificado por hash
+router.get('/verify-hash/:hash', certificateController.getCertificateByHash);
+
 // Rota para buscar detalhes de um certificado
 router.get('/certificate/:certificateId', certificateController.getCertificateById);
 
@@ -16,5 +19,8 @@ router.get('/generate/:certificateId', certificateController.generateCertificate
 
 // Rota para criar um novo certificado
 router.post('/', authenticateToken, certificateController.createCertificate);
+
+// Rota admin para criar certificado manualmente
+router.post('/admin/create', authenticateToken, certificateController.createCertificateAdmin);
 
 module.exports = router;

@@ -86,6 +86,10 @@ app.get('/verificar', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'verificar.html'));
 });
 
+app.get('/verificar/:hash', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'verificar.html'));
+});
+
 app.get('/verify', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'verify-public.html'));
 });
@@ -104,6 +108,10 @@ app.get('/change-password', (req, res) => {
 
 app.get('/dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+app.get('/admin', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
 app.get('/faq', (req, res) => res.sendFile(path.join(__dirname, 'public', 'faq.html')));

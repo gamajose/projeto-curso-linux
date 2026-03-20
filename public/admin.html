@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel Admin - Academy Z</title>
+    <link rel="stylesheet" href="/css/custom.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Fira Code', 'JetBrains Mono', 'Ubuntu Mono', 'DejaVu Sans Mono', monospace;
+        }
+
+        body {
+            background-color: #0b0f14;
+            color: #e5e7eb;
+            line-height: 1.6;
+            padding: 20px;
+            background-image:
+                linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #1f2937;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff88 !important;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .logo svg {
+            margin-right: 10px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 25px;
+        }
+
+        nav a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: #00ff88;
+        }
+
+        h1 {
+            color: #00ff88;
+            margin-bottom: 30px;
+            font-size: 2rem;
+        }
+
+        .admin-section {
+            background: #0e141a;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            background: #0b0f14;
+            border: 1px solid #1f2937;
+            border-radius: 6px;
+            color: #e5e7eb;
+            font-family: inherit;
+            font-size: 14px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #00ff88;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: #00ff88;
+            color: #0b0f14;
+        }
+
+        .btn-primary:hover {
+            background: #00cc6a;
+        }
+
+        .btn-secondary {
+            background: #334155;
+            color: #e5e7eb;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .alert-success {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid #00ff88;
+            color: #00ff88;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+
+        .alert-info {
+            background: rgba(77, 209, 197, 0.1);
+            border: 1px solid #4fd1c5;
+            color: #4fd1c5;
+        }
+
+        .certificate-preview {
+            background: #0b0f14;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .certificate-preview h3 {
+            color: #00ff88;
+            margin-bottom: 15px;
+        }
+
+        .certificate-info {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .certificate-info .label {
+            color: #94a3b8;
+        }
+
+        .certificate-info .value {
+            color: #e5e7eb;
+            font-weight: 500;
+        }
+
+        .hash-display {
+            background: #111827;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #00ff88;
+            word-break: break-all;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid #1f2937;
+            color: #94a3b8;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <a href="/home" class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#00ff88" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M2 17L12 22L22 17" stroke="#00ff88" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                    <path d="M2 12L12 17L22 12" stroke="#00ff88" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round" />
+                </svg>
+                <span>Academy Z - Painel Admin</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="/home">Home</a></li>
+                    <li><a href="/cursos">Cursos</a></li>
+                    <li><a href="/verificar">Verificação</a></li>
+                    <li><a href="/admin" class="active">Admin</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <h1>🔧 Painel de Administração - Emissão de Certificados</h1>
+
+        <div id="alertContainer"></div>
+
+        <div class="admin-section">
+            <h2 style="color: #4fd1c5; margin-bottom: 20px;">📜 Emitir Certificado Manual</h2>
+            <p style="color: #94a3b8; margin-bottom: 25px;">
+                Este painel permite emitir certificados manualmente sem necessidade de completar aulas.
+                Ideal para situações especiais ou certificados retroativos.
+            </p>
+
+            <form id="certificateForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="participantName">Nome Completo do Participante *</label>
+                        <input type="text" id="participantName" name="participantName" required 
+                               placeholder="Ex: João Silva">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="courseName">Nome do Curso *</label>
+                        <select id="courseName" name="courseName" required>
+                            <option value="">Selecione um curso</option>
+                            <option value="Curso de Linux">Curso de Linux</option>
+                            <option value="Curso de GCP">Curso de GCP</option>
+                            <option value="Curso de AWS">Curso de AWS</option>
+                            <option value="Curso de Azure">Curso de Azure</option>
+                            <option value="Curso de DevOps">Curso de DevOps</option>
+                            <option value="Curso de Docker">Curso de Docker</option>
+                            <option value="Curso de Kubernetes">Curso de Kubernetes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="hours">Carga Horária (horas) *</label>
+                        <input type="number" id="hours" name="hours" required min="1" max="500" value="20"
+                               placeholder="Ex: 20">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modalidade">Modalidade *</label>
+                        <select id="modalidade" name="modalidade" required>
+                            <option value="Online">Online</option>
+                            <option value="Presencial">Presencial</option>
+                            <option value="Híbrido">Híbrido</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="issueDate">Data de Emissão *</label>
+                        <input type="date" id="issueDate" name="issueDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="completionDate">Data de Conclusão *</label>
+                        <input type="date" id="completionDate" name="completionDate" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary" id="submitBtn">
+                        🚀 Emitir Certificado
+                    </button>
+                    <button type="button" class="btn btn-secondary" onclick="resetForm()" style="margin-left: 10px;">
+                        🔄 Limpar Formulário
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div id="previewSection" style="display: none;">
+            <div class="admin-section certificate-preview">
+                <h3>✅ Certificado Emitido com Sucesso!</h3>
+                <div class="certificate-info">
+                    <span class="label">ID do Certificado:</span>
+                    <span class="value" id="certId">-</span>
+                </div>
+                <div class="certificate-info">
+                    <span class="label">Participante:</span>
+                    <span class="value" id="certName">-</span>
+                </div>
+                <div class="certificate-info">
+                    <span class="label">Curso:</span>
+                    <span class="value" id="certCourse">-</span>
+                </div>
+                <div class="certificate-info">
+                    <span class="label">Carga Horária:</span>
+                    <span class="value" id="certHours">-</span>
+                </div>
+                <div class="certificate-info">
+                    <span class="label">Data de Conclusão:</span>
+                    <span class="value" id="certDate">-</span>
+                </div>
+                <div class="certificate-info">
+                    <span class="label">Hash de Verificação:</span>
+                    <span class="value hash-display" id="certHash">-</span>
+                </div>
+                <div class="certificate-info">
+                    <span class="label">URL de Verificação:</span>
+                    <span class="value">
+                        <a href="#" id="certVerifyUrl" target="_blank" style="color: #4fd1c5;">-</a>
+                    </span>
+                </div>
+                <div style="margin-top: 20px;">
+                    <button class="btn btn-primary" id="downloadBtn">
+                        📥 Baixar Certificado (PNG)
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetForm()" style="margin-left: 10px;">
+                        ➕ Emitir Novo Certificado
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>Academy Z &copy; 2025 - Painel Administrativo</p>
+            <p>Acesso restrito a administradores</p>
+        </footer>
+    </div>
+
+    <script src="/js/main.js"></script>
+    <script>
+        const API_BASE = '/api';
+        let lastGeneratedCert = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verifica se o usuário é admin
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                showAlert('Você precisa estar logado para acessar esta página.', 'error');
+                setTimeout(() => window.location.href = '/', 2000);
+                return;
+            }
+
+            // Define data padrão como hoje
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('issueDate').value = today;
+            document.getElementById('completionDate').value = today;
+        });
+
+        document.getElementById('certificateForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Processando...';
+
+            const formData = {
+                participant_name: document.getElementById('participantName').value.trim(),
+                course_name: document.getElementById('courseName').value,
+                hours: parseInt(document.getElementById('hours').value),
+                modalidade: document.getElementById('modalidade').value,
+                issue_date: document.getElementById('issueDate').value,
+                completion_date: document.getElementById('completionDate').value
+            };
+
+            try {
+                const token = localStorage.getItem('authToken');
+                const response = await fetch(`${API_BASE}/certificates/admin/create`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || 'Erro ao emitir certificado');
+                }
+
+                lastGeneratedCert = data;
+                showCertificatePreview(data);
+                showAlert('✅ Certificado emitido com sucesso!', 'success');
+
+            } catch (error) {
+                console.error('Erro:', error);
+                showAlert(`❌ Erro: ${error.message}`, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Emitir Certificado';
+            }
+        });
+
+        function showCertificatePreview(cert) {
+            document.getElementById('certId').textContent = cert.certificate_id;
+            document.getElementById('certName').textContent = cert.participant_name;
+            document.getElementById('certCourse').textContent = cert.course_name;
+            document.getElementById('certHours').textContent = `${cert.hours}h`;
+            document.getElementById('certDate').textContent = new Date(cert.completion_date).toLocaleDateString('pt-BR');
+            document.getElementById('certHash').textContent = cert.hash_verificacao;
+            
+            const verifyUrl = `${window.location.origin}/verificar/${cert.hash_verificacao}`;
+            document.getElementById('certVerifyUrl').textContent = verifyUrl;
+            document.getElementById('certVerifyUrl').href = verifyUrl;
+
+            document.getElementById('previewSection').style.display = 'block';
+            document.getElementById('previewSection').scrollIntoView({ behavior: 'smooth' });
+
+            // Configura o botão de download
+            const downloadBtn = document.getElementById('downloadBtn');
+            downloadBtn.onclick = () => downloadCertificate(cert.certificate_id);
+        }
+
+        async function downloadCertificate(certId) {
+            const downloadBtn = document.getElementById('downloadBtn');
+            downloadBtn.disabled = true;
+            downloadBtn.textContent = '⏳ Gerando imagem...';
+
+            try {
+                const response = await fetch(`${API_BASE}/certificates/generate/${certId}`);
+                if (!response.ok) {
+                    throw new Error('Falha ao baixar o certificado.');
+                }
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `certificado-${certId}.png`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+
+                showAlert('✅ Certificado baixado com sucesso!', 'success');
+            } catch (error) {
+                console.error('Erro ao baixar:', error);
+                showAlert('❌ Erro ao baixar certificado: ' + error.message, 'error');
+            } finally {
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = '📥 Baixar Certificado (PNG)';
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('certificateForm').reset();
+            document.getElementById('previewSection').style.display = 'none';
+            lastGeneratedCert = null;
+
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('issueDate').value = today;
+            document.getElementById('completionDate').value = today;
+
+            showAlert('📝 Formulário limpo. Pronto para novo certificado.', 'info');
+        }
+
+        function showAlert(message, type) {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertClass = type === 'success' ? 'alert-success' : 
+                              type === 'error' ? 'alert-error' : 'alert-info';
+            
+            const alert = document.createElement('div');
+            alert.className = `alert ${alertClass}`;
+            alert.textContent = message;
+            
+            alertContainer.innerHTML = '';
+            alertContainer.appendChild(alert);
+
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                alert.style.transition = 'opacity 0.5s';
+                setTimeout(() => alert.remove(), 500);
+            }, 5000);
+        }
+    </script>
+
+</body>
+
+</html>

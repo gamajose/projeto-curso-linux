@@ -70,3 +70,56 @@ exports.getStats = async (req, res) => {
         res.status(500).json({ error: 'Erro interno do servidor' });
     }
 };
+
+exports.createCertificateAdmin = async (req, res) => {
+    try {
+        const { participant_name, course_name, hours, modalidade, issue_date, completion_date } = req.body;
+
+        // Validações
+        if (!participant_name || !course_name || !hours || !issue_date || !completion_date) {
+            return res.status(400).json({ message: 'Todos os campos obrigatórios devem ser preenchidos.' });
+        }
+
+        // Gera um certificate_id único
+        const year = new Date().getFullYear();
+        const randomCode = crypto.randomBytes(4).toString('hex').toUpperCase();
+        const certificate_id = `${course_name.substring(0, 3).toUpperCase()}${year}-${randomCode}`;
+
+        // Gera um hash único de verificação
+        const hash_verificacao = crypto.randomBytes(8).toString('hex');
+
+        // Cria o certificado
+        const newCertificate = await Certificate.create({
+            participant_name,
+            course_name,
+            hours,
+            issue_date,
+            completion_date,
+            certificate_id,
+            modalidade: modalidade || 'Online',
+            hash_verificacao
+        });
+
+        res.status(201).json(newCertificate);
+
+    } catch (error) {
+        console.error('Erro ao criar certificado (admin):', error);
+        res.status(500).json({ message: 'Erro ao criar certificado', error: error.message });
+    }
+};
+
+exports.getCertificateByHash = async (req, res) => {
+    try {
+        const hash = req.params.hash;
+        const certificate = await Certificate.findByHash(hash);
+        
+        if (!certificate) {
+            return res.status(404).json({ error: 'Certificado não encontrado' });
+        }
+        
+        res.json(certificate);
+    } catch (error) {
+        console.error('Erro ao buscar certificado por hash:', error);
+        res.status(500).json({ error: 'Erro interno do servidor' });
+    }
+};

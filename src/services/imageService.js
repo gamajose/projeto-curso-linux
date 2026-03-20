@@ -32,9 +32,11 @@ class ImageService {
 
             const baseUrl = (process.env.APP_BASE_URL || '').replace(/\/$/, '');
             
-            const qrCodeVerificationUrl = `${baseUrl}/verify?id=${certificateData.certificate_id}`;
+            // URL do QR Code aponta para a página de verificação com o hash
+            const qrCodeVerificationUrl = `${baseUrl}/verificar/${certificateData.hash_verificacao}`;
 
-            const textVerificationUrl = `${baseUrl}/verificar`;
+            // URL textual exibe o domínio sem protocolo
+            const textVerificationUrl = 'academyz.com.br/verificar';
             
             console.log('Gerando QR Code localmente...');
 

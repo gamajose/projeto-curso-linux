@@ -49,6 +49,18 @@ class Certificate {
         }
     }
 
+    static async findByHash(hash) {
+        try {
+            const result = await db.query(
+                'SELECT * FROM certificates WHERE hash_verificacao = $1',
+                [hash]
+            );
+            return result.rows[0];
+        } catch (error) {
+            throw error;
+        }
+    }
+
     static async create(certificateData) {
         try {
             const { 
