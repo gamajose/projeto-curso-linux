@@ -79,23 +79,40 @@ class DatabaseMigrations {
      * Cria a tabela de cursos
      */
     static async createCoursesTable() {
-        const query = `
-            CREATE TABLE IF NOT EXISTS courses (
-                id SERIAL PRIMARY KEY,
-                title VARCHAR(255) NOT NULL,
-                description TEXT,
-                duration VARCHAR(50),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-
-            -- Inserir curso padrão se não existir
-            INSERT INTO courses (id, title, description, duration) 
-            VALUES (1, 'Introdução ao Linux', 'Aprenda os conceitos fundamentais do sistema operacional Linux, sua história e distribuições.', '2 horas')
-            ON CONFLICT (id) DO NOTHING;
-        `;
-
         try {
-            await pool.query(query);
+            // Criar tabela se não existir
+            const createTableQuery = `
+                CREATE TABLE IF NOT EXISTS courses (
+                    id SERIAL PRIMARY KEY,
+                    title VARCHAR(255) NOT NULL,
+                    description TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            `;
+            await pool.query(createTableQuery);
+
+            // Adicionar coluna duration se não existir
+            const addDurationQuery = `
+                DO $$ 
+                BEGIN
+                    IF NOT EXISTS (
+                        SELECT 1 FROM information_schema.columns 
+                        WHERE table_name = 'courses' AND column_name = 'duration'
+                    ) THEN
+                        ALTER TABLE courses ADD COLUMN duration VARCHAR(50);
+                    END IF;
+                END $$;
+            `;
+            await pool.query(addDurationQuery);
+
+            // Inserir curso padrão se não existir
+            const insertCourseQuery = `
+                INSERT INTO courses (id, title, description, duration) 
+                VALUES (1, 'Introdução ao Linux', 'Aprenda os conceitos fundamentais do sistema operacional Linux, sua história e distribuições.', '2 horas')
+                ON CONFLICT (id) DO NOTHING;
+            `;
+            await pool.query(insertCourseQuery);
+
             console.log('✅ Tabela "courses" verificada/criada');
         } catch (error) {
             console.error('❌ Erro ao criar tabela "courses":', error.message);
@@ -107,31 +124,51 @@ class DatabaseMigrations {
      * Cria a tabela de aulas
      */
     static async createLessonsTable() {
-        const query = `
-            CREATE TABLE IF NOT EXISTS lessons (
-                id SERIAL PRIMARY KEY,
-                course_id INTEGER REFERENCES courses(id) ON DELETE CASCADE NOT NULL,
-                title VARCHAR(255) NOT NULL,
-                duration VARCHAR(50),
-                video_url VARCHAR(255),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
-
-            -- Criar índice
-            CREATE INDEX IF NOT EXISTS idx_lessons_course_id ON lessons(course_id);
-
-            -- Inserir aulas padrão se não existirem
-            INSERT INTO lessons (course_id, id, title, duration, video_url) VALUES
-            (1, 1, 'O que é Linux?', '15 min', 'https://www.youtube.com/watch?v=u1xrNaTO1bI'),
-            (1, 2, 'História do Linux', '20 min', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'),
-            (1, 3, 'Distribuições Linux', '25 min', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'),
-            (1, 4, 'Instalação do Linux', '30 min', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'),
-            (1, 5, 'Primeiros Passos', '30 min', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-            ON CONFLICT (id) DO NOTHING;
-        `;
-
         try {
-            await pool.query(query);
+            // Criar tabela se não existir
+            const createTableQuery = `
+                CREATE TABLE IF NOT EXISTS lessons (
+                    id SERIAL PRIMARY KEY,
+                    course_id INTEGER REFERENCES courses(id) ON DELETE CASCADE NOT NULL,
+                    title VARCHAR(255) NOT NULL,
+                    video_url VARCHAR(255),
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                );
+            `;
+            await pool.query(createTableQuery);
+
+            // Adicionar coluna duration se não existir
+            const addDurationQuery = `
+                DO $$ 
+                BEGIN
+                    IF NOT EXISTS (
+                        SELECT 1 FROM information_schema.columns 
+                        WHERE table_name = 'lessons' AND column_name = 'duration'
+                    ) THEN
+                        ALTER TABLE lessons ADD COLUMN duration VARCHAR(50);
+                    END IF;
+                END $$;
+            `;
+            await pool.query(addDurationQuery);
+
+            // Criar índice
+            const createIndexQuery = `
+                CREATE INDEX IF NOT EXISTS idx_lessons_course_id ON lessons(course_id);
+            `;
+            await pool.query(createIndexQuery);
+
+            // Inserir aulas padrão se não existirem (com verificação)
+            const insertLessonsQuery = `
+                INSERT INTO lessons (course_id, id, title, duration, video_url) VALUES
+                (1, 1, 'O que é Linux?', '15 min', 'https://www.youtube.com/watch?v=u1xrNaTO1bI'),
+                (1, 2, 'História do Linux', '20 min', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'),
+                (1, 3, 'Distribuições Linux', '25 min', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'),
+                (1, 4, 'Instalação do Linux', '30 min', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'),
+                (1, 5, 'Primeiros Passos', '30 min', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+                ON CONFLICT (id) DO NOTHING;
+            `;
+            await pool.query(insertLessonsQuery);
+
             console.log('✅ Tabela "lessons" verificada/criada');
         } catch (error) {
             console.error('❌ Erro ao criar tabela "lessons":', error.message);
