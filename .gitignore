@@ -1,1 +1,5 @@
 node_modules
+template-reference.png
+*.log
+.env
+.DS_Store
