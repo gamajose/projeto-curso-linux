@@ -78,6 +78,41 @@
             color: #00ff88;
         }
 
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 16px;
+            background: #0e141a;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid #00ff88;
+            object-fit: cover;
+        }
+
+        .user-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            color: #e5e7eb;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-badge {
+            color: #00ff88;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
         h1 {
             color: #00ff88;
             margin-bottom: 30px;
@@ -260,6 +295,13 @@
                     <li><a href="/verificar">Verificação</a></li>
                     <li><a href="/admin" class="active">Admin</a></li>
                 </ul>
+                <div class="user-info" id="userInfo" style="display: none;">
+                    <img id="userAvatar" class="user-avatar" src="/uploads/avatars/default-avatar.png" alt="Avatar">
+                    <div class="user-details">
+                        <span class="user-name" id="userName">Carregando...</span>
+                        <span class="user-badge">👑 Administrador</span>
+                    </div>
+                </div>
             </nav>
         </header>
 
@@ -431,6 +473,13 @@
 
                 // Usuário é admin - pode continuar
                 console.log('✅ Acesso admin autorizado:', user.name);
+
+                // Mostrar informações do usuário no header
+                document.getElementById('userName').textContent = user.name;
+                if (user.avatar_url) {
+                    document.getElementById('userAvatar').src = user.avatar_url;
+                }
+                document.getElementById('userInfo').style.display = 'flex';
 
             } catch (error) {
                 console.error('Erro ao verificar admin:', error);

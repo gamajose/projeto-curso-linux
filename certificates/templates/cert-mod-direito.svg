@@ -1,83 +1,155 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000">
   <defs>
-    <linearGradient id="scanDireito" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" style="stop-color:#8b5a3c;stop-opacity:0.12" />
-      <stop offset="100%" style="stop-color:#d4a574;stop-opacity:0.12" />
+    <linearGradient id="scanLaw" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8b5a3c" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#8b5a3c" stop-opacity="0.06"/>
+      <stop offset="1" stop-color="#d4a574" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="borderDireito" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#8b5a3c;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#d4a574;stop-opacity:1" />
-    </linearGradient>
+    <pattern id="gridLaw" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M20 0 H0 V20" fill="none" stroke="#2d1a10" stroke-opacity="0.25" stroke-width="1"/>
+    </pattern>
+    <style>
+      .mono { font-family: "Courier New",monospace; }
+      .serif { font-family: "Georgia","Times New Roman",serif; }
+      .soft { fill: #94a3b8; }
+      .brown { fill: #8b5a3c; }
+      .gold { fill: #d4a574; }
+      .bronze { fill: #b8860b; }
+      .muted { fill: #9ca3af; }
+      .white { fill: #e5e7eb; }
+      .dark { fill: #2d3748; }
+    </style>
   </defs>
 
   <!-- Background -->
-  <rect width="1400" height="1000" fill="#faf8f5"/>
-  <rect width="1400" height="1000" fill="url(#scanDireito)"/>
-
-  <!-- Border elegante -->
-  <rect x="40" y="40" width="1320" height="920" fill="none" stroke="url(#borderDireito)" stroke-width="4" rx="5"/>
-  <rect x="48" y="48" width="1304" height="904" fill="none" stroke="url(#borderDireito)" stroke-width="2" rx="3"/>
-  <rect x="55" y="55" width="1290" height="890" fill="none" stroke="url(#borderDireito)" stroke-width="1" rx="2"/>
+  <rect x="0" y="0" width="1400" height="1000" fill="#f5f1ed"/>
+  <rect x="0" y="0" width="1400" height="1000" fill="url(#gridLaw)" opacity="0.15"/>
+  <rect x="0" y="0" width="1400" height="1000" fill="url(#scanLaw)"/>
 
   <!-- Símbolos jurídicos decorativos -->
-  <g opacity="0.08">
-    <text x="150" y="170" font-family="serif" font-size="60" fill="#8b5a3c">§</text>
-    <text x="1250" y="170" font-family="serif" font-size="60" fill="#8b5a3c">⚖</text>
-    <text x="150" y="870" font-family="serif" font-size="60" fill="#d4a574">⚖</text>
-    <text x="1250" y="870" font-family="serif" font-size="60" fill="#d4a574">§</text>
+  <g opacity="0.04" class="brown">
+    <text x="80" y="120" font-size="80" font-family="serif">§</text>
+    <text x="1280" y="120" font-size="80" font-family="serif">⚖</text>
+    <text x="80" y="920" font-size="80" font-family="serif">⚖</text>
+    <text x="1280" y="920" font-size="80" font-family="serif">§</text>
   </g>
 
-  <!-- Header -->
-  <text x="700" y="120" font-family="Georgia, serif" font-size="30" font-weight="bold" fill="#8b5a3c" text-anchor="middle">ACADEMY Z</text>
-  <text x="700" y="155" font-family="Georgia, serif" font-size="18" fill="#8b5a3c" text-anchor="middle" font-style="italic">Área: Direito & Legislação</text>
+  <!-- Container principal -->
+  <g transform="translate(80,90)">
+    <!-- Bordas ornamentadas -->
+    <rect x="0" y="0" rx="5" ry="5" width="1240" height="820" fill="#faf8f5" stroke="#8b5a3c" stroke-width="4"/>
+    <rect x="8" y="8" rx="4" ry="4" width="1224" height="804" fill="none" stroke="#d4a574" stroke-width="2"/>
+    <rect x="15" y="15" rx="3" ry="3" width="1210" height="790" fill="none" stroke="#8b5a3c" stroke-width="1"/>
 
-  <!-- Title -->
-  <text x="700" y="245" font-family="Georgia, serif" font-size="58" font-weight="bold" fill="#2d3748" text-anchor="middle">CERTIFICADO</text>
-  <line x1="450" y1="265" x2="950" y2="265" stroke="url(#borderDireito)" stroke-width="2"/>
+    <!-- Conteúdo -->
+    <g transform="translate(60,80)">
+      <!-- Cabeçalho formal -->
+      <text x="560" y="0" class="serif brown" font-size="28" font-weight="bold" text-anchor="middle">ACADEMY Z</text>
+      <text x="560" y="28" class="serif gold" font-size="16" font-style="italic" text-anchor="middle">Instituição de Ensino Profissionalizante</text>
+      
+      <rect x="400" y="40" width="320" height="2" fill="#8b5a3c"/>
 
-  <!-- Corpo do texto formal -->
-  <text x="700" y="335" font-family="Georgia, serif" font-size="20" fill="#4a5568" text-anchor="middle">Certificamos, para os devidos fins, que</text>
+      <!-- Artigos e parágrafos (estilo lei) -->
+      <g transform="translate(0,80)">
+        <text x="0" y="0" class="serif dark" font-size="18" font-weight="600">
+          CERTIFICADO N.º {{CERTIFICATE_ID}}
+        </text>
+        
+        <text x="0" y="40" class="serif dark" font-size="16" text-anchor="start">
+          <tspan x="0" dy="0">Art. 1º - Certificamos, para os devidos fins de direito, que:</tspan>
+        </text>
+      </g>
 
-  <!-- Nome do participante -->
-  <text x="700" y="405" font-family="Georgia, serif" font-size="44" font-weight="bold" fill="#2d3748" text-anchor="middle" id="participantName">{{PARTICIPANT_NAME}}</text>
-  <line x1="270" y1="423" x2="1130" y2="423" stroke="#8b5a3c" stroke-width="2"/>
+      <!-- Nome do participante (destaque) -->
+      <g transform="translate(0,170)">
+        <text x="0" y="0" class="serif brown" font-size="20" font-weight="600">
+          § 1º PARTICIPANTE QUALIFICADO:
+        </text>
+        <text x="0" y="45" class="serif dark" font-size="40" font-weight="700">
+          {{PARTICIPANT_NAME}}
+        </text>
+        <rect x="0" y="55" width="1000" height="2" fill="#8b5a3c"/>
+      </g>
 
-  <!-- Texto do curso -->
-  <text x="700" y="485" font-family="Georgia, serif" font-size="20" fill="#4a5568" text-anchor="middle">concluiu com êxito e aproveitamento o curso de</text>
+      <!-- Curso -->
+      <g transform="translate(0,280)">
+        <text x="0" y="0" class="serif dark" font-size="16">
+          <tspan x="0" dy="0">Art. 2º - Concluiu com êxito e aproveitamento satisfatório o curso de:</tspan>
+        </text>
+        
+        <text x="0" y="45" class="serif brown" font-size="34" font-weight="700">
+          {{COURSE_NAME}}
+        </text>
+      </g>
 
-  <!-- Nome do curso -->
-  <text x="700" y="550" font-family="Georgia, serif" font-size="38" font-weight="bold" fill="#8b5a3c" text-anchor="middle" id="courseName">{{COURSE_NAME}}</text>
+      <!-- Disposições gerais -->
+      <g transform="translate(0,380)">
+        <rect x="0" y="0" width="1000" height="1" fill="#8b5a3c"/>
+        
+        <text x="0" y="35" class="serif dark" font-size="16">
+          <tspan x="0" dy="0">Art. 3º - O presente curso possui as seguintes características:</tspan>
+        </text>
+        
+        <text x="0" y="70" class="serif dark" font-size="16">
+          <tspan x="0" dy="0">§ 1º Carga horária total de </tspan>
+          <tspan class="brown" font-weight="700">{{HOURS}}</tspan>
+          <tspan> (horas);</tspan>
+        </text>
+        
+        <text x="0" y="95" class="serif dark" font-size="16">
+          <tspan x="0" dy="0">§ 2º Realizado na modalidade </tspan>
+          <tspan class="brown" font-weight="700">{{MODALIDADE}}</tspan>
+          <tspan>;</tspan>
+        </text>
+        
+        <text x="0" y="120" class="serif dark" font-size="16">
+          <tspan x="0" dy="0">§ 3º Emitido em </tspan>
+          <tspan class="brown" font-weight="700">{{COMPLETION_DATE}}</tspan>
+          <tspan>.</tspan>
+        </text>
 
-  <!-- Informações do curso -->
-  <text x="700" y="615" font-family="Georgia, serif" font-size="18" fill="#4a5568" text-anchor="middle">
-    com carga horária total de <tspan font-weight="bold" fill="#8b5a3c">{{HOURS}}</tspan>
-  </text>
-  <text x="700" y="645" font-family="Georgia, serif" font-size="18" fill="#4a5568" text-anchor="middle">
-    realizado na modalidade <tspan font-weight="bold" fill="#8b5a3c">{{MODALIDADE}}</tspan>
-  </text>
+        <rect x="0" y="140" width="1000" height="1" fill="#8b5a3c"/>
+      </g>
 
-  <!-- Data -->
-  <text x="700" y="700" font-family="Georgia, serif" font-size="18" fill="#4a5568" text-anchor="middle">
-    Emitido em <tspan font-weight="bold">{{COMPLETION_DATE}}</tspan>
-  </text>
+      <!-- Validação jurídica -->
+      <g transform="translate(0,545)">
+        <text x="0" y="0" class="mono muted" font-size="13">
+          <tspan>Protocolo de Verificação:</tspan>
+        </text>
+        <text x="0" y="20" class="mono brown" font-size="13" font-weight="600">
+          Hash: {{HASH}}
+        </text>
+        <text x="0" y="40" class="mono muted" font-size="12">
+          URL: academyz.com.br/verificar/{{HASH}}
+        </text>
+      </g>
 
-  <!-- Assinatura -->
-  <g transform="translate(700, 780)">
-    <line x1="-160" y1="0" x2="160" y2="0" stroke="#2d3748" stroke-width="1.5"/>
-    <text x="0" y="28" font-family="Georgia, serif" font-size="20" font-weight="bold" fill="#2d3748" text-anchor="middle">José Moraes</text>
-    <text x="0" y="50" font-family="Georgia, serif" font-size="14" fill="#718096" text-anchor="middle" font-style="italic">Coordenador Jurídico</text>
+      <!-- Assinatura -->
+      <g transform="translate(300,600)">
+        <rect x="0" y="0" width="1000" height="1" fill="#8b5a3c"/>
+        
+        <g transform="translate(100,30)">
+          <image href="{{IMAGEM_ASSINATURA_JOSE}}" x="25" y="-5" width="250" height="100" />
+          <rect x="0" y="55" width="300" height="2" fill="#8b5a3c"/>
+          <text x="150" y="80" class="serif dark" font-size="20" font-weight="700" text-anchor="middle">José Moraes</text>
+          <text x="150" y="100" class="serif muted" font-size="14" font-style="italic" text-anchor="middle">Coordenador Jurídico</text>
+          <text x="150" y="115" class="serif muted" font-size="12" text-anchor="middle">OAB/BR Nº XXXXX</text>
+        </g>
+      </g>
+
+      <!-- QR Code -->
+      <g transform="translate(830,120)">
+        <rect x="0" y="0" width="280" height="280" rx="8" ry="8" fill="#faf8f5" stroke="#8b5a3c" stroke-width="2"/>
+        <rect x="24" y="24" width="232" height="232" fill="#ffffff" stroke="#d4a574"/>
+        {{QR_CODE}}
+        <text x="140" y="310" class="serif brown" font-size="14" text-anchor="middle" font-weight="600">Verificação Digital</text>
+        <text x="140" y="330" class="serif muted" font-size="12" text-anchor="middle">Academy Z</text>
+      </g>
+
+      <!-- Rodapé formal -->
+      <text x="0" y="775" class="serif muted" font-size="11" font-style="italic">
+        Este certificado possui validade nacional e internacional, conforme legislação vigente.
+      </text>
+    </g>
   </g>
-
-  <!-- QR Code -->
-  <g id="qrcode" transform="translate(1150, 755)">
-    {{QR_CODE}}
-  </g>
-
-  <!-- Footer -->
-  <text x="700" y="925" font-family="Georgia, serif" font-size="12" fill="#718096" text-anchor="middle">
-    Certificado ID: <tspan font-weight="bold" fill="#8b5a3c">{{CERTIFICATE_ID}}</tspan>
-  </text>
-  <text x="700" y="945" font-family="Georgia, serif" font-size="12" fill="#718096" text-anchor="middle">
-    Verificação: <tspan fill="#8b5a3c">academyz.com.br/verificar/{{HASH}}</tspan>
-  </text>
 </svg>

@@ -1,83 +1,162 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1400" height="1000" viewBox="0 0 1400 1000">
   <defs>
     <linearGradient id="scanDesign" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" style="stop-color:#f093fb;stop-opacity:0.15" />
-      <stop offset="100%" style="stop-color:#f5576c;stop-opacity:0.15" />
+      <stop offset="0" stop-color="#f093fb" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#f5576c" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#feca57" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="borderDesign" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#f093fb;stop-opacity:1" />
-      <stop offset="50%" style="stop-color:#f5576c;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#feca57;stop-opacity:1" />
-    </linearGradient>
+    <pattern id="gridDesign" width="20" height="20" patternUnits="userSpaceOnUse">
+      <path d="M20 0 H0 V20" fill="none" stroke="#2d1520" stroke-opacity="0.35" stroke-width="1"/>
+    </pattern>
+    <style>
+      .mono { font-family: "Fira Code","JetBrains Mono",monospace; }
+      .creative { font-family: "Georgia",serif; }
+      .soft { fill: #94a3b8; }
+      .pink { fill: #f093fb; }
+      .red { fill: #f5576c; }
+      .yellow { fill: #feca57; }
+      .orange { fill: #fb923c; }
+      .muted { fill: #9ca3af; }
+      .white { fill: #e5e7eb; }
+    </style>
   </defs>
 
   <!-- Background -->
-  <rect width="1400" height="1000" fill="#ffffff"/>
-  <rect width="1400" height="1000" fill="url(#scanDesign)"/>
+  <rect x="0" y="0" width="1400" height="1000" fill="#150a15"/>
+  <rect x="0" y="0" width="1400" height="1000" fill="url(#gridDesign)" opacity="0.3"/>
+  <rect x="0" y="0" width="1400" height="1000" fill="url(#scanDesign)"/>
 
-  <!-- Border criativo -->
-  <rect x="40" y="40" width="1320" height="920" fill="none" stroke="url(#borderDesign)" stroke-width="4" rx="15"/>
-  <rect x="50" y="50" width="1300" height="900" fill="none" stroke="url(#borderDesign)" stroke-width="1" rx="12" stroke-dasharray="10,5"/>
-
-  <!-- Elementos decorativos geométricos -->
-  <g opacity="0.08">
-    <polygon points="150,120 180,180 120,180" fill="#f093fb"/>
-    <circle cx="1250" cy="150" r="30" fill="#f5576c"/>
-    <rect x="150" y="820" width="50" height="50" fill="#feca57" transform="rotate(45 175 845)"/>
-    <polygon points="1220,850 1250,910 1190,910" fill="#f093fb" transform="rotate(180 1220 880)"/>
+  <!-- Formas geométricas decorativas -->
+  <g opacity="0.07">
+    <polygon points="80,80 120,100 100,140 60,120" fill="#f093fb"/>
+    <circle cx="1280" cy="100" r="35" fill="#f5576c"/>
+    <rect x="70" y="850" width="70" height="70" rx="10" fill="#feca57" transform="rotate(15 105 885)"/>
+    <polygon points="1250,880 1280,920 1220,920" fill="#f093fb"/>
   </g>
 
-  <!-- Header -->
-  <text x="700" y="110" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="#f5576c" text-anchor="middle">ACADEMY Z</text>
-  <text x="700" y="145" font-family="Arial, sans-serif" font-size="18" fill="#f093fb" text-anchor="middle">Área: Design & Criatividade</text>
+  <!-- Container principal -->
+  <g transform="translate(80,90)">
+    <rect x="0" y="0" rx="14" ry="14" width="1240" height="820" fill="#0d0510" stroke="#2d1520" stroke-width="2"/>
+    <rect x="0" y="0" rx="14" ry="14" width="1240" height="44" fill="#150a15"/>
+    
+    <!-- Botões -->
+    <circle cx="26" cy="22" r="7" fill="#ff5f56"/>
+    <circle cx="48" cy="22" r="7" fill="#ffbd2e"/>
+    <circle cx="70" cy="22" r="7" fill="#27c93f"/>
+    <text x="100" y="28" class="mono soft" font-size="18">design-certificate.ai - Academy Z Studio</text>
 
-  <!-- Title -->
-  <text x="700" y="235" font-family="Georgia, serif" font-size="58" font-weight="bold" fill="#2d3748" text-anchor="middle">CERTIFICADO</text>
-  <line x1="450" y1="255" x2="950" y2="255" stroke="url(#borderDesign)" stroke-width="3"/>
+    <!-- Conteúdo -->
+    <g transform="translate(40,80)">
+      <!-- Título do projeto -->
+      <text x="0" y="0" class="mono" font-size="18">
+        <tspan class="pink">🎨 Projeto:</tspan>
+        <tspan class="white"> Certificate_Design_Final.ai</tspan>
+      </text>
+      <rect x="0" y="10" width="500" height="2" fill="#f093fb"/>
 
-  <!-- Corpo do texto -->
-  <text x="700" y="315" font-family="Arial, sans-serif" font-size="20" fill="#4a5568" text-anchor="middle">Certificamos que</text>
+      <!-- Paleta de cores (camadas) -->
+      <g transform="translate(0,35)">
+        <text x="0" y="0" class="mono soft" font-size="14">
+          <tspan class="soft">🎨 Paleta:</tspan>
+        </text>
+        <rect x="100" y="-10" width="30" height="20" fill="#f093fb" rx="3"/>
+        <rect x="135" y="-10" width="30" height="20" fill="#f5576c" rx="3"/>
+        <rect x="170" y="-10" width="30" height="20" fill="#feca57" rx="3"/>
+        <rect x="205" y="-10" width="30" height="20" fill="#fb923c" rx="3"/>
+      </g>
 
-  <!-- Nome do participante -->
-  <text x="700" y="385" font-family="Georgia, serif" font-size="44" font-weight="bold" fill="#2d3748" text-anchor="middle" id="participantName">{{PARTICIPANT_NAME}}</text>
-  <line x1="280" y1="402" x2="1120" y2="402" stroke="#f5576c" stroke-width="2"/>
+      <!-- Título CERTIFICADO -->
+      <text x="0" y="100" class="creative pink" font-size="58" font-weight="700" font-style="italic" letter-spacing="1">CERTIFICADO</text>
+      <rect x="0" y="112" width="320" height="4" fill="url(#scanDesign)"/>
 
-  <!-- Texto do curso -->
-  <text x="700" y="465" font-family="Arial, sans-serif" font-size="20" fill="#4a5568" text-anchor="middle">concluiu com êxito o curso de</text>
+      <!-- Layers / Camadas -->
+      <g transform="translate(0,150)">
+        <text x="0" y="0" class="mono soft" font-size="16">
+          <tspan class="orange">▼</tspan> <tspan class="pink">Layer 1:</tspan> <tspan class="soft">Certificado Base</tspan>
+        </text>
+        <text x="0" y="25" class="mono soft" font-size="16">
+          <tspan class="orange">▼</tspan> <tspan class="red">Layer 2:</tspan> <tspan class="soft">Participante</tspan>
+        </text>
+        <text x="40" y="60" class="creative white" font-size="38" font-weight="600">
+          {{PARTICIPANT_NAME}}
+        </text>
+      </g>
 
-  <!-- Nome do curso -->
-  <text x="700" y="530" font-family="Georgia, serif" font-size="38" font-weight="bold" fill="#f093fb" text-anchor="middle" id="courseName">{{COURSE_NAME}}</text>
+      <!-- Curso -->
+      <g transform="translate(0,255)">
+        <text x="0" y="0" class="mono soft" font-size="16">
+          <tspan class="orange">▼</tspan> <tspan class="yellow">Layer 3:</tspan> <tspan class="soft">Curso Concluído</tspan>
+        </text>
+        <text x="40" y="40" class="creative pink" font-size="32" font-weight="600" font-style="italic">
+          {{COURSE_NAME}}
+        </text>
+      </g>
 
-  <!-- Informações do curso -->
-  <text x="700" y="595" font-family="Arial, sans-serif" font-size="18" fill="#4a5568" text-anchor="middle">
-    com carga horária de <tspan font-weight="bold" fill="#f5576c">{{HOURS}}</tspan>
-  </text>
-  <text x="700" y="625" font-family="Arial, sans-serif" font-size="18" fill="#4a5568" text-anchor="middle">
-    realizado na modalidade <tspan font-weight="bold" fill="#f5576c">{{MODALIDADE}}</tspan>
-  </text>
+      <!-- Propriedades do objeto -->
+      <g transform="translate(0,340)">
+        <rect x="0" y="0" width="760" height="1" fill="#2d1520"/>
+        
+        <text x="0" y="30" class="mono" font-size="16">
+          <tspan class="orange">⚙</tspan> <tspan class="soft">Horas:</tspan>
+          <tspan class="white" font-weight="600"> {{HOURS}}</tspan>
+        </text>
+        
+        <text x="0" y="55" class="mono" font-size="16">
+          <tspan class="orange">⚙</tspan> <tspan class="soft">Data:</tspan>
+          <tspan class="white" font-weight="600"> {{COMPLETION_DATE}}</tspan>
+        </text>
+        
+        <text x="0" y="80" class="mono" font-size="16">
+          <tspan class="orange">⚙</tspan> <tspan class="soft">Modalidade:</tspan>
+          <tspan class="white" font-weight="600"> {{MODALIDADE}}</tspan>
+        </text>
 
-  <!-- Data -->
-  <text x="700" y="680" font-family="Arial, sans-serif" font-size="18" fill="#4a5568" text-anchor="middle">
-    Emitido em <tspan font-weight="bold">{{COMPLETION_DATE}}</tspan>
-  </text>
+        <rect x="0" y="100" width="760" height="1" fill="#2d1520"/>
+      </g>
 
-  <!-- Assinatura -->
-  <g transform="translate(700, 760)">
-    <line x1="-150" y1="0" x2="150" y2="0" stroke="#2d3748" stroke-width="1"/>
-    <text x="0" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#2d3748" text-anchor="middle">José Moraes</text>
-    <text x="0" y="45" font-family="Arial, sans-serif" font-size="14" fill="#718096" text-anchor="middle">Coordenador de Design</text>
+      <!-- Metadados do arquivo -->
+      <g transform="translate(0,465)">
+        <text x="0" y="0" class="mono soft" font-size="14">
+          <tspan class="pink">📄 ID:</tspan> <tspan class="white">{{CERTIFICATE_ID}}</tspan>
+        </text>
+        
+        <text x="0" y="22" class="mono soft" font-size="14">
+          <tspan class="pink">#️⃣ Hash:</tspan> <tspan class="white">{{HASH}}</tspan>
+        </text>
+        
+        <text x="0" y="44" class="mono soft" font-size="13">
+          <tspan class="soft">🔗 URL:</tspan>
+        </text>
+        <text x="0" y="62" class="mono pink" font-size="13">
+          academyz.com.br/verificar/{{HASH}}
+        </text>
+      </g>
+
+      <!-- Assinatura -->
+      <g transform="translate(180,550)">
+        <rect x="0" y="0" width="760" height="1" fill="#2d1520"/>
+        
+        <g transform="translate(150,30)">
+          <image href="{{IMAGEM_ASSINATURA_JOSE}}" x="25" y="-5" width="250" height="100" />
+          <rect x="0" y="55" width="300" height="1" fill="#f5576c"/>
+          <text x="150" y="80" class="creative white" font-size="18" text-anchor="middle">José Moraes</text>
+          <text x="150" y="100" class="mono soft" font-size="14" text-anchor="middle">Design Lead • Academy Z</text>
+        </g>
+      </g>
+
+      <!-- QR Code -->
+      <g transform="translate(870,70)">
+        <rect x="0" y="0" width="280" height="280" rx="8" ry="8" fill="#080308" stroke="#2d1520"/>
+        <rect x="24" y="24" width="232" height="232" fill="#0d0510" stroke="#f093fb"/>
+        {{QR_CODE}}
+        <text x="140" y="320" class="mono soft" font-size="16" text-anchor="middle">Academy Z</text>
+        <text x="140" y="345" class="mono white" font-size="14" text-anchor="middle">Design Studio</text>
+      </g>
+
+      <!-- Comentário criativo -->
+      <text x="0" y="805" class="mono muted" font-size="14" font-style="italic">
+        // Arquivo salvo • Formato: SVG • Resolução: 1400x1000 • Status: ✅ Finalizado
+      </text>
+    </g>
   </g>
-
-  <!-- QR Code -->
-  <g id="qrcode" transform="translate(1150, 740)">
-    {{QR_CODE}}
-  </g>
-
-  <!-- Footer -->
-  <text x="700" y="930" font-family="Arial, sans-serif" font-size="12" fill="#718096" text-anchor="middle">
-    Certificado ID: <tspan font-weight="bold" fill="#f5576c">{{CERTIFICATE_ID}}</tspan>
-  </text>
-  <text x="700" y="950" font-family="Arial, sans-serif" font-size="12" fill="#718096" text-anchor="middle">
-    Verificação: <tspan fill="#f093fb">academyz.com.br/verificar/{{HASH}}</tspan>
-  </text>
 </svg>
