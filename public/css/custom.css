@@ -36,6 +36,10 @@
     border-left-color: #ff5f56;
 }
 
+.toast-info {
+    border-left-color: #64748b;
+}
+
 .toast::before {
     font-weight: bold;
     margin-right: 10px;
@@ -114,6 +118,7 @@
     font-size: 0.8em;
     margin-right: 10px;
     transition: transform 0.2s;
+    display: inline-block;
 }
 
 .faq-container details[open] summary::before {
@@ -258,7 +263,7 @@
 }
 
 .my-message .message-nickname {
-    color: #1a222c;
+    color: #ffffff;
 }
 
 .my-message .message-text {
@@ -283,4 +288,60 @@
     color: #e5e7eb;
     padding: 10px;
     border-radius: 5px;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #334155;
+}
+
+.user-menu-container {
+    position: relative;
+}
+
+.user-menu-button {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    color: #94a3b8;
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #334155;
+}
+
+.user-dropdown {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 120%;
+    background-color: #111827;
+    border: 1px solid #1f2937;
+    border-radius: 8px;
+    min-width: 180px;
+    z-index: 10;
+    padding: 5px 0;
+    list-style: none;
+}
+
+.user-dropdown a {
+    color: #94a3b8;
+    padding: 10px 15px;
+    text-decoration: none;
+    display: block;
+    font-size: 14px;
 }

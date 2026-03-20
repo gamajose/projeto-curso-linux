@@ -30,26 +30,44 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatMessagesDiv = document.querySelector('.chat-messages');
 
     const socket = io();
-    let currentUser = { id: null, name: 'Anônimo', username: 'Anônimo', avatar_url: '/images/avatar-padrao.png' };
+    let currentUser = { id: null, username: 'Anônimo', avatar_url: '/images/avatar-padrao.png' };
+
+    console.log("[CHAT DIAGNÓSTICO] Iniciando script do chat.");
 
     const token = localStorage.getItem('authToken');
     if (token) {
+        console.log("[CHAT DIAGNÓSTICO] Token encontrado no localStorage:", token);
+        
         fetch('/api/users/me', { headers: { 'Authorization': `Bearer ${token}` } })
-        .then(response => response.ok ? response.json() : Promise.reject('Token inválido'))
+        .then(response => {
+            console.log("[CHAT DIAGNÓSTICO] Resposta da API /api/users/me:", response);
+            if (!response.ok) {
+                throw new Error(`Falha na API: Status ${response.status}`);
+            }
+            return response.json();
+        })
         .then(user => {
+            console.log("[CHAT DIAGNÓSTICO] ✅ DADOS DO USUÁRIO RECEBIDOS:", user);
             currentUser = {
                 id: user.id,
                 username: user.username || user.name.split(' ')[0],
                 avatar_url: user.avatar_url || '/images/avatar-padrao.png'
             };
+            console.log("[CHAT DIAGNÓSTICO] currentUser foi definido como:", currentUser);
         })
-        .catch(error => console.error('Erro ao buscar dados do usuário para o chat:', error));
+        .catch(error => {
+            console.error("[CHAT DIAGNÓSTICO] ❌ Erro ao buscar dados do usuário:", error);
+            // Se houver erro, o usuário continua como "Anônimo"
+        });
+    } else {
+        console.warn("[CHAT DIAGNÓSTICO] ⚠️ Nenhum 'authToken' encontrado no localStorage. O usuário será 'Anônimo'.");
     }
 
     openChatBtn.addEventListener('click', () => {
         chatPopup.classList.add('open');
         chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
     });
+    
     closeChatBtn.addEventListener('click', () => chatPopup.classList.remove('open'));
 
     const renderMessage = (data, isHistory = false) => {
@@ -73,18 +91,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     chatForm.addEventListener('submit', (e) => {
         e.preventDefault();
-        const messageText = messageInput.value;
+        let messageText = messageInput.value.trim();
         if (!messageText) return;
 
-        if (messageText.toLowerCase().startsWith('/faq ') || messageText.toLowerCase().startsWith('/ask ')) {
-            const commandLength = messageText.startsWith('/faq ') ? 5 : 5;
-            const question = messageText.substring(commandLength);
+        const commandRegex = /^\/(faq|ask)\s+/i;
+        const match = messageText.match(commandRegex);
+
+        if (match) {
+            const question = messageText.substring(match[0].length);
 
             fetch('/api/chat/ask-local', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ question: question })
-            }).catch(err => console.error("Erro ao chamar API do chat local:", err));
+            })
+            .catch(err => console.error("Erro ao tentar enviar a pergunta:", err));
 
         } else {
             const messageData = {

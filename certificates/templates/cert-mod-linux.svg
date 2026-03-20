@@ -47,7 +47,7 @@
       <text x="0" y="190" class="mono white" font-size="40" font-weight="600">{{NOME_DO_PARTICIPANTE}}</text>
 
       <text x="0" y="240" class="mono muted" font-size="20">Pela conclusão do curso:</text>
-      <text x="0" y="280" class="mono cyan" font-size="32" font-weight="600">Curso de Linux</text>
+      <text x="0" y="280" class="mono cyan" font-size="32" font-weight="600">{{COURSE_NAME}}</text>
 
       <text x="0" y="330" class="mono soft" font-size="18">
         <tspan class="white">Carga horária:</tspan> {{CARGA_HORARIA}} • 

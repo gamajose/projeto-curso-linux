@@ -139,8 +139,6 @@ app.post("/api/chat/ask-local", (req, res) => {
 
     try {
         const faqContent = fs.readFileSync(path.join(__dirname, 'public', 'faq.html'), 'utf8');
-        
-        // Extrai as perguntas e respostas do HTML do FAQ
         const faqs = [];
         const detailsRegex = /<details>.*?<summary>(.*?)<\/summary>.*?<p>(.*?)<\/p>.*?<\/details>/gs;
         let match;
@@ -148,27 +146,21 @@ app.post("/api/chat/ask-local", (req, res) => {
             faqs.push({ question: match[1].trim(), answer: match[2].trim() });
         }
 
-        // Lógica simples de busca por palavras-chave
         const questionWords = question.toLowerCase().split(/\s+/);
         let bestMatch = { score: 0, answer: "Desculpe, não encontrei uma resposta para sua pergunta no nosso FAQ. Tente perguntar de outra forma." };
-
         faqs.forEach(faq => {
             let score = 0;
             questionWords.forEach(word => {
-                if (word.length > 2 && faq.question.toLowerCase().includes(word)) {
-                    score++;
-                }
+                if (word.length > 2 && faq.question.toLowerCase().includes(word)) score++;
             });
-            if (score > bestMatch.score) {
-                bestMatch = { score, answer: faq.answer };
-            }
+            if (score > bestMatch.score) bestMatch = { score, answer: faq.answer };
         });
 
         // Envia a resposta do "bot" para todos no chat
         io.emit('chat message', {
             userId: 'faq-bot',
             username: 'Assistente FAQ',
-            avatar: 'https://i.imgur.com/832W43Q.png', // URL de um ícone de robô/ajuda
+            avatar: 'https://i.imgur.com/832W43Q.png',
             text: bestMatch.answer
         });
 

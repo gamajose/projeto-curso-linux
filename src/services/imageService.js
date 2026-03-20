@@ -34,6 +34,15 @@ class ImageService {
         }
     }
 
+    escapeXml(value) {
+        return String(value ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&apos;');
+    }
+
     async generateCertificateImageFromData(certificateData) {
         console.log('🚀 Iniciando geração de imagem para:', certificateData.participant_name);
         console.log('📄 Template selecionado:', certificateData.template_type || 'cert-mod-linux');
@@ -46,6 +55,13 @@ class ImageService {
             const assinaturaJoseBase64 = this.getImageAsBase64(this.assinaturaJosePath);
             const assinaturaDaniloBase64 = this.getImageAsBase64(this.assinaturaDaniloPath);
             const completionDate = new Date(certificateData.completion_date).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+            const participantName = this.escapeXml(certificateData.participant_name);
+            const courseName = this.escapeXml(certificateData.course_name);
+            const hoursText = this.escapeXml(`${certificateData.hours}h`);
+            const modalidade = this.escapeXml(certificateData.modalidade || 'Online');
+            const certificateId = this.escapeXml(certificateData.certificate_id);
+            const hashVerificacao = this.escapeXml(certificateData.hash_verificacao);
+            const completionDateText = this.escapeXml(completionDate);
 
             const baseUrl = (process.env.APP_BASE_URL || '').replace(/\/$/, '');
             
@@ -70,14 +86,17 @@ class ImageService {
             `;
 
             const replacements = {
-                '{{PARTICIPANT_NAME}}': certificateData.participant_name,
-                '{{COURSE_NAME}}': certificateData.course_name,
-                '{{HOURS}}': `${certificateData.hours}h`,
-                '{{COMPLETION_DATE}}': completionDate,
-                '{{MODALIDADE}}': certificateData.modalidade,
-                '{{CERTIFICATE_ID}}': certificateData.certificate_id,
-                '{{HASH}}': certificateData.hash_verificacao,
-                '{{HASH_VERIFICACAO}}': certificateData.hash_verificacao,
+                '{{PARTICIPANT_NAME}}': participantName,
+                '{{NOME_DO_PARTICIPANTE}}': participantName,
+                '{{COURSE_NAME}}': courseName,
+                '{{HOURS}}': hoursText,
+                '{{CARGA_HORARIA}}': hoursText,
+                '{{COMPLETION_DATE}}': completionDateText,
+                '{{DATA_CONCLUSAO}}': completionDateText,
+                '{{MODALIDADE}}': modalidade,
+                '{{CERTIFICATE_ID}}': certificateId,
+                '{{HASH}}': hashVerificacao,
+                '{{HASH_VERIFICACAO}}': hashVerificacao,
                 '{{IMAGEM_ASSINATURA_JOSE}}': assinaturaJoseBase64,
                 '{{IMAGEM_ASSINATURA_DANILO}}': assinaturaDaniloBase64,
                 '{{QR_CODE}}': qrCodeBlock,
