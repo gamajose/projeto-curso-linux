@@ -452,6 +452,7 @@
                     <li><a href="/cursos">Cursos</a></li>
                     <li><a href="/verificar">Verificação</a></li>
                     <li><a href="#">Contato</a></li>
+                    <li id="admin-menu-item" style="display: none;"><a href="/admin">🔧 Admin</a></li>
                 </ul>
                 <ul id="nav-auth-links">
                     <li><a href="/">Login</a></li>
@@ -572,6 +573,25 @@
             }
 
             async function loadUserProfile() {
+                try {
+                    const response = await fetch('/api/users/me', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    if (response.ok) {
+                        const user = await response.json();
+                        
+                        // Mostrar link Admin se o usuário for admin
+                        if (user.is_admin) {
+                            const adminMenuItem = document.getElementById('admin-menu-item');
+                            if (adminMenuItem) {
+                                adminMenuItem.style.display = 'block';
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro ao carregar perfil:', error);
+                }
             }
             loadUserProfile();
 

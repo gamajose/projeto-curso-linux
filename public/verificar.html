@@ -460,6 +460,7 @@
                     <li><a href="/cursos">Cursos</a></li>
                     <li><a href="/verificar">Verificação</a></li>
                     <li><a href="#">Contato</a></li>
+                    <li id="admin-menu-item" style="display: none;"><a href="/admin">🔧 Admin</a></li>
                 </ul>
                 <ul id="nav-auth-links">
                     <li><a href="/">Login</a></li>
@@ -717,7 +718,31 @@
         });
 
         // Verificar se há parâmetro na URL ou hash no path
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', async function () {
+            // Verificar se o usuário está logado e é admin
+            const token = localStorage.getItem('authToken');
+            if (token) {
+                try {
+                    const response = await fetch('/api/users/me', {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    
+                    if (response.ok) {
+                        const user = await response.json();
+                        
+                        // Mostrar link Admin se o usuário for admin
+                        if (user.is_admin) {
+                            const adminMenuItem = document.getElementById('admin-menu-item');
+                            if (adminMenuItem) {
+                                adminMenuItem.style.display = 'block';
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Erro ao verificar usuário:', error);
+                }
+            }
+
             // Verifica se há hash no path (formato: /verificar/hash)
             const pathParts = window.location.pathname.split('/');
             if (pathParts.length > 2 && pathParts[1] === 'verificar') {

@@ -367,6 +367,7 @@
                     <li><a href="/cursos" class="active">Cursos</a></li>
                     <li><a href="/verificar">Verificação</a></li>
                     <li><a href="#">Contato</a></li>
+                    <li id="admin-menu-item" style="display: none;"><a href="/admin">🔧 Admin</a></li>
                 </ul>
                 <ul id="nav-auth-links">
                     <li><a href="/">Login</a></li>
@@ -471,6 +472,14 @@
                 const existingCerts = await certsRes.json();
                 const data = await coursesRes.json();
                 courses = Array.isArray(data) ? data : [];
+
+                // Mostrar link Admin se o usuário for admin
+                if (currentUser.is_admin) {
+                    const adminMenuItem = document.getElementById('admin-menu-item');
+                    if (adminMenuItem) {
+                        adminMenuItem.style.display = 'block';
+                    }
+                }
 
                 // Processa os dados
              courses.forEach(course => {
