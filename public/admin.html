@@ -392,12 +392,43 @@
         const API_BASE = '/api';
         let lastGeneratedCert = null;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            // Verifica se o usuário é admin
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Verifica se o usuário está logado
             const token = localStorage.getItem('authToken');
             if (!token) {
                 showAlert('Você precisa estar logado para acessar esta página.', 'error');
-                setTimeout(() => window.location.href = '/', 2000);
+                setTimeout(() => window.location.href = '/admin-login', 2000);
+                return;
+            }
+
+            // Verifica se o usuário é admin
+            try {
+                const response = await fetch(`${API_BASE}/users/me`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Sessão expirada');
+                }
+
+                const user = await response.json();
+
+                if (!user.is_admin) {
+                    showAlert('❌ Acesso negado! Apenas administradores podem acessar esta área.', 'error');
+                    setTimeout(() => window.location.href = '/home', 2000);
+                    return;
+                }
+
+                // Usuário é admin - pode continuar
+                console.log('✅ Acesso admin autorizado:', user.name);
+
+            } catch (error) {
+                console.error('Erro ao verificar admin:', error);
+                showAlert('Erro ao verificar permissões. Redirecionando...', 'error');
+                localStorage.removeItem('authToken');
+                setTimeout(() => window.location.href = '/admin-login', 2000);
                 return;
             }
 

@@ -95,9 +95,27 @@ exports.login = async (req, res) => {
             return res.status(401).json({ message: 'Credenciais inválidas.' });
         }
         
-        const token = jwt.sign({ id: user.id, name: user.name }, process.env.JWT_SECRET, { expiresIn: '8h' });
+        // Incluir is_admin no token JWT
+        const token = jwt.sign(
+            { 
+                id: user.id, 
+                name: user.name,
+                is_admin: user.is_admin || false
+            }, 
+            process.env.JWT_SECRET, 
+            { expiresIn: '8h' }
+        );
         
-        res.json({ token, user: { id: user.id, name: user.name, email: user.email, username: user.username } });
+        res.json({ 
+            token, 
+            user: { 
+                id: user.id, 
+                name: user.name, 
+                email: user.email, 
+                username: user.username,
+                is_admin: user.is_admin || false
+            } 
+        });
 
     } catch (error) {
         console.error('Erro no login', error);

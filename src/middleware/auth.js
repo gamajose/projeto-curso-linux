@@ -17,4 +17,28 @@ function authenticateToken(req, res, next) {
     });
 }
 
+/**
+ * Middleware para verificar se o usuário é administrador
+ */
+function checkIsAdmin(req, res, next) {
+    // Verificar se o usuário está autenticado
+    if (!req.user) {
+        return res.status(401).json({ 
+            error: 'Não autenticado',
+            message: 'Você precisa estar logado para acessar esta área.' 
+        });
+    }
+
+    // Verificar se o usuário é admin
+    if (!req.user.is_admin) {
+        return res.status(403).json({ 
+            error: 'Acesso negado',
+            message: 'Apenas administradores podem acessar esta área.' 
+        });
+    }
+
+    next();
+}
+
 module.exports = authenticateToken;
+module.exports.checkIsAdmin = checkIsAdmin;
