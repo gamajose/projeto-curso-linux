@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const pool = require('../config/database');
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization'];
@@ -19,8 +20,9 @@ function authenticateToken(req, res, next) {
 
 /**
  * Middleware para verificar se o usuário é administrador
+ * Busca diretamente no banco para garantir que está atualizado
  */
-function checkIsAdmin(req, res, next) {
+async function checkIsAdmin(req, res, next) {
     // Verificar se o usuário está autenticado
     if (!req.user) {
         return res.status(401).json({ 
@@ -29,15 +31,41 @@ function checkIsAdmin(req, res, next) {
         });
     }
 
-    // Verificar se o usuário é admin
-    if (!req.user.is_admin) {
-        return res.status(403).json({ 
-            error: 'Acesso negado',
-            message: 'Apenas administradores podem acessar esta área.' 
+    try {
+        // Buscar is_admin diretamente do banco
+        const result = await pool.query(
+            'SELECT is_admin FROM users WHERE id = $1',
+            [req.user.id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({ 
+                error: 'Usuário não encontrado',
+                message: 'Usuário não existe no sistema.' 
+            });
+        }
+
+        const user = result.rows[0];
+
+        // Verificar se o usuário é admin
+        if (!user.is_admin) {
+            return res.status(403).json({ 
+                error: 'Acesso negado',
+                message: 'Apenas administradores podem acessar esta área.' 
+            });
+        }
+
+        // Atualizar req.user com is_admin do banco
+        req.user.is_admin = true;
+        next();
+
+    } catch (error) {
+        console.error('Erro ao verificar admin:', error);
+        return res.status(500).json({ 
+            error: 'Erro interno',
+            message: 'Erro ao verificar permissões de administrador.' 
         });
     }
-
-    next();
 }
 
 module.exports = authenticateToken;
