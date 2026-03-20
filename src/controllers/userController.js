@@ -8,7 +8,7 @@ exports.getMe = async (req, res) => {
         const userResult = await pool.query(
             `SELECT id, name, email, username, avatar_url, xp, level, cpf, birth_date, gender, 
              phone_fixed, phone_mobile, address_street, address_number, address_district, 
-             address_city, address_state, address_zipcode, linkedin_profile, organization, "position", observations 
+             address_city, address_state, address_zipcode, linkedin_profile, organization, "position", observations, is_admin 
              FROM users WHERE id = $1`,
             [req.user.id]
         );
