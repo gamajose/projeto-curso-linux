@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS certificates (
     modalidade VARCHAR(100) DEFAULT 'Online',
     instrutor VARCHAR(255) DEFAULT 'José Moraes',
     diretor VARCHAR(255) DEFAULT 'Danilo Germano',
-    organizacao VARCHAR(255) DEFAULT 'Red Innovations',
+    organizacao VARCHAR(255) DEFAULT 'Academy Z',
     hash_verificacao VARCHAR(50) UNIQUE NOT NULL,
     valido BOOLEAN DEFAULT TRUE,
     download_count INTEGER DEFAULT 0,
