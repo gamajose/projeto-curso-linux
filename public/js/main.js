@@ -4,6 +4,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     const logoLink = document.getElementById('logo-link');
     const token = localStorage.getItem('authToken');
 
+    document.querySelectorAll('nav a').forEach((link) => {
+        if (link.textContent.trim().toLowerCase() === 'contato') {
+            link.href = '/contato';
+        }
+    });
+
     if (token) {
         // --- USUÁRIO ESTÁ LOGADO ---
         if (logoLink) {
