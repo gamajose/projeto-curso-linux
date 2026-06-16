@@ -1,45 +1,401 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Contato - Academyz</title>
-  <style>
-    body { margin: 0; font-family: Arial, sans-serif; background: #0f172a; color: #f8fafc; }
-    header { padding: 24px; background: #020617; border-bottom: 1px solid #1e293b; }
-    header h1 { margin: 0; color: #38bdf8; }
-    main { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-    .card { background: #111827; border: 1px solid #1f2937; border-radius: 16px; padding: 32px; box-shadow: 0 10px 30px rgba(0,0,0,.25); }
-    h2 { margin-top: 0; color: #38bdf8; }
-    .info { margin: 20px 0; line-height: 1.8; font-size: 18px; }
-    a { color: #38bdf8; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .actions { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; }
-    .btn { display: inline-block; padding: 12px 18px; border-radius: 10px; background: #0284c7; color: #fff; font-weight: bold; text-decoration: none; }
-    .btn.secondary { background: #334155; }
-    footer { text-align: center; margin-top: 40px; color: #94a3b8; font-size: 14px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - Academy Z</title>
+    <link rel="stylesheet" href="/css/custom.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Fira Code', 'JetBrains Mono', 'Ubuntu Mono', 'DejaVu Sans Mono', monospace;
+        }
+
+        body {
+            background-color: #0b0f14;
+            color: #e5e7eb;
+            line-height: 1.6;
+            padding: 20px;
+            background-image:
+                linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #1f2937;
+            margin-bottom: 30px;
+        }
+
+        .logo, .logo:link, .logo:visited, .logo:hover, .logo:active {
+            font-size: 24px;
+            font-weight: bold;
+            color: #00ff88 !important;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .logo:hover {
+            opacity: 0.8;
+        }
+
+        .logo svg {
+            margin-right: 10px;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 40px;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            align-items: center;
+            gap: 25px;
+        }
+
+        nav ul li a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 14px;
+        }
+
+        nav ul li a:hover,
+        nav ul li a.active {
+            color: #00ff88;
+        }
+
+        .user-menu-container {
+            position: relative;
+        }
+
+        .user-menu-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: color 0.3s;
+        }
+
+        .user-menu-button:hover {
+            color: #00ff88;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #334155;
+        }
+
+        .user-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 120%;
+            background-color: #111827;
+            border: 1px solid #1f2937;
+            border-radius: 8px;
+            min-width: 180px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+            z-index: 10;
+            padding: 5px 0;
+        }
+
+        .user-dropdown a {
+            color: #94a3b8;
+            padding: 10px 15px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+        }
+
+        .user-dropdown a:hover {
+            background-color: #1f2937;
+            color: #00ff88;
+        }
+
+        .page-title {
+            text-align: center;
+            padding: 40px 20px 25px;
+        }
+
+        .page-title h1 {
+            font-size: 2.4rem;
+            color: #00ff88;
+            margin-bottom: 14px;
+        }
+
+        .page-title p {
+            font-size: 1.05rem;
+            color: #94a3b8;
+        }
+
+        .terminal-window {
+            background-color: #0e141a;
+            border-radius: 14px;
+            border: 2px solid #1f2937;
+            overflow: hidden;
+            max-width: 880px;
+            margin: 35px auto 0;
+        }
+
+        .terminal-header {
+            background-color: #111827;
+            padding: 12px 20px;
+            border-top-left-radius: 14px;
+            border-top-right-radius: 14px;
+            display: flex;
+            align-items: center;
+        }
+
+        .terminal-buttons {
+            display: flex;
+            margin-right: 15px;
+        }
+
+        .terminal-button {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .button-close { background-color: #ff5f56; }
+        .button-minimize { background-color: #ffbd2e; }
+        .button-maximize { background-color: #27c93f; }
+
+        .terminal-title {
+            color: #94a3b8;
+            font-size: 18px;
+        }
+
+        .terminal-body {
+            padding: 30px;
+        }
+
+        .prompt-line {
+            margin-bottom: 24px;
+            color: #94a3b8;
+        }
+
+        .prompt-user,
+        .prompt-host {
+            color: #94a3b8;
+        }
+
+        .prompt-at,
+        .prompt-dir,
+        .command-text {
+            color: #e5e7eb;
+        }
+
+        .prompt-symbol,
+        .highlight {
+            color: #00ff88;
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .contact-card {
+            background: #0b1220;
+            border: 1px solid #1f2937;
+            border-radius: 12px;
+            padding: 22px;
+        }
+
+        .contact-card h3 {
+            color: #00ff88;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .contact-card p,
+        .contact-card a {
+            color: #c7d2fe;
+            text-decoration: none;
+            word-break: break-word;
+        }
+
+        .contact-card a:hover {
+            color: #00ff88;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+
+        .btn {
+            background-color: #00ff88;
+            color: #0b0f14;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background-color: #00cc6a;
+        }
+
+        .btn.secondary {
+            background-color: #4fd1c5;
+        }
+
+        .btn.secondary:hover {
+            background-color: #38b2ac;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #1f2937;
+            color: #94a3b8;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+                gap: 18px;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .page-title h1 {
+                font-size: 2rem;
+            }
+
+            .terminal-body {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Academyz</h1>
-  </header>
-  <main>
-    <section class="card">
-      <h2>Contato</h2>
-      <p>Entre em contato para dúvidas sobre cursos, certificados, acesso à plataforma ou suporte.</p>
-      <div class="info">
-        <p><strong>Responsável:</strong> José Moraes</p>
-        <p><strong>E-mail:</strong> <a href="mailto:josemoraes@academyz.com.br">josemoraes@academyz.com.br</a></p>
-        <p><strong>Telefone/WhatsApp:</strong> <a href="https://wa.me/5532999192233" target="_blank" rel="noopener noreferrer">(32) 9 9919-2233</a></p>
-      </div>
-      <div class="actions">
-        <a class="btn" href="mailto:josemoraes@academyz.com.br">Enviar e-mail</a>
-        <a class="btn" href="https://wa.me/5532999192233" target="_blank" rel="noopener noreferrer">Chamar no WhatsApp</a>
-        <a class="btn secondary" href="/home">Voltar</a>
-      </div>
-    </section>
-    <footer>© Academyz - Plataforma de cursos e certificados</footer>
-  </main>
+    <div class="container">
+        <header>
+            <a href="/home" id="logo-link" class="logo" style="text-decoration: none;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 17L12 22L22 17" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M2 12L12 17L22 12" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span style="display: inline-block; vertical-align: middle;">Academy Z</span>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="/home">Home</a></li>
+                    <li><a href="/cursos">Cursos</a></li>
+                    <li><a href="/verificar">Verificação</a></li>
+                    <li><a href="/contato" class="active">Contato</a></li>
+                    <li id="admin-menu-item" style="display: none;"><a href="/admin">🔧 Admin</a></li>
+                </ul>
+                <ul id="nav-auth-links">
+                    <li><a href="/">Login</a></li>
+                </ul>
+            </nav>
+        </header>
+
+        <section class="page-title">
+            <h1>Contato</h1>
+            <p>Fale com o responsável pelo Academy Z para suporte, certificados e dúvidas sobre o curso.</p>
+        </section>
+
+        <section class="terminal-window">
+            <div class="terminal-header">
+                <div class="terminal-buttons">
+                    <div class="terminal-button button-close"></div>
+                    <div class="terminal-button button-minimize"></div>
+                    <div class="terminal-button button-maximize"></div>
+                </div>
+                <div class="terminal-title">user@linux: ~/contato-academyz</div>
+            </div>
+            <div class="terminal-body">
+                <div class="prompt-line">
+                    <span class="prompt-user">user@linux</span><span class="prompt-at">@</span><span class="prompt-host">host</span><span class="prompt-dir">:~/contato-academyz</span><span class="prompt-symbol">$</span>
+                    <span class="command-text"> cat contato.txt</span>
+                </div>
+
+                <div class="contact-grid">
+                    <div class="contact-card">
+                        <h3>[RESPONSÁVEL]</h3>
+                        <p>José Moraes</p>
+                    </div>
+                    <div class="contact-card">
+                        <h3>[E-MAIL]</h3>
+                        <p><a href="mailto:josemoraes@academyz.com.br">josemoraes@academyz.com.br</a></p>
+                    </div>
+                    <div class="contact-card">
+                        <h3>[WHATSAPP]</h3>
+                        <p><a href="https://wa.me/5532999192233" target="_blank" rel="noopener noreferrer">(32) 9 9919-2233</a></p>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <a class="btn" href="mailto:josemoraes@academyz.com.br">Enviar e-mail</a>
+                    <a class="btn secondary" href="https://wa.me/5532999192233" target="_blank" rel="noopener noreferrer">Chamar no WhatsApp</a>
+                    <a class="btn secondary" href="/home">Voltar ao início</a>
+                </div>
+
+                <div class="prompt-line" style="margin-top: 28px; margin-bottom: 0;">
+                    <span class="prompt-symbol">[INFO]</span>
+                    <span>Retorno para dúvidas sobre acesso, certificados e conteúdo do curso.</span>
+                </div>
+            </div>
+        </section>
+
+        <footer>
+            <p>Academy Z &copy; 2025 - Especialistas em Educação Tecnológica</p>
+            <p>Academy Z - Modalidade Online - Instrutor: José Moraes</p>
+            <a href="/faq" style="color: #00ff88; text-decoration: none;">FAQ</a>
+        </footer>
+    </div>
+
+    <script src="/js/main.js"></script>
+    <script src="/js/notifications.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/chat.js"></script>
 </body>
 </html>
