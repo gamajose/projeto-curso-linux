@@ -4,17 +4,14 @@ const db = require('../config/database');
 class Certificate {
     static async findById(id) {
         try {
-            // Verifica se o ID é numérico antes de buscar
             if (isNaN(id)) {
-                // Se não for numérico, busca por certificate_id
                 const result = await db.query(
                     'SELECT * FROM certificates WHERE certificate_id = $1',
                     [id]
                 );
                 return result.rows[0];
-        }
+            }
             
-            // Se for numérico, busca pelo ID normal
             const result = await db.query(
                 'SELECT * FROM certificates WHERE id = $1',
                 [parseInt(id)]
@@ -71,11 +68,11 @@ class Certificate {
                 completion_date, 
                 certificate_id, 
                 modalidade, 
-                instrutor, 
+                instrutor = 'José Moraes', 
                 diretor, 
-                organizacao, 
+                organizacao = 'Academy Z', 
                 hash_verificacao,
-                template_type = 'cert-mod-linux',
+                template_type = 'certificado-template',
                 valido = true
             } = certificateData;
             
