@@ -8,7 +8,10 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Fira Code', 'JetBrains Mono', 'Ubuntu Mono', 'DejaVu Sans Mono', monospace; }
         body {
-            background-color: #0b0f14; color: #e5e7eb; line-height: 1.6; padding: 20px;
+            background-color: #0b0f14;
+            color: #e5e7eb;
+            line-height: 1.6;
+            padding: 20px;
             background-image: linear-gradient(rgba(0, 255, 136, 0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(0, 255, 136, 0.03) 1px, transparent 1px);
             background-size: 20px 20px;
         }
@@ -16,54 +19,41 @@
         header { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #1f2937; margin-bottom: 30px; }
         .logo { font-size: 24px; font-weight: bold; color: #00ff88 !important; display: flex; align-items: center; cursor: pointer; text-decoration: none; }
         .logo svg { margin-right: 10px; }
-        nav { display: flex; align-items: center; gap: 30px; }
-        nav ul { display: flex; list-style: none; align-items: center; gap: 22px; }
+        nav { display: flex; align-items: center; gap: 40px; }
+        nav ul { display: flex; list-style: none; align-items: center; gap: 25px; }
         nav a { color: #94a3b8; text-decoration: none; transition: color .3s; }
         nav a:hover, nav a.active { color: #00ff88; }
-        h1 { color: #00ff88; margin-bottom: 10px; font-size: 2rem; }
-        h2 { color: #4fd1c5; margin-bottom: 18px; }
-        h3 { color: #00ff88; margin-bottom: 10px; }
-        .muted { color: #94a3b8; margin-bottom: 25px; }
         .user-info { display: none; align-items: center; gap: 12px; padding: 8px 16px; background: #0e141a; border: 1px solid #1f2937; border-radius: 8px; }
         .user-avatar { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #00ff88; object-fit: cover; }
         .user-details { display: flex; flex-direction: column; }
         .user-name { color: #e5e7eb; font-weight: 600; font-size: 14px; }
         .user-badge { color: #00ff88; font-size: 12px; font-weight: 500; }
-        .tabs { display: flex; gap: 10px; flex-wrap: wrap; margin: 25px 0; }
-        .tab-button { padding: 12px 18px; border: 1px solid #1f2937; background: #0e141a; color: #94a3b8; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .tab-button.active, .tab-button:hover { border-color: #00ff88; color: #00ff88; }
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
-        .admin-section { background: #0e141a; border: 1px solid #1f2937; border-radius: 12px; padding: 26px; margin-bottom: 28px; }
-        .form-group { margin-bottom: 18px; }
+        h1 { color: #00ff88; margin-bottom: 10px; font-size: 2rem; }
+        h2 { color: #4fd1c5; margin-bottom: 18px; }
+        .muted { color: #94a3b8; margin-bottom: 25px; }
+        .admin-section { background: #0e141a; border: 1px solid #1f2937; border-radius: 12px; padding: 30px; margin-bottom: 30px; }
+        .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; color: #94a3b8; font-weight: 500; }
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px; background: #0b0f14; border: 1px solid #1f2937; border-radius: 6px; color: #e5e7eb; font-family: inherit; font-size: 14px; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #00ff88; }
-        .form-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
-        .form-row.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-        .btn { padding: 11px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background-color .3s, transform .2s; font-family: inherit; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-row.three { grid-template-columns: repeat(3, 1fr); }
+        .btn { padding: 12px 24px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; transition: background-color .3s, transform .2s; font-family: inherit; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
         .btn:hover { transform: translateY(-1px); }
         .btn-primary { background: #00ff88; color: #0b0f14; }
         .btn-primary:hover { background: #00cc6a; }
         .btn-secondary { background: #334155; color: #e5e7eb; }
         .btn-secondary:hover { background: #4b5563; }
-        .btn-danger { background: #ef4444; color: #fff; }
-        .btn-danger:hover { background: #dc2626; }
         .alert { padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
         .alert-success { background: rgba(0,255,136,.1); border: 1px solid #00ff88; color: #00ff88; }
         .alert-error { background: rgba(239,68,68,.1); border: 1px solid #ef4444; color: #ef4444; }
         .alert-info { background: rgba(77,209,197,.1); border: 1px solid #4fd1c5; color: #4fd1c5; }
-        .list-grid { display: grid; gap: 14px; }
-        .item-card { background: #0b0f14; border: 1px solid #1f2937; border-radius: 10px; padding: 18px; display: grid; gap: 12px; }
-        .item-card:hover { border-color: #334155; }
-        .item-meta { color: #94a3b8; font-size: .9rem; }
-        .item-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-        .management-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
-        .hash-display { background: #111827; padding: 10px; border-radius: 4px; font-family: monospace; color: #00ff88; word-break: break-all; }
+        .quick-actions { display: flex; gap: 12px; flex-wrap: wrap; margin: 18px 0 28px; }
         .certificate-info { display: grid; grid-template-columns: 200px 1fr; gap: 10px; margin-bottom: 10px; }
         .certificate-info .label { color: #94a3b8; }
+        .hash-display { background: #111827; padding: 10px; border-radius: 4px; font-family: monospace; color: #00ff88; word-break: break-all; }
         footer { text-align: center; margin-top: 50px; padding-top: 30px; border-top: 1px solid #1f2937; color: #94a3b8; }
-        @media (max-width: 900px) { .form-row, .form-row.three, .management-grid { grid-template-columns: 1fr; } header, nav { flex-direction: column; text-align: center; } nav ul { flex-wrap: wrap; justify-content: center; } }
+        @media (max-width: 768px) { header, nav { flex-direction: column; text-align: center; gap: 18px; } nav ul, .quick-actions { justify-content: center; flex-wrap: wrap; } .form-row, .form-row.three { grid-template-columns: 1fr; } .btn { width: 100%; } }
     </style>
 </head>
 <body>
@@ -96,110 +86,47 @@
         </header>
 
         <h1>🔧 Painel de Administração</h1>
-        <p class="muted">Gerencie seções, cards de cursos, aulas, URLs externas, vídeos hospedados no servidor e certificados.</p>
-        <div id="alertContainer"></div>
+        <p class="muted">Área administrativa para emissão manual de certificados. A criação e edição de seções, cursos e aulas fica diretamente na tela <strong>Cursos</strong>, visível apenas para administradores.</p>
 
-        <div class="tabs">
-            <button class="tab-button active" data-tab="contentPanel">📚 Conteúdo dos Cursos</button>
-            <button class="tab-button" data-tab="certificatePanel">📜 Emitir Certificado</button>
+        <div class="quick-actions">
+            <a class="btn btn-primary" href="/cursos">Editar cursos e aulas</a>
+            <a class="btn btn-secondary" href="/verificar">Verificar certificados</a>
         </div>
 
-        <section id="contentPanel" class="tab-panel active">
-            <div class="admin-section">
-                <h2>📁 Seções</h2>
-                <form id="sectionForm">
-                    <input type="hidden" id="sectionId">
-                    <div class="form-row three">
-                        <div class="form-group"><label>Nome da seção *</label><input id="sectionName" required placeholder="Ex: T.I."></div>
-                        <div class="form-group"><label>Ícone</label><input id="sectionIcon" placeholder="💻"></div>
-                        <div class="form-group"><label>Ordem</label><input id="sectionOrder" type="number" value="0"></div>
-                    </div>
-                    <div class="form-group"><label>Descrição</label><textarea id="sectionDescription" rows="3" placeholder="Resumo da seção"></textarea></div>
-                    <button class="btn btn-primary" type="submit">Salvar Seção</button>
-                    <button class="btn btn-secondary" type="button" onclick="clearSectionForm()">Limpar</button>
-                </form>
-            </div>
+        <div id="alertContainer"></div>
 
-            <div class="admin-section">
-                <h2>🎓 Cards dos Cursos</h2>
-                <form id="courseForm">
-                    <input type="hidden" id="courseId">
-                    <div class="form-row">
-                        <div class="form-group"><label>Seção *</label><select id="courseSection" required></select></div>
-                        <div class="form-group"><label>Título do curso *</label><input id="courseTitle" required placeholder="Ex: Introdução ao Linux"></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>Carga horária</label><input id="courseDuration" placeholder="Ex: 2 horas"></div>
-                        <div class="form-group"><label>Ordem</label><input id="courseOrder" type="number" value="0"></div>
-                    </div>
-                    <div class="form-group"><label>Descrição do card</label><textarea id="courseDescription" rows="3" placeholder="Descrição exibida no card do curso"></textarea></div>
-                    <button class="btn btn-primary" type="submit">Salvar Curso</button>
-                    <button class="btn btn-secondary" type="button" onclick="clearCourseForm()">Limpar</button>
-                </form>
-            </div>
+        <div class="admin-section">
+            <h2>📜 Emitir Certificado Manual</h2>
+            <p class="muted">Use esta área para emitir certificados manualmente sem depender do progresso das aulas.</p>
+            <form id="certificateForm">
+                <div class="form-row">
+                    <div class="form-group"><label for="participantName">Nome Completo do Participante *</label><input type="text" id="participantName" required placeholder="Ex: João Silva"></div>
+                    <div class="form-group"><label for="courseName">Nome do Curso *</label><input type="text" id="courseName" required placeholder="Ex: Curso de Linux"></div>
+                </div>
+                <div class="form-row three">
+                    <div class="form-group"><label for="hours">Carga Horária *</label><input type="number" id="hours" required min="1" max="500" value="20"></div>
+                    <div class="form-group"><label for="modalidade">Modalidade *</label><select id="modalidade" required><option value="Online">Online</option><option value="Presencial">Presencial</option><option value="Híbrido">Híbrido</option></select></div>
+                    <div class="form-group"><label for="templateType">Modelo *</label><select id="templateType" required><option value="cert-mod-linux">🐧 Linux / TI</option><option value="cert-mod-programacao">💻 Programação</option><option value="cert-mod-marketing">📱 Marketing</option><option value="cert-mod-design">🎨 Design</option><option value="cert-mod-direito">⚖️ Direito</option><option value="cert-mod-administrativo">📊 Administração</option><option value="cert-mod-geral">📜 Geral</option></select></div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group"><label for="issueDate">Data de Emissão *</label><input type="date" id="issueDate" required></div>
+                    <div class="form-group"><label for="completionDate">Data de Conclusão *</label><input type="date" id="completionDate" required></div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="submitBtn">🚀 Emitir Certificado</button>
+                <button type="button" class="btn btn-secondary" onclick="resetForm()">🔄 Limpar Formulário</button>
+            </form>
+        </div>
 
-            <div class="admin-section">
-                <h2>🎬 Aulas</h2>
-                <form id="lessonForm">
-                    <input type="hidden" id="lessonId">
-                    <div class="form-row">
-                        <div class="form-group"><label>Curso *</label><select id="lessonCourse" required></select></div>
-                        <div class="form-group"><label>Título da aula *</label><input id="lessonTitle" required placeholder="Ex: O que é Linux?"></div>
-                    </div>
-                    <div class="form-row three">
-                        <div class="form-group"><label>Duração</label><input id="lessonDuration" placeholder="Ex: 15 min"></div>
-                        <div class="form-group"><label>Origem do vídeo</label><select id="lessonSource"><option value="external">URL externa/importada</option><option value="local">Hospedado no servidor</option></select></div>
-                        <div class="form-group"><label>Ordem</label><input id="lessonOrder" type="number" value="0"></div>
-                    </div>
-                    <div class="form-group"><label>URL do vídeo / site externo</label><input id="lessonUrl" placeholder="YouTube, Vimeo, URL importada ou /uploads/lessons/video.mp4"></div>
-                    <div class="form-group"><label>Hospedar vídeo no servidor</label><input id="lessonFile" type="file" accept="video/mp4,video/webm,video/ogg,video/quicktime"></div>
-                    <div class="form-group"><label>Descrição / conteúdo da aula</label><textarea id="lessonDescription" rows="3" placeholder="Resumo, comandos ou objetivos da aula"></textarea></div>
-                    <button class="btn btn-primary" type="submit">Salvar Aula</button>
-                    <button class="btn btn-secondary" type="button" onclick="clearLessonForm()">Limpar</button>
-                </form>
-            </div>
-
-            <div class="management-grid">
-                <div class="admin-section"><h2>Seções cadastradas</h2><div id="sectionsList" class="list-grid"></div></div>
-                <div class="admin-section"><h2>Cursos cadastrados</h2><div id="coursesList" class="list-grid"></div></div>
-            </div>
-            <div class="admin-section"><h2>Aulas cadastradas</h2><div id="lessonsList" class="list-grid"></div></div>
-        </section>
-
-        <section id="certificatePanel" class="tab-panel">
-            <div class="admin-section">
-                <h2>📜 Emitir Certificado Manual</h2>
-                <p class="muted">Use esta área para emitir certificados manualmente sem depender do progresso das aulas.</p>
-                <form id="certificateForm">
-                    <div class="form-row">
-                        <div class="form-group"><label>Nome Completo do Participante *</label><input type="text" id="participantName" required placeholder="Ex: João Silva"></div>
-                        <div class="form-group"><label>Nome do Curso *</label><input type="text" id="courseName" required placeholder="Ex: Curso de Linux"></div>
-                    </div>
-                    <div class="form-row three">
-                        <div class="form-group"><label>Carga Horária *</label><input type="number" id="hours" required min="1" max="500" value="20"></div>
-                        <div class="form-group"><label>Modalidade *</label><select id="modalidade" required><option value="Online">Online</option><option value="Presencial">Presencial</option><option value="Híbrido">Híbrido</option></select></div>
-                        <div class="form-group"><label>Modelo *</label><select id="templateType" required><option value="cert-mod-linux">🐧 Linux / TI</option><option value="cert-mod-programacao">💻 Programação</option><option value="cert-mod-marketing">📱 Marketing</option><option value="cert-mod-design">🎨 Design</option><option value="cert-mod-direito">⚖️ Direito</option><option value="cert-mod-administrativo">📊 Administração</option><option value="cert-mod-geral">📜 Geral</option></select></div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group"><label>Data de Emissão *</label><input type="date" id="issueDate" required></div>
-                        <div class="form-group"><label>Data de Conclusão *</label><input type="date" id="completionDate" required></div>
-                    </div>
-                    <button type="submit" class="btn btn-primary" id="submitBtn">🚀 Emitir Certificado</button>
-                    <button type="button" class="btn btn-secondary" onclick="resetCertificateForm()">🔄 Limpar</button>
-                </form>
-            </div>
-
-            <div id="previewSection" style="display: none;" class="admin-section">
-                <h3>✅ Certificado Emitido com Sucesso!</h3>
-                <div class="certificate-info"><span class="label">ID:</span><span id="certId">-</span></div>
-                <div class="certificate-info"><span class="label">Participante:</span><span id="certName">-</span></div>
-                <div class="certificate-info"><span class="label">Curso:</span><span id="certCourse">-</span></div>
-                <div class="certificate-info"><span class="label">Carga Horária:</span><span id="certHours">-</span></div>
-                <div class="certificate-info"><span class="label">Conclusão:</span><span id="certDate">-</span></div>
-                <div class="certificate-info"><span class="label">Hash:</span><span class="hash-display" id="certHash">-</span></div>
-                <button class="btn btn-primary" id="downloadBtn">📥 Baixar Certificado</button>
-            </div>
-        </section>
+        <div id="previewSection" class="admin-section" style="display: none;">
+            <h2>✅ Certificado Emitido com Sucesso</h2>
+            <div class="certificate-info"><span class="label">ID do Certificado:</span><span id="certId">-</span></div>
+            <div class="certificate-info"><span class="label">Participante:</span><span id="certName">-</span></div>
+            <div class="certificate-info"><span class="label">Curso:</span><span id="certCourse">-</span></div>
+            <div class="certificate-info"><span class="label">Carga Horária:</span><span id="certHours">-</span></div>
+            <div class="certificate-info"><span class="label">Data de Conclusão:</span><span id="certDate">-</span></div>
+            <div class="certificate-info"><span class="label">Hash:</span><span class="hash-display" id="certHash">-</span></div>
+            <div style="margin-top: 20px;"><button class="btn btn-primary" id="downloadBtn">📥 Baixar Certificado</button></div>
+        </div>
 
         <footer>
             <p>Academy Z &copy; 2025 - Painel Administrativo</p>
@@ -210,8 +137,6 @@
     <script src="/js/main.js"></script>
     <script>
         const API_BASE = '/api';
-        const MANAGE_BASE = '/api/courses/manage';
-        let catalog = { sections: [], courses: [], lessons: [] };
         let lastGeneratedCert = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
@@ -241,164 +166,45 @@
                 return;
             }
 
-            document.querySelectorAll('.tab-button').forEach(button => {
-                button.addEventListener('click', () => switchTab(button.dataset.tab));
-            });
-
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('issueDate').value = today;
             document.getElementById('completionDate').value = today;
-
-            bindForms();
-            await loadCatalog();
         });
 
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-button').forEach(btn => btn.classList.toggle('active', btn.dataset.tab === tabId));
-            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.toggle('active', panel.id === tabId));
-        }
-
-        function authHeaders(extra = {}) {
-            return { ...extra, 'Authorization': `Bearer ${localStorage.getItem('authToken')}` };
-        }
-
-        async function apiRequest(path, options = {}) {
-            const response = await fetch(`${MANAGE_BASE}${path}`, {
-                ...options,
-                headers: options.body instanceof FormData ? authHeaders(options.headers || {}) : authHeaders({ 'Content-Type': 'application/json', ...(options.headers || {}) })
-            });
-            const data = await response.json().catch(() => ({}));
-            if (!response.ok) throw new Error(data.message || 'Erro na operação.');
-            return data;
-        }
-
-        function bindForms() {
-            document.getElementById('sectionForm').addEventListener('submit', saveSection);
-            document.getElementById('courseForm').addEventListener('submit', saveCourse);
-            document.getElementById('lessonForm').addEventListener('submit', saveLesson);
-            document.getElementById('certificateForm').addEventListener('submit', saveCertificate);
-        }
-
-        async function loadCatalog() {
-            try {
-                catalog = await apiRequest('/catalog');
-                renderSelects();
-                renderLists();
-            } catch (error) {
-                showAlert(`Erro ao carregar catálogo: ${error.message}`, 'error');
-            }
-        }
-
-        function renderSelects() {
-            const sectionOptions = catalog.sections.map(s => `<option value="${s.id}">${escapeHtml(s.name)}</option>`).join('');
-            document.getElementById('courseSection').innerHTML = sectionOptions || '<option value="">Cadastre uma seção primeiro</option>';
-
-            const courseOptions = catalog.courses.map(c => `<option value="${c.id}">${escapeHtml(c.title)}</option>`).join('');
-            document.getElementById('lessonCourse').innerHTML = courseOptions || '<option value="">Cadastre um curso primeiro</option>';
-        }
-
-        function renderLists() {
-            document.getElementById('sectionsList').innerHTML = catalog.sections.length ? catalog.sections.map(section => `
-                <div class="item-card">
-                    <h3>${escapeHtml(section.icon || '📚')} ${escapeHtml(section.name)}</h3>
-                    <p class="item-meta">Ordem: ${section.display_order || 0}</p>
-                    <p>${escapeHtml(section.description || 'Sem descrição')}</p>
-                    <div class="item-actions"><button class="btn btn-secondary" onclick="editSection(${section.id})">Editar</button><button class="btn btn-danger" onclick="deleteSection(${section.id})">Excluir</button></div>
-                </div>
-            `).join('') : '<p class="muted">Nenhuma seção cadastrada.</p>';
-
-            document.getElementById('coursesList').innerHTML = catalog.courses.length ? catalog.courses.map(course => `
-                <div class="item-card">
-                    <h3>${escapeHtml(course.title)}</h3>
-                    <p class="item-meta">Seção: ${escapeHtml(course.section_name || 'Sem seção')} • ${escapeHtml(course.duration || 'sem carga')}</p>
-                    <p>${escapeHtml(course.description || 'Sem descrição')}</p>
-                    <div class="item-actions"><button class="btn btn-secondary" onclick="editCourse(${course.id})">Editar</button><button class="btn btn-danger" onclick="deleteCourse(${course.id})">Excluir</button></div>
-                </div>
-            `).join('') : '<p class="muted">Nenhum curso cadastrado.</p>';
-
-            document.getElementById('lessonsList').innerHTML = catalog.lessons.length ? catalog.lessons.map(lesson => {
-                const course = catalog.courses.find(c => Number(c.id) === Number(lesson.course_id));
-                return `
-                    <div class="item-card">
-                        <h3>${escapeHtml(lesson.title)}</h3>
-                        <p class="item-meta">Curso: ${escapeHtml(course?.title || 'Curso removido')} • ${escapeHtml(lesson.duration || 'sem duração')} • ${lesson.video_source || 'external'}</p>
-                        <p>${escapeHtml(lesson.video_url || 'Sem URL/vídeo')}</p>
-                        <div class="item-actions"><button class="btn btn-secondary" onclick="editLesson(${lesson.id})">Editar</button><button class="btn btn-danger" onclick="deleteLesson(${lesson.id})">Excluir</button></div>
-                    </div>
-                `;
-            }).join('') : '<p class="muted">Nenhuma aula cadastrada.</p>';
-        }
-
-        async function saveSection(event) {
-            event.preventDefault();
-            const id = document.getElementById('sectionId').value;
-            const payload = { name: sectionName.value.trim(), description: sectionDescription.value.trim(), icon: sectionIcon.value.trim() || '📚', display_order: Number(sectionOrder.value) || 0 };
-            try {
-                await apiRequest(id ? `/sections/${id}` : '/sections', { method: id ? 'PUT' : 'POST', body: JSON.stringify(payload) });
-                showAlert('Seção salva com sucesso.', 'success');
-                clearSectionForm();
-                await loadCatalog();
-            } catch (error) { showAlert(error.message, 'error'); }
-        }
-
-        async function saveCourse(event) {
-            event.preventDefault();
-            const id = document.getElementById('courseId').value;
-            const payload = { section_id: courseSection.value, title: courseTitle.value.trim(), description: courseDescription.value.trim(), duration: courseDuration.value.trim(), display_order: Number(courseOrder.value) || 0 };
-            try {
-                await apiRequest(id ? `/courses/${id}` : '/courses', { method: id ? 'PUT' : 'POST', body: JSON.stringify(payload) });
-                showAlert('Curso salvo com sucesso.', 'success');
-                clearCourseForm();
-                await loadCatalog();
-            } catch (error) { showAlert(error.message, 'error'); }
-        }
-
-        async function saveLesson(event) {
-            event.preventDefault();
-            const id = document.getElementById('lessonId').value;
-            const payload = { course_id: lessonCourse.value, title: lessonTitle.value.trim(), duration: lessonDuration.value.trim(), video_source: lessonSource.value, video_url: lessonUrl.value.trim(), description: lessonDescription.value.trim(), display_order: Number(lessonOrder.value) || 0 };
-            try {
-                const savedLesson = await apiRequest(id ? `/lessons/${id}` : '/lessons', { method: id ? 'PUT' : 'POST', body: JSON.stringify(payload) });
-                const file = document.getElementById('lessonFile').files[0];
-                if (file) {
-                    const formData = new FormData();
-                    formData.append('video', file);
-                    await apiRequest(`/lessons/${savedLesson.id}/upload`, { method: 'POST', body: formData });
-                }
-                showAlert('Aula salva com sucesso.', 'success');
-                clearLessonForm();
-                await loadCatalog();
-            } catch (error) { showAlert(error.message, 'error'); }
-        }
-
-        async function saveCertificate(event) {
+        document.getElementById('certificateForm').addEventListener('submit', async (event) => {
             event.preventDefault();
             const submitBtn = document.getElementById('submitBtn');
             submitBtn.disabled = true;
             submitBtn.textContent = '⏳ Processando...';
-            const formData = { participant_name: participantName.value.trim(), course_name: courseName.value.trim(), hours: parseInt(hours.value), modalidade: modalidade.value, issue_date: issueDate.value, completion_date: completionDate.value, template_type: templateType.value };
+
+            const formData = {
+                participant_name: participantName.value.trim(),
+                course_name: courseName.value.trim(),
+                hours: parseInt(hours.value),
+                modalidade: modalidade.value,
+                issue_date: issueDate.value,
+                completion_date: completionDate.value,
+                template_type: templateType.value
+            };
+
             try {
-                const response = await fetch(`${API_BASE}/certificates/admin/create`, { method: 'POST', headers: authHeaders({ 'Content-Type': 'application/json' }), body: JSON.stringify(formData) });
+                const response = await fetch(`${API_BASE}/certificates/admin/create`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('authToken')}` },
+                    body: JSON.stringify(formData)
+                });
                 const data = await response.json();
                 if (!response.ok) throw new Error(data.message || 'Erro ao emitir certificado');
                 lastGeneratedCert = data;
                 showCertificatePreview(data);
                 showAlert('Certificado emitido com sucesso.', 'success');
-            } catch (error) { showAlert(error.message, 'error'); }
-            finally { submitBtn.disabled = false; submitBtn.textContent = '🚀 Emitir Certificado'; }
-        }
-
-        function editSection(id) { const s = catalog.sections.find(item => item.id === id); if (!s) return; sectionId.value = s.id; sectionName.value = s.name || ''; sectionDescription.value = s.description || ''; sectionIcon.value = s.icon || ''; sectionOrder.value = s.display_order || 0; window.scrollTo({ top: 0, behavior: 'smooth' }); }
-        function editCourse(id) { const c = catalog.courses.find(item => item.id === id); if (!c) return; courseId.value = c.id; courseSection.value = c.section_id || ''; courseTitle.value = c.title || ''; courseDescription.value = c.description || ''; courseDuration.value = c.duration || ''; courseOrder.value = c.display_order || 0; window.scrollTo({ top: 260, behavior: 'smooth' }); }
-        function editLesson(id) { const l = catalog.lessons.find(item => item.id === id); if (!l) return; lessonId.value = l.id; lessonCourse.value = l.course_id || ''; lessonTitle.value = l.title || ''; lessonDuration.value = l.duration || ''; lessonSource.value = l.video_source || 'external'; lessonUrl.value = l.video_url || ''; lessonDescription.value = l.description || ''; lessonOrder.value = l.display_order || 0; lessonFile.value = ''; window.scrollTo({ top: 520, behavior: 'smooth' }); }
-
-        async function deleteSection(id) { if (!confirm('Excluir esta seção?')) return; try { await apiRequest(`/sections/${id}`, { method: 'DELETE' }); showAlert('Seção excluída.', 'success'); await loadCatalog(); } catch (error) { showAlert(error.message, 'error'); } }
-        async function deleteCourse(id) { if (!confirm('Excluir este curso e suas aulas?')) return; try { await apiRequest(`/courses/${id}`, { method: 'DELETE' }); showAlert('Curso excluído.', 'success'); await loadCatalog(); } catch (error) { showAlert(error.message, 'error'); } }
-        async function deleteLesson(id) { if (!confirm('Excluir esta aula?')) return; try { await apiRequest(`/lessons/${id}`, { method: 'DELETE' }); showAlert('Aula excluída.', 'success'); await loadCatalog(); } catch (error) { showAlert(error.message, 'error'); } }
-
-        function clearSectionForm() { sectionForm.reset(); sectionId.value = ''; sectionIcon.value = ''; sectionOrder.value = 0; }
-        function clearCourseForm() { courseForm.reset(); courseId.value = ''; courseOrder.value = 0; renderSelects(); }
-        function clearLessonForm() { lessonForm.reset(); lessonId.value = ''; lessonOrder.value = 0; lessonSource.value = 'external'; renderSelects(); }
+            } catch (error) {
+                showAlert(error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Emitir Certificado';
+            }
+        });
 
         function showCertificatePreview(cert) {
             certId.textContent = cert.certificate_id;
@@ -409,6 +215,7 @@
             certHash.textContent = cert.hash_verificacao;
             previewSection.style.display = 'block';
             downloadBtn.onclick = () => downloadCertificate(cert.certificate_id);
+            previewSection.scrollIntoView({ behavior: 'smooth' });
         }
 
         async function downloadCertificate(certIdValue) {
@@ -427,11 +234,15 @@
                 window.URL.revokeObjectURL(url);
                 a.remove();
                 showAlert('Certificado baixado com sucesso.', 'success');
-            } catch (error) { showAlert(error.message, 'error'); }
-            finally { downloadBtn.disabled = false; downloadBtn.textContent = '📥 Baixar Certificado'; }
+            } catch (error) {
+                showAlert(error.message, 'error');
+            } finally {
+                downloadBtn.disabled = false;
+                downloadBtn.textContent = '📥 Baixar Certificado';
+            }
         }
 
-        function resetCertificateForm() {
+        function resetForm() {
             certificateForm.reset();
             previewSection.style.display = 'none';
             const today = new Date().toISOString().split('T')[0];
@@ -448,10 +259,6 @@
             alertContainer.innerHTML = '';
             alertContainer.appendChild(alert);
             setTimeout(() => alert.remove(), 5000);
-        }
-
-        function escapeHtml(value) {
-            return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
         }
     </script>
 </body>
