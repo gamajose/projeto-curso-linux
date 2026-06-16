@@ -37,26 +37,25 @@ exports.createCertificate = async (req, res) => {
     try {
         const { participant_name, course_name } = req.body;
 
-        // VERIFICA SE O CERTIFICADO JÁ EXISTE
         const existingCert = await Certificate.findByParticipantAndCourse(participant_name, course_name);
         if (existingCert) {
             console.log('Certificado já existe, retornando o existente:', existingCert.certificate_id);
-            return res.status(200).json(existingCert); // Retorna o certificado existente
+            return res.status(200).json(existingCert);
         }
         
-        // Se não existir, cria um novo
         const newCertificate = await Certificate.create({
             ...req.body,
+            template_type: req.body.template_type || 'certificado-template',
             hash_verificacao: crypto.randomBytes(6).toString('hex')
         });
         res.status(201).json(newCertificate);
 
     } catch (error) {
-        // Trata o erro de duplicidade que pode vir do banco de dados (garantia extra)
-        if (error.code === '23505') { // Código de erro para violação de unique constraint
+        if (error.code === '23505') {
             const existingCert = await Certificate.findByParticipantAndCourse(req.body.participant_name, req.body.course_name);
             return res.status(200).json(existingCert);
         }
+        console.error('Erro ao criar certificado:', error);
         res.status(500).json({ error: 'Erro ao criar certificado' });
     }
 };
@@ -75,20 +74,15 @@ exports.createCertificateAdmin = async (req, res) => {
     try {
         const { participant_name, course_name, hours, modalidade, issue_date, completion_date, template_type } = req.body;
 
-        // Validações
         if (!participant_name || !course_name || !hours || !issue_date || !completion_date) {
             return res.status(400).json({ message: 'Todos os campos obrigatórios devem ser preenchidos.' });
         }
 
-        // Gera um certificate_id único
         const year = new Date().getFullYear();
         const randomCode = crypto.randomBytes(4).toString('hex').toUpperCase();
         const certificate_id = `${course_name.substring(0, 3).toUpperCase()}${year}-${randomCode}`;
-
-        // Gera um hash único de verificação
         const hash_verificacao = crypto.randomBytes(8).toString('hex');
 
-        // Cria o certificado
         const newCertificate = await Certificate.create({
             participant_name,
             course_name,
@@ -97,7 +91,7 @@ exports.createCertificateAdmin = async (req, res) => {
             completion_date,
             certificate_id,
             modalidade: modalidade || 'Online',
-            template_type: template_type || 'cert-mod-linux',
+            template_type: template_type || 'certificado-template',
             hash_verificacao
         });
 
