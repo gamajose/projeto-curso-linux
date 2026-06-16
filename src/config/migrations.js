@@ -221,7 +221,7 @@ class DatabaseMigrations {
                     certificate_id VARCHAR(50) UNIQUE NOT NULL,
                     modalidade VARCHAR(100) DEFAULT 'Online',
                     instrutor VARCHAR(255) DEFAULT 'José Moraes',
-                    diretor VARCHAR(255) DEFAULT 'Danilo Germano',
+                    diretor VARCHAR(255) DEFAULT 'José Moraes',
                     organizacao VARCHAR(255) DEFAULT 'Academy Z',
                     hash_verificacao VARCHAR(50) UNIQUE NOT NULL,
                     valido BOOLEAN DEFAULT true,
