@@ -6,19 +6,18 @@ const QRCode = require('qrcode');
 class ImageService {
     constructor() {
         this.templatesDir = path.join(__dirname, '..', '..', 'certificates', 'templates');
-        this.assinaturaJosePath = path.join(this.templatesDir, 'Joseluiz.png');
-        this.assinaturaDaniloPath = path.join(this.templatesDir, 'danilo.png');
+        this.assinaturaJosePath = path.join(this.templatesDir, 'jose.png');
+        this.defaultTemplate = 'certificado-template';
     }
 
     getTemplatePath(templateType) {
-        // Define o arquivo de template baseado no tipo
-        const templateFile = `${templateType || 'cert-mod-linux'}.svg`;
+        const safeTemplateType = String(templateType || this.defaultTemplate).replace(/[^a-zA-Z0-9_-]/g, '');
+        const templateFile = `${safeTemplateType || this.defaultTemplate}.svg`;
         const templatePath = path.join(this.templatesDir, templateFile);
         
-        // Se o template não existir, usa o padrão
         if (!fs.existsSync(templatePath)) {
-            console.warn(`⚠️ Template ${templateFile} não encontrado, usando cert-mod-linux.svg`);
-            return path.join(this.templatesDir, 'cert-mod-linux.svg');
+            console.warn(`⚠️ Template ${templateFile} não encontrado, usando ${this.defaultTemplate}.svg`);
+            return path.join(this.templatesDir, `${this.defaultTemplate}.svg`);
         }
         
         return templatePath;
@@ -45,16 +44,15 @@ class ImageService {
 
     async generateCertificateImageFromData(certificateData) {
         console.log('🚀 Iniciando geração de imagem para:', certificateData.participant_name);
-        console.log('📄 Template selecionado:', certificateData.template_type || 'cert-mod-linux');
+        console.log('📄 Template selecionado:', certificateData.template_type || this.defaultTemplate);
 
         try {
-            // Carrega o template correto
             const templatePath = this.getTemplatePath(certificateData.template_type);
             let svgContent = fs.readFileSync(templatePath, 'utf8');
 
             const assinaturaJoseBase64 = this.getImageAsBase64(this.assinaturaJosePath);
-            const assinaturaDaniloBase64 = this.getImageAsBase64(this.assinaturaDaniloPath);
             const completionDate = new Date(certificateData.completion_date).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+            const issueDate = new Date(certificateData.issue_date || certificateData.completion_date).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
             const participantName = this.escapeXml(certificateData.participant_name);
             const courseName = this.escapeXml(certificateData.course_name);
             const hoursText = this.escapeXml(`${certificateData.hours}h`);
@@ -62,14 +60,13 @@ class ImageService {
             const certificateId = this.escapeXml(certificateData.certificate_id);
             const hashVerificacao = this.escapeXml(certificateData.hash_verificacao);
             const completionDateText = this.escapeXml(completionDate);
+            const issueDateText = this.escapeXml(issueDate);
+            const instrutor = this.escapeXml(certificateData.instrutor || 'José Moraes');
+            const organizacao = this.escapeXml(certificateData.organizacao || 'Academy Z');
 
-            const baseUrl = (process.env.APP_BASE_URL || '').replace(/\/$/, '');
-            
-            // URL do QR Code aponta para a página de verificação com o hash
+            const baseUrl = (process.env.APP_BASE_URL || 'https://academyz.com.br').replace(/\/$/, '');
             const qrCodeVerificationUrl = `${baseUrl}/verificar/${certificateData.hash_verificacao}`;
-
-            // URL textual exibe o domínio sem protocolo
-            const textVerificationUrl = 'academyz.com.br/verificar';
+            const textVerificationUrl = `${baseUrl.replace(/^https?:\/\//, '')}/verificar`;
             
             console.log('Gerando QR Code localmente...');
 
@@ -89,23 +86,29 @@ class ImageService {
                 '{{PARTICIPANT_NAME}}': participantName,
                 '{{NOME_DO_PARTICIPANTE}}': participantName,
                 '{{COURSE_NAME}}': courseName,
+                '{{NOME_DO_CURSO}}': courseName,
                 '{{HOURS}}': hoursText,
                 '{{CARGA_HORARIA}}': hoursText,
                 '{{COMPLETION_DATE}}': completionDateText,
                 '{{DATA_CONCLUSAO}}': completionDateText,
+                '{{ISSUE_DATE}}': issueDateText,
+                '{{DATA_EMISSAO}}': issueDateText,
                 '{{MODALIDADE}}': modalidade,
                 '{{CERTIFICATE_ID}}': certificateId,
+                '{{ID_CERTIFICADO}}': certificateId,
                 '{{HASH}}': hashVerificacao,
                 '{{HASH_VERIFICACAO}}': hashVerificacao,
+                '{{INSTRUTOR}}': instrutor,
+                '{{ORGANIZACAO}}': organizacao,
                 '{{IMAGEM_ASSINATURA_JOSE}}': assinaturaJoseBase64,
-                '{{IMAGEM_ASSINATURA_DANILO}}': assinaturaDaniloBase64,
+                '{{ASSINATURA_INSTRUTOR}}': assinaturaJoseBase64,
                 '{{QR_CODE}}': qrCodeBlock,
                 '{{QR_CODE_BLOCK}}': qrCodeBlock,
-                '{{URL_VERIFICACAO}}': textVerificationUrl.replace(/^https?:\/\//, '')
+                '{{URL_VERIFICACAO}}': textVerificationUrl
             };
 
             for (const placeholder in replacements) {
-                const regex = new RegExp(placeholder, 'g');
+                const regex = new RegExp(placeholder.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
                 svgContent = svgContent.replace(regex, replacements[placeholder]);
             }
 

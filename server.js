@@ -120,6 +120,10 @@ app.get('/admin', (req, res) => {
 
 app.get('/faq', (req, res) => res.sendFile(path.join(__dirname, 'public', 'faq.html')));
 
+app.get('/contato', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'contato.html'));
+});
+
 let messageHistory = [];
 io.on('connection', (socket) => {
     socket.emit('chat history', messageHistory);

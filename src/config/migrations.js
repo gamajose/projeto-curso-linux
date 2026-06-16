@@ -2,7 +2,6 @@
 const pool = require('./database');
 
 class DatabaseMigrations {
-    
     /**
      * Executa todas as migrations necessárias
      */
@@ -11,6 +10,7 @@ class DatabaseMigrations {
         
         try {
             await this.createUsersTable();
+            await this.createCourseSectionsTable();
             await this.createCoursesTable();
             await this.createLessonsTable();
             await this.createUserCourseProgressTable();
@@ -61,7 +61,6 @@ class DatabaseMigrations {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
 
-            -- Criar índices
             CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
             CREATE INDEX IF NOT EXISTS idx_users_username ON users(username);
         `;
@@ -76,11 +75,42 @@ class DatabaseMigrations {
     }
 
     /**
+     * Cria a tabela de seções dos cursos
+     */
+    static async createCourseSectionsTable() {
+        const query = `
+            CREATE TABLE IF NOT EXISTS course_sections (
+                id SERIAL PRIMARY KEY,
+                name VARCHAR(255) UNIQUE NOT NULL,
+                description TEXT,
+                icon VARCHAR(20) DEFAULT '📚',
+                display_order INTEGER DEFAULT 0,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+
+            CREATE INDEX IF NOT EXISTS idx_course_sections_order ON course_sections(display_order, name);
+
+            INSERT INTO course_sections (id, name, description, icon, display_order)
+            VALUES (1, 'T.I.', 'Cursos relacionados à tecnologia, infraestrutura, sistemas e suporte.', '💻', 1)
+            ON CONFLICT (id) DO NOTHING;
+
+            SELECT setval('course_sections_id_seq', GREATEST((SELECT COALESCE(MAX(id), 1) FROM course_sections), 1), true);
+        `;
+
+        try {
+            await pool.query(query);
+            console.log('✅ Tabela "course_sections" verificada/criada');
+        } catch (error) {
+            console.error('❌ Erro ao criar tabela "course_sections":', error.message);
+            throw error;
+        }
+    }
+
+    /**
      * Cria a tabela de cursos
      */
     static async createCoursesTable() {
         try {
-            // Criar tabela se não existir
             const createTableQuery = `
                 CREATE TABLE IF NOT EXISTS courses (
                     id SERIAL PRIMARY KEY,
@@ -91,8 +121,7 @@ class DatabaseMigrations {
             `;
             await pool.query(createTableQuery);
 
-            // Adicionar coluna duration se não existir
-            const addDurationQuery = `
+            const alterQuery = `
                 DO $$ 
                 BEGIN
                     IF NOT EXISTS (
@@ -101,15 +130,35 @@ class DatabaseMigrations {
                     ) THEN
                         ALTER TABLE courses ADD COLUMN duration VARCHAR(50);
                     END IF;
+
+                    IF NOT EXISTS (
+                        SELECT 1 FROM information_schema.columns 
+                        WHERE table_name = 'courses' AND column_name = 'section_id'
+                    ) THEN
+                        ALTER TABLE courses ADD COLUMN section_id INTEGER REFERENCES course_sections(id);
+                    END IF;
+
+                    IF NOT EXISTS (
+                        SELECT 1 FROM information_schema.columns 
+                        WHERE table_name = 'courses' AND column_name = 'display_order'
+                    ) THEN
+                        ALTER TABLE courses ADD COLUMN display_order INTEGER DEFAULT 0;
+                    END IF;
                 END $$;
             `;
-            await pool.query(addDurationQuery);
+            await pool.query(alterQuery);
 
-            // Inserir curso padrão se não existir
             const insertCourseQuery = `
-                INSERT INTO courses (id, title, description, duration) 
-                VALUES (1, 'Introdução ao Linux', 'Aprenda os conceitos fundamentais do sistema operacional Linux, sua história e distribuições.', '2 horas')
+                INSERT INTO courses (id, section_id, title, description, duration, display_order) 
+                VALUES (1, 1, 'Introdução ao Linux', 'Aprenda os conceitos fundamentais do sistema operacional Linux, sua história e distribuições.', '2 horas', 1)
                 ON CONFLICT (id) DO NOTHING;
+
+                UPDATE courses SET section_id = 1 WHERE section_id IS NULL;
+                UPDATE courses SET display_order = id WHERE display_order IS NULL OR display_order = 0;
+                SELECT setval('courses_id_seq', GREATEST((SELECT COALESCE(MAX(id), 1) FROM courses), 1), true);
+
+                CREATE INDEX IF NOT EXISTS idx_courses_section_id ON courses(section_id);
+                CREATE INDEX IF NOT EXISTS idx_courses_order ON courses(section_id, display_order, id);
             `;
             await pool.query(insertCourseQuery);
 
@@ -125,7 +174,6 @@ class DatabaseMigrations {
      */
     static async createLessonsTable() {
         try {
-            // Criar tabela se não existir
             const createTableQuery = `
                 CREATE TABLE IF NOT EXISTS lessons (
                     id SERIAL PRIMARY KEY,
@@ -137,8 +185,7 @@ class DatabaseMigrations {
             `;
             await pool.query(createTableQuery);
 
-            // Adicionar coluna duration se não existir
-            const addDurationQuery = `
+            const alterQuery = `
                 DO $$ 
                 BEGIN
                     IF NOT EXISTS (
@@ -147,25 +194,49 @@ class DatabaseMigrations {
                     ) THEN
                         ALTER TABLE lessons ADD COLUMN duration VARCHAR(50);
                     END IF;
+
+                    IF NOT EXISTS (
+                        SELECT 1 FROM information_schema.columns 
+                        WHERE table_name = 'lessons' AND column_name = 'video_source'
+                    ) THEN
+                        ALTER TABLE lessons ADD COLUMN video_source VARCHAR(20) DEFAULT 'external';
+                    END IF;
+
+                    IF NOT EXISTS (
+                        SELECT 1 FROM information_schema.columns 
+                        WHERE table_name = 'lessons' AND column_name = 'description'
+                    ) THEN
+                        ALTER TABLE lessons ADD COLUMN description TEXT;
+                    END IF;
+
+                    IF NOT EXISTS (
+                        SELECT 1 FROM information_schema.columns 
+                        WHERE table_name = 'lessons' AND column_name = 'display_order'
+                    ) THEN
+                        ALTER TABLE lessons ADD COLUMN display_order INTEGER DEFAULT 0;
+                    END IF;
                 END $$;
             `;
-            await pool.query(addDurationQuery);
+            await pool.query(alterQuery);
 
-            // Criar índice
             const createIndexQuery = `
                 CREATE INDEX IF NOT EXISTS idx_lessons_course_id ON lessons(course_id);
+                CREATE INDEX IF NOT EXISTS idx_lessons_order ON lessons(course_id, display_order, id);
             `;
             await pool.query(createIndexQuery);
 
-            // Inserir aulas padrão se não existirem (com verificação)
             const insertLessonsQuery = `
-                INSERT INTO lessons (course_id, id, title, duration, video_url) VALUES
-                (1, 1, 'O que é Linux?', '15 min', 'https://www.youtube.com/watch?v=u1xrNaTO1bI'),
-                (1, 2, 'História do Linux', '20 min', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'),
-                (1, 3, 'Distribuições Linux', '25 min', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'),
-                (1, 4, 'Instalação do Linux', '30 min', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ'),
-                (1, 5, 'Primeiros Passos', '30 min', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+                INSERT INTO lessons (course_id, id, title, duration, video_url, video_source, display_order) VALUES
+                (1, 1, 'O que é Linux?', '15 min', 'https://www.youtube.com/watch?v=u1xrNaTO1bI', 'external', 1),
+                (1, 2, 'História do Linux', '20 min', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'external', 2),
+                (1, 3, 'Distribuições Linux', '25 min', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'external', 3),
+                (1, 4, 'Instalação do Linux', '30 min', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'external', 4),
+                (1, 5, 'Primeiros Passos', '30 min', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', 'external', 5)
                 ON CONFLICT (id) DO NOTHING;
+
+                UPDATE lessons SET display_order = id WHERE display_order IS NULL OR display_order = 0;
+                UPDATE lessons SET video_source = 'external' WHERE video_source IS NULL;
+                SELECT setval('lessons_id_seq', GREATEST((SELECT COALESCE(MAX(id), 1) FROM lessons), 1), true);
             `;
             await pool.query(insertLessonsQuery);
 
@@ -190,7 +261,6 @@ class DatabaseMigrations {
                 UNIQUE(user_id, course_id, lesson_id)
             );
 
-            -- Criar índices
             CREATE INDEX IF NOT EXISTS idx_progress_user_id ON user_course_progress(user_id);
             CREATE INDEX IF NOT EXISTS idx_progress_course_id ON user_course_progress(course_id);
         `;
@@ -209,7 +279,6 @@ class DatabaseMigrations {
      */
     static async createCertificatesTable() {
         try {
-            // Criar tabela se não existir
             const createTableQuery = `
                 CREATE TABLE IF NOT EXISTS certificates (
                     id SERIAL PRIMARY KEY,
@@ -221,7 +290,7 @@ class DatabaseMigrations {
                     certificate_id VARCHAR(50) UNIQUE NOT NULL,
                     modalidade VARCHAR(100) DEFAULT 'Online',
                     instrutor VARCHAR(255) DEFAULT 'José Moraes',
-                    diretor VARCHAR(255) DEFAULT 'Danilo Germano',
+                    diretor VARCHAR(255) DEFAULT 'José Moraes',
                     organizacao VARCHAR(255) DEFAULT 'Academy Z',
                     hash_verificacao VARCHAR(50) UNIQUE NOT NULL,
                     valido BOOLEAN DEFAULT true,
@@ -232,7 +301,6 @@ class DatabaseMigrations {
             `;
             await pool.query(createTableQuery);
 
-            // Adicionar coluna template_type se não existir
             const addTemplateTypeQuery = `
                 DO $$ 
                 BEGIN
@@ -246,7 +314,6 @@ class DatabaseMigrations {
             `;
             await pool.query(addTemplateTypeQuery);
 
-            // Criar índices
             const createIndexesQuery = `
                 CREATE INDEX IF NOT EXISTS idx_certificates_participant_name ON certificates(participant_name);
                 CREATE INDEX IF NOT EXISTS idx_certificates_course_name ON certificates(course_name);
@@ -302,7 +369,6 @@ class DatabaseMigrations {
                 PRIMARY KEY (user_id, badge_id)
             );
 
-            -- Criar índices
             CREATE INDEX IF NOT EXISTS idx_user_badges_user_id ON user_badges(user_id);
             CREATE INDEX IF NOT EXISTS idx_user_badges_badge_id ON user_badges(badge_id);
         `;

@@ -71,12 +71,6 @@
           <rect x="0" y="55" width="300" height="1" fill="#334155"/>
           <text x="150" y="80" class="mono white" font-size="18" text-anchor="middle">José Moraes - Instrutor</text>
         </g>
-        
-        <g transform="translate(420,30)">
-          <image href="{{IMAGEM_ASSINATURA_DANILO}}" x="25" y="-5" width="250" height="100" />
-          <rect x="0" y="55" width="300" height="1" fill="#334155"/>
-          <text x="150" y="80" class="mono white" font-size="18" text-anchor="middle">Danilo Germano - Diretor</text>
-        </g>
       </g>
 
       <g transform="translate(870,0)">
