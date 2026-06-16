@@ -8,6 +8,7 @@ const { checkIsAdmin } = require('../middleware/auth');
 
 const router = express.Router();
 
+const templatesDir = path.join(__dirname, '..', '..', 'certificates', 'templates');
 const uploadsDir = path.join(__dirname, '..', '..', 'public', 'uploads', 'lessons');
 fs.mkdirSync(uploadsDir, { recursive: true });
 
@@ -30,7 +31,45 @@ const upload = multer({
     }
 });
 
+function listCertificateTemplates() {
+    try {
+        if (!fs.existsSync(templatesDir)) return [];
+        return fs.readdirSync(templatesDir)
+            .filter(file => file.endsWith('.svg'))
+            .map(file => {
+                const value = path.basename(file, '.svg');
+                return {
+                    value,
+                    label: value
+                        .replace(/^cert-mod-/, '')
+                        .replace(/-/g, ' ')
+                        .replace(/\b\w/g, char => char.toUpperCase())
+                };
+            })
+            .sort((a, b) => a.label.localeCompare(b.label));
+    } catch (error) {
+        console.error('Erro ao listar templates de certificado:', error);
+        return [];
+    }
+}
+
+async function ensureContentSchema() {
+    await pool.query(`
+        ALTER TABLE courses ADD COLUMN IF NOT EXISTS certificate_template VARCHAR(100) DEFAULT 'certificado-template';
+        UPDATE courses SET certificate_template = 'certificado-template' WHERE certificate_template IS NULL OR certificate_template = '';
+    `);
+}
+
 router.use(authenticateToken, checkIsAdmin);
+router.use(async (_req, res, next) => {
+    try {
+        await ensureContentSchema();
+        next();
+    } catch (error) {
+        console.error('Erro ao preparar estrutura de conteúdo:', error);
+        res.status(500).json({ message: 'Erro ao preparar estrutura de conteúdo.' });
+    }
+});
 
 router.get('/catalog', async (_req, res) => {
     try {
@@ -56,7 +95,8 @@ router.get('/catalog', async (_req, res) => {
         res.json({
             sections: sections.rows,
             courses: courses.rows,
-            lessons: lessons.rows
+            lessons: lessons.rows,
+            templates: listCertificateTemplates()
         });
     } catch (error) {
         console.error('Erro ao carregar catálogo admin:', error);
@@ -114,16 +154,16 @@ router.delete('/sections/:id', async (req, res) => {
 });
 
 router.post('/courses', async (req, res) => {
-    const { section_id, title, description, duration, display_order } = req.body;
+    const { section_id, title, description, duration, display_order, certificate_template } = req.body;
     if (!section_id) return res.status(400).json({ message: 'Seção do curso é obrigatória.' });
     if (!title || !title.trim()) return res.status(400).json({ message: 'Título do curso é obrigatório.' });
 
     try {
         const result = await pool.query(`
-            INSERT INTO courses (section_id, title, description, duration, display_order)
-            VALUES ($1, $2, $3, $4, $5)
+            INSERT INTO courses (section_id, title, description, duration, display_order, certificate_template)
+            VALUES ($1, $2, $3, $4, $5, $6)
             RETURNING *
-        `, [section_id, title.trim(), description || null, duration || null, Number(display_order) || 0]);
+        `, [section_id, title.trim(), description || null, duration || null, Number(display_order) || 0, certificate_template || 'certificado-template']);
 
         res.status(201).json(result.rows[0]);
     } catch (error) {
@@ -133,17 +173,17 @@ router.post('/courses', async (req, res) => {
 });
 
 router.put('/courses/:id', async (req, res) => {
-    const { section_id, title, description, duration, display_order } = req.body;
+    const { section_id, title, description, duration, display_order, certificate_template } = req.body;
     if (!section_id) return res.status(400).json({ message: 'Seção do curso é obrigatória.' });
     if (!title || !title.trim()) return res.status(400).json({ message: 'Título do curso é obrigatório.' });
 
     try {
         const result = await pool.query(`
             UPDATE courses
-            SET section_id = $1, title = $2, description = $3, duration = $4, display_order = $5
-            WHERE id = $6
+            SET section_id = $1, title = $2, description = $3, duration = $4, display_order = $5, certificate_template = $6
+            WHERE id = $7
             RETURNING *
-        `, [section_id, title.trim(), description || null, duration || null, Number(display_order) || 0, req.params.id]);
+        `, [section_id, title.trim(), description || null, duration || null, Number(display_order) || 0, certificate_template || 'certificado-template', req.params.id]);
 
         if (!result.rows.length) return res.status(404).json({ message: 'Curso não encontrado.' });
         res.json(result.rows[0]);
