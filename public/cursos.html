@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cursos Linux - Academy Z</title>
+    <title>Cursos - Academy Z</title>
     <link rel="stylesheet" href="/css/custom.css">
     <style>
         * {
@@ -79,6 +79,7 @@
             color: #94a3b8;
             text-decoration: none;
             transition: color 0.3s;
+            font-size: 14px;
         }
 
         nav a:hover,
@@ -96,6 +97,11 @@
             gap: 10px;
             cursor: pointer;
             color: #94a3b8;
+            transition: color 0.3s;
+        }
+
+        .user-menu-button:hover {
+            color: #00ff88;
         }
 
         .avatar {
@@ -114,7 +120,9 @@
             border: 1px solid #1f2937;
             border-radius: 8px;
             min-width: 180px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
             z-index: 10;
+            padding: 5px 0;
         }
 
         .user-dropdown a {
@@ -122,11 +130,18 @@
             padding: 10px 15px;
             text-decoration: none;
             display: block;
+            font-size: 14px;
+        }
+
+        .user-dropdown a:hover {
+            background-color: #1f2937;
+            color: #00ff88;
         }
 
         .hero {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 38px;
+            padding: 20px 10px;
         }
 
         .hero h1 {
@@ -140,35 +155,81 @@
             font-size: 1.1rem;
         }
 
-        .courses-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 25px;
-            margin-bottom: 50px;
+        .section-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin: 25px 0 18px;
+            border-bottom: 1px solid #1f2937;
+            padding-bottom: 14px;
         }
 
+        .section-title-row h2 {
+            color: #00ff88;
+            font-size: 1.35rem;
+        }
+
+        .section-title-row p {
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .sections-grid,
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .section-card,
         .course-card {
             background: #0e141a;
             border: 1px solid #1f2937;
             border-radius: 12px;
             padding: 25px;
-            transition: transform 0.3s, border-color 0.3s;
+            transition: transform 0.3s, border-color 0.3s, background 0.3s;
         }
 
+        .section-card {
+            cursor: pointer;
+            min-height: 190px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .section-card:hover,
         .course-card:hover {
             transform: translateY(-5px);
             border-color: #00ff88;
+            background: rgba(14, 20, 26, 0.95);
         }
 
+        .section-icon {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+        }
+
+        .section-card h3,
         .course-card h3 {
             color: #00ff88;
-            margin-bottom: 15px;
-            font-size: 1.3rem;
+            margin-bottom: 12px;
+            font-size: 1.25rem;
         }
 
-        .course-info {
+        .section-card p,
+        .course-card p {
+            color: #cbd5e1;
+            margin-bottom: 16px;
+        }
+
+        .course-info,
+        .section-info {
             display: flex;
             justify-content: space-between;
+            gap: 10px;
             margin-bottom: 15px;
             color: #94a3b8;
             font-size: 0.9rem;
@@ -189,7 +250,9 @@
             transition: width 0.3s;
         }
 
-        .course-actions {
+        .course-actions,
+        .modal-actions,
+        .lesson-actions {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
@@ -201,7 +264,16 @@
             border-radius: 6px;
             cursor: pointer;
             font-weight: bold;
-            transition: background-color 0.3s;
+            transition: background-color 0.3s, transform 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
         }
 
         .btn-primary {
@@ -234,9 +306,6 @@
         .btn-linkedin {
             background-color: #0A66C2;
             color: white;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
         }
 
         .btn-linkedin:hover {
@@ -249,37 +318,51 @@
             fill: currentColor;
         }
 
+        .empty-state {
+            background: #0e141a;
+            border: 1px dashed #334155;
+            color: #94a3b8;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+
         .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             background: rgba(11, 15, 20, 0.95);
             z-index: 1000;
             align-items: center;
             justify-content: center;
             -webkit-backdrop-filter: blur(5px);
             backdrop-filter: blur(5px);
+            padding: 20px;
         }
 
         .modal-content {
             background: #0e141a;
-            border: 2px solid #00ff88;
+            border: 2px solid #1f2937;
             border-radius: 12px;
             padding: 25px;
-            max-width: 90vw;
-            width: 800px;
-            max-height: 85vh;
+            max-width: 94vw;
+            width: 900px;
+            max-height: 88vh;
             overflow-y: auto;
             position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+        }
+
+        .modal-content.lesson-modal-content {
+            width: 980px;
+            border-color: #00ff88;
         }
 
         .modal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 15px;
             margin-bottom: 20px;
             padding-bottom: 15px;
             border-bottom: 1px solid #1f2937;
@@ -287,6 +370,7 @@
 
         .modal-header h2 {
             color: #00ff88;
+            font-size: 1.4rem;
         }
 
         .close-modal {
@@ -297,18 +381,25 @@
             cursor: pointer;
         }
 
+        .close-modal:hover {
+            color: #00ff88;
+        }
+
         .lesson-list {
             list-style: none;
+            display: grid;
+            gap: 12px;
+            margin-top: 18px;
         }
 
         .lesson-item {
-            padding: 15px;
+            padding: 16px;
             border: 1px solid #1f2937;
             border-radius: 8px;
-            margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 15px;
             background: #0b0f14;
         }
 
@@ -332,9 +423,65 @@
             font-size: 0.9rem;
         }
 
-        .lesson-actions {
+        .video-box {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            background: #000;
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+            margin-bottom: 22px;
+        }
+
+        .video-box iframe,
+        .video-placeholder {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .video-placeholder {
             display: flex;
-            gap: 10px;
+            align-items: center;
+            justify-content: center;
+            color: #94a3b8;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .notes-area {
+            margin-top: 18px;
+            background: #0b1220;
+            border: 1px solid #1f2937;
+            border-radius: 10px;
+            padding: 18px;
+        }
+
+        .notes-area label {
+            color: #00ff88;
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .notes-area textarea {
+            width: 100%;
+            min-height: 140px;
+            resize: vertical;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            background: #0b0f14;
+            color: #e5e7eb;
+            padding: 14px;
+            outline: none;
+            line-height: 1.5;
+        }
+
+        .notes-area textarea:focus {
+            border-color: #00ff88;
         }
 
         footer {
@@ -344,20 +491,60 @@
             border-top: 1px solid #1f2937;
             color: #94a3b8;
         }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                text-align: center;
+                gap: 18px;
+            }
+
+            nav {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                justify-content: center;
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+
+            .hero h1 {
+                font-size: 2rem;
+            }
+
+            .section-title-row {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .lesson-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .lesson-actions,
+            .course-actions,
+            .modal-actions {
+                width: 100%;
+            }
+
+            .btn {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
 <body>
     <div class="container">
         <header>
-            <a href="/" id="logo-link" class="logo" style="text-decoration: none;">
+            <a href="/home" id="logo-link" class="logo" style="text-decoration: none;">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#00ff88" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path d="M2 17L12 22L22 17" stroke="#00ff88" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
-                    <path d="M2 12L12 17L22 12" stroke="#00ff88" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" />
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M2 17L12 22L22 17" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M2 12L12 17L22 12" stroke="#00ff88" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
                 <span>Academy Z</span>
             </a>
@@ -366,7 +553,7 @@
                     <li><a href="/home">Home</a></li>
                     <li><a href="/cursos" class="active">Cursos</a></li>
                     <li><a href="/verificar">Verificação</a></li>
-                    <li><a href="#">Contato</a></li>
+                    <li><a href="/contato">Contato</a></li>
                     <li id="admin-menu-item" style="display: none;"><a href="/admin">🔧 Admin</a></li>
                 </ul>
                 <ul id="nav-auth-links">
@@ -376,19 +563,48 @@
         </header>
 
         <div class="hero">
-            <h1>Curso de Linux</h1>
-            <p>Aprenda Linux do básico ao avançado e receba seu certificado</p>
+            <h1>Cursos</h1>
+            <p>Escolha uma seção, veja os cursos disponíveis e acompanhe as aulas com suas anotações.</p>
         </div>
 
-        <div class="courses-grid" id="coursesContainer"></div>
+        <section id="sectionsBlock">
+            <div class="section-title-row">
+                <div>
+                    <h2>Seções de Cursos</h2>
+                    <p>Clique em uma seção para visualizar os cursos relacionados.</p>
+                </div>
+            </div>
+            <div class="sections-grid" id="sectionsContainer"></div>
+        </section>
+
+        <section id="coursesBlock" style="display: none;">
+            <div class="section-title-row">
+                <div>
+                    <h2 id="selectedSectionTitle">Cursos</h2>
+                    <p id="selectedSectionDescription">Cursos relacionados à seção selecionada.</p>
+                </div>
+                <button class="btn btn-secondary" onclick="backToSections()">Voltar para seções</button>
+            </div>
+            <div class="courses-grid" id="coursesContainer"></div>
+        </section>
 
         <div class="modal" id="courseModal">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h2 id="modalTitle">Detalhes do Curso</h2>
-                    <button class="close-modal" onclick="closeModal()">×</button>
+                    <h2 id="modalTitle">Aulas do Curso</h2>
+                    <button class="close-modal" onclick="closeCourseModal()">×</button>
                 </div>
                 <div id="modalContent"></div>
+            </div>
+        </div>
+
+        <div class="modal" id="lessonModal">
+            <div class="modal-content lesson-modal-content">
+                <div class="modal-header">
+                    <h2 id="lessonModalTitle">Aula</h2>
+                    <button class="close-modal" onclick="closeLessonModal()">×</button>
+                </div>
+                <div id="lessonModalContent"></div>
             </div>
         </div>
 
@@ -406,47 +622,26 @@
     <script>
         const API_BASE = '/api';
         let currentUser = null;
-        let lastGeneratedCert = null;
+        let selectedSection = null;
 
-        let courses = [
-            { id: 1, title: "Introdução ao Linux", 
-                description: "Aprenda os conceitos fundamentais do sistema operacional Linux...", 
-                duration: "2 horas", 
+        const fallbackCourses = [
+            {
+                id: 1,
+                title: 'Introdução ao Linux',
+                description: 'Aprenda os conceitos fundamentais do sistema operacional Linux, sua história e distribuições.',
+                duration: '2 horas',
+                category: 'T.I.',
                 lessons: [
-                { id: 1, title: "O que é Linux?", videoUrl: "/videos/video1.mp4" }, 
-                { id: 2, title: "História do Linux", videoUrl: "/videos/video2.mp4" }, 
-                { id: 3, title: "Distribuições Linux", videoUrl: "/videos/video3.mp4" }, 
-                { id: 4, title: "Instalação do Linux", videoUrl: "/videos/video4.mp4" }, 
-                { id: 5, title: "Primeiros Passos", videoUrl: "/videos/video5.mp4" }] 
-            },
-
-            { id: 2, title: "Comandos Terminal", 
-                description: "Domine o terminal Linux e aprenda comandos essenciais...", 
-                duration: "3 horas", 
-                lessons: [
-                { id: 1, title: "Navegação Básica", videoUrl: "/videos/video6.mp4" }, 
-                { id: 2, title: "Manipulação de Arquivos", videoUrl: "/videos/video7.mp4" }, 
-                { id: 3, title: "Permissões e Donos", videoUrl: "/videos/video8.mp4" }, 
-                { id: 4, title: "Processos e Serviços", videoUrl: "/videos/video9.mp4" }, 
-                { id: 5, title: "Redirecionamentos", videoUrl: "/videos/video10.mp4" }, 
-                { id: 6, title: "Scripts Básicos", videoUrl: "/videos/video11.mp4" }, 
-                { id: 7, title: "Ferramentas Úteis", videoUrl: "/videos/video12.mp4" }] 
-            },
-
-            { id: 3, title: "Administração Linux", 
-                description: "Aprenda a gerenciar sistemas Linux como um administrador...", 
-                duration: "4 horas", 
-                lessons: [
-                    { id: 1, title: "Gerenciamento de Usuários", videoUrl: "/videos/video13.mp4" }, 
-                    { id: 2, title: "Gerenciamento de Pacotes", videoUrl: "/videos/video14.mp4" }, 
-                    { id: 3, title: "Configuração de Rede", videoUrl: "/videos/video15.mp4" }, 
-                    { id: 4, title: "Serviços e Daemons", videoUrl: "/videos/video16.mp4" }, 
-                    { id: 5, title: "Backup e Restauração", videoUrl: "/videos/video17.mp4" }, 
-                    { id: 6, title: "Monitoramento", videoUrl: "/videos/video18.mp4" }, 
-                    { id: 7, title: "Segurança Básica", videoUrl: "/videos/video19.mp4" }, 
-                    { id: 8, title: "Troubleshooting", videoUrl: "/videos/video20.mp4" }] 
+                    { id: 1, title: 'O que é Linux?', duration: '15 min', video_url: 'https://www.youtube.com/watch?v=u1xrNaTO1bI' },
+                    { id: 2, title: 'História do Linux', duration: '20 min', video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
+                    { id: 3, title: 'Distribuições Linux', duration: '25 min', video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
+                    { id: 4, title: 'Instalação do Linux', duration: '30 min', video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' },
+                    { id: 5, title: 'Primeiros Passos', duration: '30 min', video_url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' }
+                ]
             }
         ];
+
+        let courses = fallbackCourses;
 
         document.addEventListener('DOMContentLoaded', () => {
             const token = localStorage.getItem('authToken');
@@ -459,59 +654,144 @@
 
         async function initializeApp(token) {
             try {
-                // Busca todas as informações em paralelo
-                const [userRes, progressRes, certsRes, coursesRes] = await Promise.all([
+                const [userRes, progressRes, coursesRes] = await Promise.all([
                     fetch('/api/users/me', { headers: { 'Authorization': `Bearer ${token}` }, cache: 'no-cache' }),
                     fetch('/api/progress', { headers: { 'Authorization': `Bearer ${token}` }, cache: 'no-cache' }),
-                    fetch('/api/users/me/certificates', { headers: { 'Authorization': `Bearer ${token}` }, cache: 'no-cache' }),
                     fetch('/api/courses', { headers: { 'Authorization': `Bearer ${token}` }, cache: 'no-cache' })
                 ]);
 
                 currentUser = await userRes.json();
                 const progress = await progressRes.json();
-                const existingCerts = await certsRes.json();
                 const data = await coursesRes.json();
-                courses = Array.isArray(data) ? data : [];
 
-                // Mostrar link Admin se o usuário for admin
-                if (currentUser.is_admin) {
-                    const adminMenuItem = document.getElementById('admin-menu-item');
-                    if (adminMenuItem) {
-                        adminMenuItem.style.display = 'block';
-                    }
+                if (Array.isArray(data) && data.length > 0) {
+                    courses = data;
                 }
 
-                // Processa os dados
-             courses.forEach(course => {
-                (course.lessons || []).forEach(lesson => {
-                    lesson.completed = progress.some(p => p.course_id === course.id && p.lesson_id === lesson.id);
-                });
-                calculateProgress(course);
-            });
+                if (currentUser.is_admin) {
+                    const adminMenuItem = document.getElementById('admin-menu-item');
+                    if (adminMenuItem) adminMenuItem.style.display = 'block';
+                }
 
-                renderCourses();
-
+                normalizeCourses(progress);
+                renderSections();
             } catch (error) {
-                console.error("Erro na inicialização:", error);
-                showToast('Erro ao carregar dados. Tente novamente.', 'error');
+                console.error('Erro ao carregar cursos:', error);
+                showToast('Erro ao carregar dados. Exibindo cursos locais.', 'error');
+                normalizeCourses([]);
+                renderSections();
             }
         }
 
-        async function loadProgress(token) {
-            try {
-                const response = await fetch(`${API_BASE}/progress`, { headers: { 'Authorization': `Bearer ${token}` } });
-                const progress = await response.json();
+        function normalizeCourses(progress) {
+            courses = courses.map((course) => {
+                const lessons = Array.isArray(course.lessons) ? course.lessons : [];
+                const normalizedCourse = {
+                    ...course,
+                    category: getCourseCategory(course),
+                    lessons: lessons.map((lesson) => ({
+                        ...lesson,
+                        duration: lesson.duration || 'Aula',
+                        video_url: lesson.video_url || lesson.videoUrl || '',
+                        completed: Array.isArray(progress) && progress.some(p => Number(p.course_id) === Number(course.id) && Number(p.lesson_id) === Number(lesson.id))
+                    }))
+                };
+                calculateProgress(normalizedCourse);
+                return normalizedCourse;
+            });
+        }
 
-                courses.forEach(course => {
-                    course.lessons.forEach(lesson => {
-                        lesson.completed = progress.some(p => p.course_id === course.id && p.lesson_id === lesson.id);
-                    });
-                    calculateProgress(course);
-                });
-                renderCourses();
-            } catch (error) {
-                console.error("Erro ao carregar progresso:", error);
+        function getCourseCategory(course) {
+            return course.category || course.section || course.area || 'T.I.';
+        }
+
+        function getSections() {
+            const grouped = courses.reduce((acc, course) => {
+                const category = getCourseCategory(course);
+                if (!acc[category]) acc[category] = [];
+                acc[category].push(course);
+                return acc;
+            }, {});
+
+            return Object.entries(grouped).map(([name, sectionCourses]) => ({
+                id: slugify(name),
+                name,
+                icon: getSectionIcon(name),
+                description: getSectionDescription(name),
+                courses: sectionCourses
+            }));
+        }
+
+        function getSectionIcon(name) {
+            const normalized = name.toLowerCase();
+            if (normalized.includes('t.i') || normalized.includes('ti') || normalized.includes('tecnologia')) return '💻';
+            if (normalized.includes('linux')) return '🐧';
+            if (normalized.includes('segurança') || normalized.includes('cyber')) return '🔐';
+            if (normalized.includes('dados')) return '🗄️';
+            return '📚';
+        }
+
+        function getSectionDescription(name) {
+            const normalized = name.toLowerCase();
+            if (normalized.includes('t.i') || normalized.includes('ti') || normalized.includes('tecnologia')) {
+                return 'Cursos relacionados à tecnologia, infraestrutura, sistemas e suporte.';
             }
+            return `Cursos disponíveis na seção ${name}.`;
+        }
+
+        function slugify(value) {
+            return String(value)
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)/g, '');
+        }
+
+        function renderSections() {
+            const container = document.getElementById('sectionsContainer');
+            const sections = getSections();
+
+            if (!sections.length) {
+                container.innerHTML = '<div class="empty-state">Nenhuma seção de curso encontrada.</div>';
+                return;
+            }
+
+            container.innerHTML = sections.map(section => {
+                const totalLessons = section.courses.reduce((total, course) => total + (course.lessons || []).length, 0);
+                return `
+                    <article class="section-card" onclick="selectSection('${section.id}')">
+                        <div>
+                            <div class="section-icon">${section.icon}</div>
+                            <h3>${escapeHtml(section.name)}</h3>
+                            <p>${escapeHtml(section.description)}</p>
+                        </div>
+                        <div class="section-info">
+                            <span>${section.courses.length} curso(s)</span>
+                            <span>${totalLessons} aula(s)</span>
+                        </div>
+                    </article>
+                `;
+            }).join('');
+        }
+
+        function selectSection(sectionId) {
+            const section = getSections().find(item => item.id === sectionId);
+            if (!section) return;
+
+            selectedSection = section;
+            document.getElementById('sectionsBlock').style.display = 'none';
+            document.getElementById('coursesBlock').style.display = 'block';
+            document.getElementById('selectedSectionTitle').textContent = section.name;
+            document.getElementById('selectedSectionDescription').textContent = section.description;
+            renderCourses(section.courses);
+        }
+
+        function backToSections() {
+            selectedSection = null;
+            document.getElementById('coursesBlock').style.display = 'none';
+            document.getElementById('sectionsBlock').style.display = 'block';
+            closeCourseModal();
+            closeLessonModal();
         }
 
         function calculateProgress(course) {
@@ -527,72 +807,171 @@
             course.completed = course.progress === 100;
         }
 
-        function renderCourses() {
+        function renderCourses(sectionCourses = selectedSection?.courses || courses) {
             const container = document.getElementById('coursesContainer');
-            container.innerHTML = '';
-            courses.forEach(course => {
-                const card = document.createElement('div');
-                card.className = 'course-card';
-                let actionButtons = `<button class="btn btn-primary" onclick="viewCourse(${course.id})">${course.progress > 0 ? 'Continuar' : 'Começar'}</button>`;
+
+            if (!sectionCourses.length) {
+                container.innerHTML = '<div class="empty-state">Nenhum curso encontrado nesta seção.</div>';
+                return;
+            }
+
+            container.innerHTML = sectionCourses.map(course => {
+                const lessons = course.lessons || [];
+                let actionButtons = `<button class="btn btn-primary" onclick="viewCourse(${course.id})">${course.progress > 0 ? 'Continuar' : 'Abrir Curso'}</button>`;
 
                 if (course.completed) {
-                    actionButtons += `<button class="btn btn-secondary" onclick="generateCertificate(${course.id}, event)">Emitir Certificado</button>`;
+                    actionButtons += `<button class="btn btn-certificate" onclick="generateCertificate(${course.id}, event)">Emitir Certificado</button>`;
                 }
 
-                card.innerHTML = `
-                    <h3>${course.title}</h3>
-                    <p>${course.description}</p>
-                    <div class="course-info"><span>${course.duration}</span><span>${course.lessons.length} aulas</span></div>
-                    <div class="progress-container"><div class="progress-bar" style="width: ${course.progress}%"></div></div>
-                    <div class="course-actions" id="actions-${course.id}">${actionButtons}</div>
+                return `
+                    <article class="course-card">
+                        <h3>${escapeHtml(course.title)}</h3>
+                        <p>${escapeHtml(course.description || 'Curso disponível na plataforma Academy Z.')}</p>
+                        <div class="course-info">
+                            <span>${escapeHtml(course.duration || 'Carga horária não informada')}</span>
+                            <span>${lessons.length} aula(s)</span>
+                        </div>
+                        <div class="progress-container"><div class="progress-bar" style="width: ${course.progress || 0}%"></div></div>
+                        <div class="course-info">
+                            <span>Progresso: ${course.progress || 0}%</span>
+                            <span>${course.completed ? 'Concluído' : 'Em andamento'}</span>
+                        </div>
+                        <div class="course-actions" id="actions-${course.id}">${actionButtons}</div>
+                    </article>
                 `;
-                container.appendChild(card);
-            });
+            }).join('');
         }
 
-        async function downloadCertificate(certId, button) {
+        function viewCourse(courseId) {
+            const course = courses.find(c => Number(c.id) === Number(courseId));
+            if (!course) return;
+
+            document.getElementById('modalTitle').textContent = course.title;
+            const lessons = course.lessons || [];
+
+            const lessonsHtml = lessons.length ? lessons.map(lesson => `
+                <li class="lesson-item ${lesson.completed ? 'completed' : ''}">
+                    <div class="lesson-info">
+                        <div class="lesson-title">${lesson.completed ? '✅ ' : ''}${escapeHtml(lesson.title)}</div>
+                        <div class="lesson-duration">${escapeHtml(lesson.duration || 'Aula')} • ${getSavedNote(course.id, lesson.id) ? 'com anotações' : 'sem anotações'}</div>
+                    </div>
+                    <div class="lesson-actions">
+                        <button class="btn btn-primary" onclick="openLesson(${course.id}, ${lesson.id})">${lesson.completed ? 'Rever Aula' : 'Abrir Aula'}</button>
+                    </div>
+                </li>
+            `).join('') : '<li class="empty-state">Este curso ainda não possui aulas cadastradas.</li>';
+
+            document.getElementById('modalContent').innerHTML = `
+                <p style="color: #94a3b8; margin-bottom: 16px;">${escapeHtml(course.description || '')}</p>
+                <div class="course-info">
+                    <span>${escapeHtml(course.duration || 'Carga horária não informada')}</span>
+                    <span>${lessons.length} aula(s)</span>
+                    <span>${course.progress || 0}% concluído</span>
+                </div>
+                <div class="progress-container"><div class="progress-bar" style="width: ${course.progress || 0}%"></div></div>
+                <ul class="lesson-list">${lessonsHtml}</ul>
+                <div class="modal-actions" style="margin-top: 20px;">
+                    <button class="btn btn-secondary" onclick="closeCourseModal()">Fechar</button>
+                </div>
+            `;
+            document.getElementById('courseModal').style.display = 'flex';
+        }
+
+        function openLesson(courseId, lessonId) {
+            const course = courses.find(c => Number(c.id) === Number(courseId));
+            if (!course) return;
+
+            const lesson = (course.lessons || []).find(l => Number(l.id) === Number(lessonId));
+            if (!lesson) return;
+
+            const embedUrl = convertVideoUrlToEmbed(lesson.video_url || lesson.videoUrl);
+            const note = getSavedNote(courseId, lessonId);
+
+            document.getElementById('lessonModalTitle').textContent = `Aula: ${lesson.title}`;
+            document.getElementById('lessonModalContent').innerHTML = `
+                <div class="video-box">
+                    ${embedUrl ? `
+                        <iframe
+                            src="${embedUrl}"
+                            title="${escapeHtml(lesson.title)}"
+                            frameborder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowfullscreen>
+                        </iframe>
+                    ` : `
+                        <div class="video-placeholder">
+                            <div>
+                                <strong>Vídeo não cadastrado para esta aula.</strong><br>
+                                Use este espaço para revisar o conteúdo e fazer anotações.
+                            </div>
+                        </div>
+                    `}
+                </div>
+
+                <div class="notes-area">
+                    <label for="lessonNotes">Anotações desta aula</label>
+                    <textarea id="lessonNotes" placeholder="Digite aqui suas anotações, comandos importantes, dúvidas ou pontos para revisar...">${escapeHtml(note)}</textarea>
+                    <div class="modal-actions" style="margin-top: 14px;">
+                        <button class="btn btn-primary" onclick="saveLessonNote(${course.id}, ${lesson.id})">Salvar Anotações</button>
+                        ${!lesson.completed ? `<button class="btn btn-certificate" onclick="completeLesson(${course.id}, ${lesson.id})">Marcar como Concluída</button>` : '<button class="btn btn-secondary" disabled>Aula Concluída</button>'}
+                        <button class="btn btn-secondary" onclick="closeLessonModal(); viewCourse(${course.id});">Voltar para Aulas</button>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('lessonModal').style.display = 'flex';
+        }
+
+        function convertVideoUrlToEmbed(url) {
+            if (!url) return '';
+
+            if (url.includes('/embed/')) return url;
+
             try {
-                button.innerHTML = 'Baixando...';
-                const response = await fetch(`${API_BASE}/certificates/generate/${certId}`);
-                if (!response.ok) {
-                    throw new Error('Falha ao baixar a imagem.');
+                const urlObj = new URL(url, window.location.origin);
+                if (urlObj.hostname.includes('youtube.com')) {
+                    const videoId = urlObj.searchParams.get('v');
+                    if (videoId) return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
                 }
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.style.display = 'none';
-                a.href = url;
-                a.download = `certificado-${certId}.png`;
-                document.body.appendChild(a);
-                a.click();
-                window.URL.revokeObjectURL(url);
-                a.remove();
+
+                if (urlObj.hostname.includes('youtu.be')) {
+                    const videoId = urlObj.pathname.replace('/', '');
+                    if (videoId) return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+                }
+
+                return url;
             } catch (error) {
-                showToast(error.message);
-            } finally {
-                // Atualiza a UI para mostrar que o certificado foi emitido
-                button.textContent = 'Certificado Emitido';
-                button.disabled = true;
-
-                const courseId = parseInt(button.id.split('-')[2]);
-                const course = courses.find(c => c.id === courseId);
-                const cert = { course_name: course.title, certificate_id: certId };
-
-                const actionsContainer = document.getElementById(`actions-${course.id}`);
-                const linkedinButton = document.createElement('a');
-                linkedinButton.href = getLinkedInShareUrl(cert);
-                linkedinButton.target = '_blank';
-                linkedinButton.className = 'btn btn-linkedin';
-                linkedinButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2ZM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.25 6.5 1.75 1.75 0 0 1 6.5 8.25ZM19 19h-3v-4.75c0-1.4-1.2-2.5-2.5-2.5S11 12.85 11 14.25V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.6-1.4c2.5 0 4.5 2.2 4.5 5.1V19z"></path></svg> Compartilhar`;
-                actionsContainer.appendChild(linkedinButton);
+                console.error('URL do vídeo inválida:', url, error);
+                return url;
             }
+        }
+
+        function getNoteKey(courseId, lessonId) {
+            const userId = currentUser?.id || 'local';
+            return `academyz:notes:${userId}:${courseId}:${lessonId}`;
+        }
+
+        function getSavedNote(courseId, lessonId) {
+            return localStorage.getItem(getNoteKey(courseId, lessonId)) || '';
+        }
+
+        function saveLessonNote(courseId, lessonId) {
+            const textarea = document.getElementById('lessonNotes');
+            if (!textarea) return;
+
+            localStorage.setItem(getNoteKey(courseId, lessonId), textarea.value);
+            showToast('Anotações salvas com sucesso.', 'success');
+            viewCourse(courseId);
+            openLesson(courseId, lessonId);
         }
 
         async function completeLesson(courseId, lessonId) {
             const token = localStorage.getItem('authToken');
-            const course = courses.find(c => c.id === courseId);
-            const lesson = course.lessons.find(l => l.id === lessonId);
-            if (lesson.completed) return;
+            const course = courses.find(c => Number(c.id) === Number(courseId));
+            if (!course) return;
+
+            const lesson = course.lessons.find(l => Number(l.id) === Number(lessonId));
+            if (!lesson || lesson.completed) return;
 
             try {
                 const response = await fetch(`${API_BASE}/progress/complete-lesson`, {
@@ -600,22 +979,27 @@
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify({ courseId, lessonId, totalLessonsInCourse: course.lessons.length })
                 });
+
                 if (!response.ok) throw new Error('Falha ao salvar progresso.');
 
                 lesson.completed = true;
                 calculateProgress(course);
-                renderCourses();
+                renderCourses(selectedSection?.courses || courses);
+                showToast('Aula marcada como concluída.', 'success');
+
                 if (course.completed) {
                     setTimeout(() => showToast(`🎉 Parabéns! Você concluiu o curso "${course.title}"!`), 500);
                 }
+
+                openLesson(courseId, lessonId);
             } catch (error) {
-                showToast(error.message);
+                showToast(error.message, 'error');
             }
         }
 
         async function generateCertificate(courseId, event) {
-            const course = courses.find(c => c.id === courseId);
-            if (!course || !course.completed || !currentUser) return showToast('Você precisa concluir o curso primeiro!');
+            const course = courses.find(c => Number(c.id) === Number(courseId));
+            if (!course || !course.completed || !currentUser) return showToast('Você precisa concluir o curso primeiro!', 'error');
 
             const token = localStorage.getItem('authToken');
             const button = event.target;
@@ -632,7 +1016,7 @@
                     body: JSON.stringify({
                         participant_name: currentUser.name,
                         course_name: course.title,
-                        hours: parseInt(course.duration, 10),
+                        hours: parseInt(course.duration, 10) || 0,
                         issue_date: new Date().toISOString().split('T')[0],
                         completion_date: new Date().toISOString().split('T')[0],
                         certificate_id: certId,
@@ -644,99 +1028,78 @@
 
                 const generatedCert = await createResponse.json();
                 showToast(`✅ Certificado "${generatedCert.certificate_id}" registrado! O download começará em seguida.`);
-
-                // Chama a função de download
-                await downloadCertificate(generatedCert.certificate_id, button);
-
+                await downloadCertificate(generatedCert.certificate_id, button, course);
             } catch (error) {
                 console.error('Erro ao gerar certificado:', error);
-                showToast(`❌ Erro: ${error.message}`);
+                showToast(`❌ Erro: ${error.message}`, 'error');
                 button.disabled = false;
                 button.innerHTML = 'Emitir Certificado';
             }
         }
 
+        async function downloadCertificate(certId, button, course) {
+            try {
+                button.innerHTML = 'Baixando...';
+                const response = await fetch(`${API_BASE}/certificates/generate/${certId}`);
+                if (!response.ok) throw new Error('Falha ao baixar a imagem.');
+
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                a.download = `certificado-${certId}.png`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                a.remove();
+            } catch (error) {
+                showToast(error.message, 'error');
+            } finally {
+                button.textContent = 'Certificado Emitido';
+                button.disabled = true;
+
+                const actionsContainer = document.getElementById(`actions-${course.id}`);
+                if (actionsContainer && !actionsContainer.querySelector('.btn-linkedin')) {
+                    const linkedinButton = document.createElement('a');
+                    linkedinButton.href = getLinkedInShareUrl({ course_name: course.title, certificate_id: certId, completion_date: new Date().toISOString() });
+                    linkedinButton.target = '_blank';
+                    linkedinButton.className = 'btn btn-linkedin';
+                    linkedinButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20.5 2h-17A1.5 1.5 0 0 0 2 3.5v17A1.5 1.5 0 0 0 3.5 22h17a1.5 1.5 0 0 0 1.5-1.5v-17A1.5 1.5 0 0 0 20.5 2ZM8 19H5v-9h3zM6.5 8.25A1.75 1.75 0 1 1 8.25 6.5 1.75 1.75 0 0 1 6.5 8.25ZM19 19h-3v-4.75c0-1.4-1.2-2.5-2.5-2.5S11 12.85 11 14.25V19h-3v-9h2.9v1.3a3.11 3.11 0 0 1 2.6-1.4c2.5 0 4.5 2.2 4.5 5.1V19z"></path></svg> Compartilhar`;
+                    actionsContainer.appendChild(linkedinButton);
+                }
+            }
+        }
+
         function getLinkedInShareUrl(cert) {
             const name = encodeURIComponent(cert.course_name);
-            const organizationName = encodeURIComponent("Academy Z");
-            const issueDate = new Date(cert.completion_date);
+            const organizationName = encodeURIComponent('Academy Z');
+            const issueDate = new Date(cert.completion_date || new Date());
             const issueYear = issueDate.getFullYear();
             const issueMonth = issueDate.getMonth() + 1;
-            const certUrl = encodeURIComponent(`http://academyz.com.br/verify?id=${cert.certificate_id}`);
+            const certUrl = encodeURIComponent(`https://academyz.com.br/verify?id=${cert.certificate_id}`);
             const certId = encodeURIComponent(cert.certificate_id);
             return `https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${name}&organizationName=${organizationName}&issueYear=${issueYear}&issueMonth=${issueMonth}&certUrl=${certUrl}&certId=${certId}`;
         }
 
-        function closeModal() {
+        function closeCourseModal() {
             document.getElementById('courseModal').style.display = 'none';
+            document.getElementById('modalContent').innerHTML = '';
         }
 
-        function viewCourse(courseId) {
-            const course = courses.find(c => c.id == courseId);
-            if (!course) return;
-
-            document.getElementById('modalTitle').textContent = course.title;
-            let lessonsHtml = `<ul class="lesson-list">`;
-
-            course.lessons.forEach(lesson => {
-                lessonsHtml += `
-                    <li class="lesson-item ${lesson.completed ? 'completed' : ''}">
-                        <span>${lesson.title} (${lesson.duration})</span>
-                        <div class="lesson-actions">
-                            <button class="btn btn-primary" onclick="playVideo(${course.id}, ${lesson.id})">${lesson.completed ? 'Rever' : 'Assistir'}</button>
-                        </div>
-                    </li>
-                `;
-            });
-
-            lessonsHtml += '</ul>';
-            document.getElementById('modalContent').innerHTML = lessonsHtml;
-            document.getElementById('courseModal').style.display = 'flex';
+        function closeLessonModal() {
+            document.getElementById('lessonModal').style.display = 'none';
+            document.getElementById('lessonModalContent').innerHTML = '';
         }
 
-        function convertYouTubeUrlToEmbed(url) {
-            if (!url) return '';
-            try {
-                const urlObj = new URL(url);
-                // Pega o ID do vídeo do parâmetro 'v'
-                const videoId = urlObj.searchParams.get('v');
-                if (videoId) {
-                    // Retorna a URL no formato correto para embed
-                    return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-                }
-            } catch (e) {
-                console.error("URL do vídeo inválida:", url, e);
-            }
-            // Se a URL já estiver no formato embed ou for inválida, retorna como está
-            return url;
+        function escapeHtml(value) {
+            return String(value ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
-
-        function playVideo(courseId, lessonId) {
-            const course = courses.find(c => c.id == courseId);
-            const lesson = course.lessons.find(l => l.id == lessonId);
-            
-            // Converte a URL do vídeo para o formato de incorporação
-            const embedUrl = convertYouTubeUrlToEmbed(lesson.video_url);
-
-            document.getElementById('modalTitle').textContent = `Aula: ${lesson.title}`;
-            document.getElementById('modalContent').innerHTML = `
-                <div style="position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden; max-width: 100%; background: #000;">
-                    <iframe
-                        style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;"
-                        src="${embedUrl}"
-                        title="YouTube video player"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen>
-                    </iframe>
-                </div>
-                <div style="margin-top: 20px; display: flex; gap: 15px;">
-                    ${!lesson.completed ? `<button class="btn btn-primary" onclick="completeLesson(${course.id}, ${lesson.id}); viewCourse(${course.id});">Marcar como Concluída</button>` : ''}
-                    <button class="btn btn-secondary" onclick="viewCourse(${course.id})">Voltar para Aulas</button>
-                </div>
-            `;
-        }
-
     </script>
 
 </body>
