@@ -6,7 +6,7 @@ const QRCode = require('qrcode');
 class ImageService {
     constructor() {
         this.templatesDir = path.join(__dirname, '..', '..', 'certificates', 'templates');
-        this.assinaturaJosePath = path.join(this.templatesDir, 'Joseluiz.png');
+        this.assinaturaJosePath = path.join(this.templatesDir, 'jose.png');
         this.defaultTemplate = 'certificado-template';
     }
 
