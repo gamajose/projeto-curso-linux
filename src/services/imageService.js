@@ -7,7 +7,6 @@ class ImageService {
     constructor() {
         this.templatesDir = path.join(__dirname, '..', '..', 'certificates', 'templates');
         this.assinaturaJosePath = path.join(this.templatesDir, 'Joseluiz.png');
-        this.assinaturaJosePath = path.join(this.templatesDir, 'jose.png');
     }
 
     getTemplatePath(templateType) {
@@ -53,7 +52,6 @@ class ImageService {
             let svgContent = fs.readFileSync(templatePath, 'utf8');
 
             const assinaturaJoseBase64 = this.getImageAsBase64(this.assinaturaJosePath);
-            const assinaturaJoseBase64 = this.getImageAsBase64(this.assinaturaJosePath);
             const completionDate = new Date(certificateData.completion_date).toLocaleDateString('pt-BR', { timeZone: 'UTC' });
             const participantName = this.escapeXml(certificateData.participant_name);
             const courseName = this.escapeXml(certificateData.course_name);
@@ -97,7 +95,6 @@ class ImageService {
                 '{{CERTIFICATE_ID}}': certificateId,
                 '{{HASH}}': hashVerificacao,
                 '{{HASH_VERIFICACAO}}': hashVerificacao,
-                '{{IMAGEM_ASSINATURA_JOSE}}': assinaturaJoseBase64,
                 '{{IMAGEM_ASSINATURA_JOSE}}': assinaturaJoseBase64,
                 '{{QR_CODE}}': qrCodeBlock,
                 '{{QR_CODE_BLOCK}}': qrCodeBlock,
